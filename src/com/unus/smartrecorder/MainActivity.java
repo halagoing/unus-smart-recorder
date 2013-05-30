@@ -1,9 +1,12 @@
 package com.unus.smartrecorder;
 
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 
+
+// bond 
 public class MainActivity extends Activity {
 
     @Override
