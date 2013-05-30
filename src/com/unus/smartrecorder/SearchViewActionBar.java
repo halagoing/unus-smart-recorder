@@ -30,11 +30,15 @@ import android.view.Window;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.android.debug.hv.ViewServer;
+
 /**
- * This demonstrates the usage of SearchView in an ActionBar as a menu item.
- * It sets a SearchableInfo on the SearchView for suggestions and submitting queries to.
+ * This demonstrates the usage of SearchView in an ActionBar as a menu item. It
+ * sets a SearchableInfo on the SearchView for suggestions and submitting
+ * queries to.
  */
-public class SearchViewActionBar extends Activity implements SearchView.OnQueryTextListener {
+public class SearchViewActionBar extends Activity implements
+        SearchView.OnQueryTextListener {
 
     private SearchView mSearchView;
     private TextView mStatusView;
@@ -47,6 +51,9 @@ public class SearchViewActionBar extends Activity implements SearchView.OnQueryT
         setContentView(R.layout.searchview_actionbar);
 
         mStatusView = (TextView) findViewById(R.id.status_text);
+
+        // DEBUG : For Hierarchy Viewer
+        ViewServer.get(this).addWindow(this);
     }
 
     @Override
@@ -73,10 +80,12 @@ public class SearchViewActionBar extends Activity implements SearchView.OnQueryT
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         if (searchManager != null) {
-            List<SearchableInfo> searchables = searchManager.getSearchablesInGlobalSearch();
+            List<SearchableInfo> searchables = searchManager
+                    .getSearchablesInGlobalSearch();
 
             // Try to use the "applications" global search provider
-            SearchableInfo info = searchManager.getSearchableInfo(getComponentName());
+            SearchableInfo info = searchManager
+                    .getSearchableInfo(getComponentName());
             for (SearchableInfo inf : searchables) {
                 if (inf.getSuggestAuthority() != null
                         && inf.getSuggestAuthority().startsWith("applications")) {
@@ -106,5 +115,23 @@ public class SearchViewActionBar extends Activity implements SearchView.OnQueryT
 
     protected boolean isAlwaysExpanded() {
         return false;
+    }
+
+    @Override
+    protected void onResume() {
+        // TODO Auto-generated method stub
+        super.onResume();
+
+        // DEBUG : For Hierarchy Viewer
+        ViewServer.get(this).setFocusedWindow(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        super.onDestroy();
+
+        // DEBUG : For Hierarchy Viewer
+        ViewServer.get(this).removeWindow(this);
     }
 }
