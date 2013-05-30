@@ -4,3 +4,4 @@ gen
 .project
 .settings
 project.properties
+/local.properties

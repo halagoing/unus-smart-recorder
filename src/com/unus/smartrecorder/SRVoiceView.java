@@ -10,5 +10,28 @@
 //
 package com.unus.smartrecorder;
 
-public class SRVoiceView {
+import android.content.Context;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.widget.RelativeLayout;
+
+public class SRVoiceView extends RelativeLayout{
+    Context mContext;
+
+    public SRVoiceView(Context context) {
+        super(context);
+        initView(context);
+    }
+    
+    public SRVoiceView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        initView(context);
+    }
+    
+    private void initView(Context context) {
+        mContext = context;
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            inflater.inflate(R.layout.sr_voiceview_layout, this, true);
+    }
 }

@@ -10,5 +10,16 @@
 //
 package com.unus.smartrecorder;
 
+import android.content.Context;
+import android.util.AttributeSet;
+
 public class SRPlayView extends SRVoiceView {
+
+    public SRPlayView(Context context) {
+        super(context);
+    }
+    
+    public SRPlayView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 }
