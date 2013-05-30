@@ -20,6 +20,7 @@ import android.widget.ListView;
 public class SRSearchView extends FrameLayout {
     Context mContext;
     ListView mListView;
+    private ArrayAdapter<String> mAdapter;
     
     //{{TESTCODE
     private String[] mStrings = Cheeses.sCheeseStrings;
@@ -42,7 +43,20 @@ public class SRSearchView extends FrameLayout {
         inflater.inflate(R.layout.sr_searchview_layout, this, true);
         
         mListView = (ListView)findViewById(R.id.SRSearchListView);
-        mListView.setAdapter(new ArrayAdapter<String>(mContext,
+        mListView.setAdapter(mAdapter = new ArrayAdapter<String>(mContext,
                 android.R.layout.simple_list_item_1, mStrings));
+        mListView.setTextFilterEnabled(true);
+    }
+    
+    public void clearTextFilter() {
+        if (mListView != null) {
+            mListView.clearTextFilter();
+        }
+    }
+    
+    public void setFilterText(String filterText) {
+        if (mListView != null) {
+            mListView.setFilterText(filterText);
+        }        
     }
 }

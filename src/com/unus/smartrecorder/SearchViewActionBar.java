@@ -18,15 +18,21 @@ package com.unus.smartrecorder;
 
 import java.util.List;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MenuItem.OnActionExpandListener;
+import android.view.View;
 import android.view.Window;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -38,10 +44,20 @@ import com.android.debug.hv.ViewServer;
  * queries to.
  */
 public class SearchViewActionBar extends Activity implements
-        SearchView.OnQueryTextListener {
-
+        SearchView.OnQueryTextListener, SearchView.OnCloseListener  {
+    public static final int STATE_RECORDING = 1;        // Recording
+    public static final int STATE_PLAYING = 2;          // Playing
+    public static final int STATE_SEARCHING = 3;        // Searching
+    
     private SearchView mSearchView;
-    private TextView mStatusView;
+    private ActionBar mActionBar;
+    private int mState; 
+    private LinearLayout mMainLayout;
+    
+    private SRSearchView mSRSearchView;
+    private SRVoiceView mSRVoiceView;
+
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +66,20 @@ public class SearchViewActionBar extends Activity implements
 
         setContentView(R.layout.searchview_actionbar);
 
-        mStatusView = (TextView) findViewById(R.id.status_text);
+        mActionBar = getActionBar();
+        
+        //initial state
+        mActionBar.setTitle(R.string.no_title);     // no title
+        mState = STATE_RECORDING;                   // recording
+        
+        //TEST
+        mSRSearchView = new SRSearchView(getBaseContext());
+        mSRVoiceView = new SRVoiceView(getBaseContext());
+        mMainLayout = (LinearLayout)findViewById(R.id.mainLayout);
+        mMainLayout.addView(mSRVoiceView);
+        mMainLayout.addView(mSRSearchView);
+
+        mSRSearchView.setVisibility(View.GONE);
 
         // DEBUG : For Hierarchy Viewer
         ViewServer.get(this).addWindow(this);
@@ -63,9 +92,47 @@ public class SearchViewActionBar extends Activity implements
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.searchview_in_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
+        
+        searchItem.setOnActionExpandListener(new OnActionExpandListener() {
+            
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                Log.d("SmartRecorder", "onMenuItemActionExpand()");
+                mState = STATE_SEARCHING;
+                mSRVoiceView.setVisibility(View.GONE);
+                mSRSearchView.setVisibility(View.VISIBLE);
+                return true;
+            }
+            
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                Log.d("SmartRecorder", "onMenuItemActionCollapse()");
+                mState = STATE_RECORDING;
+                mSRVoiceView.setVisibility(View.VISIBLE);
+                mSRSearchView.setVisibility(View.GONE);                
+                return true;
+            }
+        });
+        
         mSearchView = (SearchView) searchItem.getActionView();
         setupSearchView(searchItem);
 
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // TODO Auto-generated method stub
+        //return super.onOptionsItemSelected(item);
+        switch(item.getItemId()) {
+        case android.R.id.home:
+            break;
+        case R.id.action_search:
+            break;
+        default:
+            break;
+        }
         return true;
     }
 
@@ -78,38 +145,44 @@ public class SearchViewActionBar extends Activity implements
                     | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
         }
 
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        if (searchManager != null) {
-            List<SearchableInfo> searchables = searchManager
-                    .getSearchablesInGlobalSearch();
-
-            // Try to use the "applications" global search provider
-            SearchableInfo info = searchManager
-                    .getSearchableInfo(getComponentName());
-            for (SearchableInfo inf : searchables) {
-                if (inf.getSuggestAuthority() != null
-                        && inf.getSuggestAuthority().startsWith("applications")) {
-                    info = inf;
-                }
-            }
-            mSearchView.setSearchableInfo(info);
-        }
+//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        if (searchManager != null) {
+//            List<SearchableInfo> searchables = searchManager
+//                    .getSearchablesInGlobalSearch();
+//
+//            // Try to use the "applications" global search provider
+//            SearchableInfo info = searchManager
+//                    .getSearchableInfo(getComponentName());
+//            for (SearchableInfo inf : searchables) {
+//                if (inf.getSuggestAuthority() != null
+//                        && inf.getSuggestAuthority().startsWith("applications")) {
+//                    info = inf;
+//                }
+//            }
+//            mSearchView.setSearchableInfo(info);
+//        }
 
         mSearchView.setOnQueryTextListener(this);
+        mSearchView.setOnCloseListener(this);
     }
 
     public boolean onQueryTextChange(String newText) {
-        mStatusView.setText("Query = " + newText);
-        return false;
+        Log.d("SmartRecorder", "Query = " + newText);
+        if (TextUtils.isEmpty(newText)) {
+            mSRSearchView.clearTextFilter();
+        } else {
+            mSRSearchView.setFilterText(newText.toString());
+        }
+        return true;
     }
 
     public boolean onQueryTextSubmit(String query) {
-        mStatusView.setText("Query = " + query + " : submitted");
+        Log.d("SmartRecorder", "Query = " + query + " : submitted");
         return false;
     }
 
     public boolean onClose() {
-        mStatusView.setText("Closed!");
+        Log.d("SmartRecorder", "onClose()");
         return false;
     }
 
@@ -119,7 +192,6 @@ public class SearchViewActionBar extends Activity implements
 
     @Override
     protected void onResume() {
-        // TODO Auto-generated method stub
         super.onResume();
 
         // DEBUG : For Hierarchy Viewer
@@ -128,10 +200,17 @@ public class SearchViewActionBar extends Activity implements
 
     @Override
     protected void onDestroy() {
-        // TODO Auto-generated method stub
         super.onDestroy();
 
         // DEBUG : For Hierarchy Viewer
         ViewServer.get(this).removeWindow(this);
+    }
+    
+    public int getState() {
+        return mState;
+    }
+    
+    public void setState(int state) {
+        mState = state;
     }
 }
