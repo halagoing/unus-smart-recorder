@@ -16,25 +16,16 @@
 
 package com.unus.smartrecorder;
 
-import java.util.List;
-
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.SearchManager;
-import android.app.SearchableInfo;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MenuItem.OnActionExpandListener;
-import android.view.View;
 import android.view.Window;
-import android.widget.LinearLayout;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import com.android.debug.hv.ViewServer;
 
@@ -51,8 +42,8 @@ public class SearchViewActionBar extends Activity implements
     
     private SearchView mSearchView;
     private ActionBar mActionBar;
-    private int mState; 
-    private LinearLayout mMainLayout;
+    private int mViewState; 
+    private int mPrevViewState;
     
     private SRSearchView mSRSearchView;
     private SRVoiceView mSRVoiceView;
@@ -64,22 +55,20 @@ public class SearchViewActionBar extends Activity implements
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 
-        setContentView(R.layout.searchview_actionbar);
+        //setContentView(R.layout.searchview_actionbar);
 
         mActionBar = getActionBar();
+        mActionBar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_HOME);   // remove title icon
         
         //initial state
-        mActionBar.setTitle(R.string.no_title);     // no title
-        mState = STATE_RECORDING;                   // recording
+        mActionBar.setTitle(R.string.no_title);         // no title
+        mPrevViewState = mViewState = STATE_RECORDING;  // recording
         
-        //TEST
+        // TEST
         mSRSearchView = new SRSearchView(getBaseContext());
         mSRVoiceView = new SRVoiceView(getBaseContext());
-        mMainLayout = (LinearLayout)findViewById(R.id.mainLayout);
-        mMainLayout.addView(mSRVoiceView);
-        mMainLayout.addView(mSRSearchView);
-
-        mSRSearchView.setVisibility(View.GONE);
+        
+        setContentView(mSRVoiceView);
 
         // DEBUG : For Hierarchy Viewer
         ViewServer.get(this).addWindow(this);
@@ -97,19 +86,17 @@ public class SearchViewActionBar extends Activity implements
             
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                Log.d("SmartRecorder", "onMenuItemActionExpand()");
-                mState = STATE_SEARCHING;
-                mSRVoiceView.setVisibility(View.GONE);
-                mSRSearchView.setVisibility(View.VISIBLE);
+                DebugUtil.SRLog("onMenuItemActionExpand()");
+
+                setViewState(STATE_SEARCHING);
                 return true;
             }
             
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                Log.d("SmartRecorder", "onMenuItemActionCollapse()");
-                mState = STATE_RECORDING;
-                mSRVoiceView.setVisibility(View.VISIBLE);
-                mSRSearchView.setVisibility(View.GONE);                
+                DebugUtil.SRLog("onMenuItemActionCollapse()");
+
+                setViewState(STATE_RECORDING);
                 return true;
             }
         });
@@ -167,7 +154,7 @@ public class SearchViewActionBar extends Activity implements
     }
 
     public boolean onQueryTextChange(String newText) {
-        Log.d("SmartRecorder", "Query = " + newText);
+        DebugUtil.SRLog("Query = " + newText);
         if (TextUtils.isEmpty(newText)) {
             mSRSearchView.clearTextFilter();
         } else {
@@ -177,12 +164,12 @@ public class SearchViewActionBar extends Activity implements
     }
 
     public boolean onQueryTextSubmit(String query) {
-        Log.d("SmartRecorder", "Query = " + query + " : submitted");
+        DebugUtil.SRLog("Query = " + query + " : submitted");
         return false;
     }
 
     public boolean onClose() {
-        Log.d("SmartRecorder", "onClose()");
+        DebugUtil.SRLog("onClose()");
         return false;
     }
 
@@ -206,11 +193,30 @@ public class SearchViewActionBar extends Activity implements
         ViewServer.get(this).removeWindow(this);
     }
     
-    public int getState() {
-        return mState;
+    public int getViewState() {
+        return mViewState;
     }
     
-    public void setState(int state) {
-        mState = state;
+    public void setViewState(int state) {
+        switch(state) {
+        case STATE_PLAYING:
+            setContentView(mSRVoiceView);
+            break;
+        case STATE_RECORDING:
+            setContentView(mSRVoiceView);
+            break;
+        case STATE_SEARCHING:
+            setContentView(mSRSearchView);
+            break;
+        default:
+            return;
+        }
+        mPrevViewState = mViewState;    // Previous View State
+        mViewState = state;  
     }
+    
+    public int getPrevViewState() {
+        return mPrevViewState;
+    }
+    
 }
