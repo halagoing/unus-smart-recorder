@@ -11,7 +11,7 @@
 package com.unus.smartrecorder;
 
 public interface SRTagItemData {
-    public void get();
+    public Object get();
 
-    public void set();
+    public void set(Object data);
 }

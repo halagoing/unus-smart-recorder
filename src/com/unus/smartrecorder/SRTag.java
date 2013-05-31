@@ -10,8 +10,10 @@
 //
 package com.unus.smartrecorder;
 
+import java.util.ArrayList;
+
 public class SRTag {
-    private SRTagItem mTagItems;
+    private ArrayList<SRTagItem> mTagItems = new ArrayList<SRTagItem>();
 
     /**
      * DB에도 동시에 저장한다.
@@ -19,32 +21,70 @@ public class SRTag {
      * @param tagItem
      **/
     public void insert(SRTagItem tagItem) {
-
+        if (mTagItems != null) {
+            mTagItems.add(tagItem);
+        }
+        
+        // TODO : DB
     }
 
     /**
      * DB에도 동시에 저장한다.
      * 
-     * @param tagItem
+     * @param position
      **/
-    public void delete(SRTagItem tagItem) {
-
+    public void delete(int position) {
+        if (mTagItems != null) {
+            for(int i = 0; i < mTagItems.size(); i++) {
+                if (((SRTagItem)mTagItems.get(i)).getPosition() == position) {
+                    mTagItems.remove(i);
+                    
+                    // TODO : DB
+                    break;
+                }
+            }
+        }
     }
 
     /**
      * DB에도 동시에 저장한다.
      * 
-     * @param tagItem
+     * @param position
+     * @param tagData
      **/
-    public void update(SRTagItem tagItem) {
-
+    public void updateTagData(int position, SRTagItemData tagData) {
+        if (mTagItems != null) {
+            for(int i = 0; i < mTagItems.size(); i++) {
+                SRTagItem t = mTagItems.get(i);
+                if (t.getPosition() == position) {
+                    t.setTagData(tagData);
+                    
+                    // TODO : DB
+                    break;
+                }
+            }
+        }
+        
+        // TODO : DB
     }
 
-    public void getTagItem(int position) {
+    public SRTagItem getTagItem(int position) {
+        if (mTagItems != null) {
+            for(int i = 0; i < mTagItems.size(); i++) {
+                SRTagItem t = mTagItems.get(i);
+                if (t.getPosition() == position) {
+                    return t;
 
+                }
+            }
+        }
+        return null;
     }
 
-    public void getAllTagItem() {
-
+    public ArrayList<SRTagItem> getAllTagItem() {
+        if (mTagItems != null) {
+            return mTagItems;
+        }
+        return null;
     }
 }

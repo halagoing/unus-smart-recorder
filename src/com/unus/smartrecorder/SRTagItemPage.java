@@ -11,13 +11,13 @@
 package com.unus.smartrecorder;
 
 public class SRTagItemPage implements SRTagItemData {
-    private int mPage;
+    private Integer mPage;
 
-    public void get() {
-        ;
+    public Object get() {
+        return mPage;
     }
 
-    public void set() {
-        ;
+    public void set(Object data) {
+        mPage = (Integer)data;
     }
 }

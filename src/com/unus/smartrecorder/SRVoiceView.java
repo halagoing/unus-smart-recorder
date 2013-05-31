@@ -13,10 +13,13 @@ package com.unus.smartrecorder;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
 public class SRVoiceView extends RelativeLayout{
     Context mContext;
+    Button mButton;
 
     public SRVoiceView(Context context) {
         super(context);
@@ -33,5 +36,15 @@ public class SRVoiceView extends RelativeLayout{
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             inflater.inflate(R.layout.sr_voiceview_layout, this, true);
+            
+            mButton = (Button) findViewById(R.id.button1);
+            mButton.setOnClickListener(new OnClickListener() {
+                
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    DebugUtil.SRLog("onClick()");
+                }
+            });
     }
 }

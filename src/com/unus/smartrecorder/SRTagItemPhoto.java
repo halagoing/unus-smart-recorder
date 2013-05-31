@@ -13,11 +13,11 @@ package com.unus.smartrecorder;
 public class SRTagItemPhoto implements SRTagItemData {
     private String mPhoto;
 
-    public void get() {
-        ;
+    public Object get() {
+        return mPhoto;
     }
 
-    public void set() {
-        ;
+    public void set(Object data) {
+        mPhoto = (String)data;
     }
 }

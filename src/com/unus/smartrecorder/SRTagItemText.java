@@ -13,11 +13,11 @@ package com.unus.smartrecorder;
 public class SRTagItemText implements SRTagItemData {
     private String mText;
 
-    public void get() {
-        ;
+    public Object get() {
+        return mText;
     }
 
-    public void set() {
-        ;
+    public void set(Object data) {
+        mText = (String)data;
     }
 }

@@ -17,27 +17,30 @@ public class SRTagItem {
     private int mPosition;
     private SRTagItemData mTagData;
 
-    public void create(int position) {
-
+    public SRTagItem(int position, SRTagItemData tagData) {
+        super();
+        mDate = new Date();
+        this.mPosition = position;
+        this.mTagData = tagData;
     }
 
-    public void getDate() {
-
+    public Date getDate() {
+        return mDate;
     }
 
     public void setPosition(int position) {
-
+        mPosition = position;
     }
 
-    public void getPosition() {
-
+    public int getPosition() {
+        return mPosition;
     }
 
     public void setTagData(SRTagItemData tagData) {
-
+        mTagData = tagData;
     }
 
-    public void getTagData() {
-
+    public SRTagItemData getTagData() {
+        return mTagData;
     }
 }
