@@ -10,12 +10,30 @@
 //
 package com.unus.smartrecorder;
 
+import java.io.File;
+import java.io.IOException;
+
+import android.media.MediaRecorder;
+import android.os.Environment;
+import android.util.Log;
+
 public class SRVoice {
     private SRTag mTag;
     private SRDoc mDoc;
     public SRDB mDB;
     public SRShare mShare;
+    
+    
 
+    boolean isRecorder = false;
+    private MediaRecorder mRecorder = null;
+	private int currentFormat = 0;
+	private static final String AUDIO_RECORDER_FILE_EXT_3GP = ".3gp";
+	private static final String AUDIO_RECORDER_FILE_EXT_MP4 = ".mp4";
+	private static final String AUDIO_RECORDER_FOLDER = "UNUS_RECORDER";
+	private int output_formats[] = { MediaRecorder.OutputFormat.MPEG_4, MediaRecorder.OutputFormat.THREE_GPP };
+	private String file_exts[] = { AUDIO_RECORDER_FILE_EXT_MP4, AUDIO_RECORDER_FILE_EXT_3GP };
+    
     /**
      * 음성녹음 파일과 Tag DB 읽는다
      * 
@@ -36,11 +54,70 @@ public class SRVoice {
     }
 
     public void recordStart() {
+    	DebugUtil.SRLog("recordStart -> isRecorder = " + isRecorder);
+    	if(!isRecorder){
+    		
+//    		isRecorder = true;
+    		mRecorder = new MediaRecorder();
+    		
+    		String filepath = Environment.getExternalStorageDirectory().getPath();
 
+    		File file = new File(filepath, AUDIO_RECORDER_FOLDER);
+    	    if (!file.exists()) {
+    	        file.mkdirs();
+    	    }
+    	    String filename = file.getAbsolutePath() + "/" + System.currentTimeMillis() + file_exts[currentFormat];
+
+    	    mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+    	    mRecorder.setOutputFormat(output_formats[currentFormat]);
+    	    mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+    	    mRecorder.setOutputFile(filename);
+    	    mRecorder.setOnErrorListener(errorListener);
+    	    mRecorder.setOnInfoListener(infoListener);
+    	    
+    	    try {
+    	    	mRecorder.prepare();
+    	    	mRecorder.start();
+    	        isRecorder = true;
+    	        SRVoiceView.mBtnRecorder.setText("stop");
+    	        
+    	    } catch (IllegalStateException e) {
+    	        e.printStackTrace();
+    	    } catch (IOException e) {
+    	        e.printStackTrace();
+    	    }
+    	    
+    	}
+    	else{
+    		// when user click stop button -> we need move
+    		recordStop();
+  
+    	}
+		
     }
+    /*
+     *  recorder error handling
+     */
+    private MediaRecorder.OnErrorListener errorListener = new MediaRecorder.OnErrorListener() {
+        @Override
+        public void onError(MediaRecorder mr, int what, int extra) {     
+        	DebugUtil.SRLog("Error = " +what);
+        }
+    };
+    private MediaRecorder.OnInfoListener infoListener = new MediaRecorder.OnInfoListener() {
+        @Override
+        public void onInfo(MediaRecorder mr, int what, int extra) {
+        	DebugUtil.SRLog("Error = " +what);
+        }
+    };
+
 
     public void recordStop() {
-
+    	SRVoiceView.mBtnRecorder.setText("recorder");
+		isRecorder = false;
+		mRecorder.stop();
+		mRecorder.release();
+		mRecorder = null;
     }
 
     public void save() {

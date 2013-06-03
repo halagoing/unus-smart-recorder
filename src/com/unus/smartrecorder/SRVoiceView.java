@@ -19,8 +19,9 @@ import android.widget.RelativeLayout;
 
 public class SRVoiceView extends RelativeLayout{
     Context mContext;
-    Button mButton;
-
+    static Button mBtnRecorder;
+    SRVoice mSRVoice;
+    
     public SRVoiceView(Context context) {
         super(context);
         initView(context);
@@ -37,13 +38,16 @@ public class SRVoiceView extends RelativeLayout{
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             inflater.inflate(R.layout.sr_voiceview_layout, this, true);
             
-            mButton = (Button) findViewById(R.id.button1);
-            mButton.setOnClickListener(new OnClickListener() {
+            mSRVoice = new SRVoice();
+            
+            mBtnRecorder = (Button) findViewById(R.id.btnRecorder);
+            mBtnRecorder.setOnClickListener(new OnClickListener() {
                 
                 @Override
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
-                    DebugUtil.SRLog("onClick()");
+                    //DebugUtil.SRLog("onClick()");
+                	mSRVoice.recordStart();
                 }
             });
     }
