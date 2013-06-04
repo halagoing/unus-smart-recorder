@@ -19,7 +19,7 @@ import android.widget.RelativeLayout;
 
 public class SRVoiceView extends RelativeLayout{
     Context mContext;
-    static Button mBtnRecorder;
+    private Button mBtnRecorder, mBtnStop, mBtnPlay;
     SRVoice mSRVoice;
     
     public SRVoiceView(Context context) {
@@ -40,6 +40,8 @@ public class SRVoiceView extends RelativeLayout{
             
             mSRVoice = new SRVoice();
             
+            
+            
             mBtnRecorder = (Button) findViewById(R.id.btnRecorder);
             mBtnRecorder.setOnClickListener(new OnClickListener() {
                 
@@ -47,8 +49,27 @@ public class SRVoiceView extends RelativeLayout{
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
                     //DebugUtil.SRLog("onClick()");
-                	mSRVoice.recordStart();
+                	mSRVoice.recordStart(mContext);
                 }
+            });
+            
+            mBtnStop = (Button) findViewById(R.id.btnStop);
+            mBtnStop.setOnClickListener(new OnClickListener(){
+            	@Override
+            	public void onClick(View v) {
+            		// TODO Auto-generated method stub
+            		mSRVoice.recordStop(mContext);
+            	}
+            });
+            
+            
+            mBtnPlay = (Button) findViewById(R.id.btnPlay);
+            mBtnPlay.setOnClickListener(new OnClickListener(){
+            	@Override
+            	public void onClick(View v) {
+            		// TODO Auto-generated method stub
+            		mSRVoice.play();
+            	}
             });
     }
 }

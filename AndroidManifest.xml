@@ -45,6 +45,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <service android:name=".SRRecorderService" >
+            <intent-filter >
+                <action android:name="com.unus.smartrecorder.Recorder" />
+            </intent-filter>
+        </service>
     </application>
-
+	
 </manifest>

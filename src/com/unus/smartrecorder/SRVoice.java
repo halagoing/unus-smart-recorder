@@ -13,8 +13,14 @@ package com.unus.smartrecorder;
 import java.io.File;
 import java.io.IOException;
 
+
+
+import android.content.Context;
+import android.content.Intent;
 import android.media.MediaRecorder;
 import android.os.Environment;
+import android.os.Handler;
+import android.sax.StartElementListener;
 import android.util.Log;
 
 public class SRVoice {
@@ -23,14 +29,12 @@ public class SRVoice {
     public SRDB mDB;
     public SRShare mShare;
     
-    
-
     boolean isRecorder = false;
-    private MediaRecorder mRecorder = null;
+    //private MediaRecorder mRecorder = null;
 	private int currentFormat = 0;
 	private static final String AUDIO_RECORDER_FILE_EXT_3GP = ".3gp";
 	private static final String AUDIO_RECORDER_FILE_EXT_MP4 = ".mp4";
-	private static final String AUDIO_RECORDER_FOLDER = "UNUS_RECORDER";
+	
 	private int output_formats[] = { MediaRecorder.OutputFormat.MPEG_4, MediaRecorder.OutputFormat.THREE_GPP };
 	private String file_exts[] = { AUDIO_RECORDER_FILE_EXT_MP4, AUDIO_RECORDER_FILE_EXT_3GP };
     
@@ -53,71 +57,35 @@ public class SRVoice {
 
     }
 
-    public void recordStart() {
+    public void recordStart(Context mContext) {
     	DebugUtil.SRLog("recordStart -> isRecorder = " + isRecorder);
-    	if(!isRecorder){
-    		
-//    		isRecorder = true;
-    		mRecorder = new MediaRecorder();
-    		
-    		String filepath = Environment.getExternalStorageDirectory().getPath();
+    	mContext.startService(new Intent("com.unus.smartrecorder.Recorder"));
 
-    		File file = new File(filepath, AUDIO_RECORDER_FOLDER);
-    	    if (!file.exists()) {
-    	        file.mkdirs();
-    	    }
-    	    String filename = file.getAbsolutePath() + "/" + System.currentTimeMillis() + file_exts[currentFormat];
-
-    	    mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-    	    mRecorder.setOutputFormat(output_formats[currentFormat]);
-    	    mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-    	    mRecorder.setOutputFile(filename);
-    	    mRecorder.setOnErrorListener(errorListener);
-    	    mRecorder.setOnInfoListener(infoListener);
-    	    
-    	    try {
-    	    	mRecorder.prepare();
-    	    	mRecorder.start();
-    	        isRecorder = true;
-    	        SRVoiceView.mBtnRecorder.setText("stop");
-    	        
-    	    } catch (IllegalStateException e) {
-    	        e.printStackTrace();
-    	    } catch (IOException e) {
-    	        e.printStackTrace();
-    	    }
-    	    
-    	}
-    	else{
-    		// when user click stop button -> we need move
-    		recordStop();
-  
-    	}
-		
     }
     /*
      *  recorder error handling
      */
-    private MediaRecorder.OnErrorListener errorListener = new MediaRecorder.OnErrorListener() {
-        @Override
-        public void onError(MediaRecorder mr, int what, int extra) {     
-        	DebugUtil.SRLog("Error = " +what);
-        }
-    };
-    private MediaRecorder.OnInfoListener infoListener = new MediaRecorder.OnInfoListener() {
-        @Override
-        public void onInfo(MediaRecorder mr, int what, int extra) {
-        	DebugUtil.SRLog("Error = " +what);
-        }
-    };
+//    private MediaRecorder.OnErrorListener errorListener = new MediaRecorder.OnErrorListener() {
+//        @Override
+//        public void onError(MediaRecorder mr, int what, int extra) {     
+//        	DebugUtil.SRLog("Error = " +what);
+//        }
+//    };
+//    private MediaRecorder.OnInfoListener infoListener = new MediaRecorder.OnInfoListener() {
+//        @Override
+//        public void onInfo(MediaRecorder mr, int what, int extra) {
+//        	DebugUtil.SRLog("Error = " +what);
+//        }
+//    };
 
 
-    public void recordStop() {
-    	SRVoiceView.mBtnRecorder.setText("recorder");
-		isRecorder = false;
-		mRecorder.stop();
-		mRecorder.release();
-		mRecorder = null;
+    public void recordStop(Context mContext) {
+    	mContext.stopService(new Intent("com.unus.smartrecorder.Recorder"));
+//    	SRVoiceView.mBtnRecorder.setText("recorder");
+//		isRecorder = false;
+//		mRecorder.stop();
+//		mRecorder.release();
+//		mRecorder = null;
     }
 
     public void save() {
@@ -125,7 +93,7 @@ public class SRVoice {
     }
 
     public void play() {
-
+    	
     }
 
     public void seekTo(int position) {
