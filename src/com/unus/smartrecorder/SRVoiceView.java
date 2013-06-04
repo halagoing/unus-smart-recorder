@@ -14,13 +14,21 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 public class SRVoiceView extends RelativeLayout{
-    Context mContext;
-    Button mButton;
+    private Context mContext;
+    private Button mButton;
+    private ListView mTagListView;
+    private ArrayAdapter<String> mTagListViewAdapter;
 
+    //{{TESTCODE
+    private String[] mStrings = Cheeses.sCheeseStrings;
+    //}}TESTCODE
+    
     public SRVoiceView(Context context) {
         super(context);
         initView(context);
@@ -37,14 +45,18 @@ public class SRVoiceView extends RelativeLayout{
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             inflater.inflate(R.layout.sr_voiceview_layout, this, true);
             
-            mButton = (Button) findViewById(R.id.button1);
-            mButton.setOnClickListener(new OnClickListener() {
-                
-                @Override
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    DebugUtil.SRLog("onClick()");
-                }
-            });
+        mTagListView = (ListView) findViewById(R.id.tagListView);
+        mTagListView.setAdapter(mTagListViewAdapter = new ArrayAdapter<String>(
+                mContext, android.R.layout.simple_list_item_1, mStrings));
+            
+//            mButton = (Button) findViewById(R.id.button1);
+//            mButton.setOnClickListener(new OnClickListener() {
+//                
+//                @Override
+//                public void onClick(View v) {
+//                    // TODO Auto-generated method stub
+//                    DebugUtil.SRLog("onClick()");
+//                }
+//            });
     }
 }

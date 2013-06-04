@@ -2,23 +2,81 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    
+
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/sr_voiceview"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_alignParentTop="true"
+        android:text="@string/sr_voiceview" />
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
+    <!-- PDF Document View -->
+
+    <com.unus.smartrecorder.SRDocView
+        android:id="@+id/docView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="true"
+        android:adjustViewBounds="true"
+        android:scaleType="fitStart"
+        android:src="@drawable/pdf_icon_large" />
+
+    <!-- Sound Input Volume -->
+
+    <ProgressBar
+        android:id="@+id/volumeView"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/docView"
+        android:layout_marginLeft="@dimen/sound_volume_left_margin"
+        android:layout_marginRight="@dimen/sound_volume_right_margin" />
+
+    <!-- Tag List View -->
+
+    <ListView
+        android:id="@+id/tagListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/buttonsLayout"
+        android:layout_below="@+id/volumeView" >
+    </ListView>
+
+    <LinearLayout
+        android:id="@+id/buttonsLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="22dp"
-        android:text="Button" />
-    
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/textTagBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/photoTagBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/recordBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/stopBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Button" />
+    </LinearLayout>
+
 </RelativeLayout>
