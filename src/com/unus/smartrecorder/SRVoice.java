@@ -17,6 +17,7 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
 import android.os.Handler;
@@ -93,6 +94,40 @@ public class SRVoice {
     }
 
     public void play() {
+    	DebugUtil.SRLog("play -> play = ");
+    	MediaPlayer player;
+    	player = new MediaPlayer();
+//    	player = MediaPlayer.create(this, R.raw.man);
+    	
+
+		String filepath = Environment.getExternalStorageDirectory().getPath();
+		
+    	File file = new File(filepath, "BondRecorder");
+	    if (!file.exists()) {
+	        file.mkdirs();
+	    }
+	    //String filename = file.getAbsolutePath() + "/" + System.currentTimeMillis() + file_exts[currentFormat];
+	    String filename = file.getAbsolutePath() + "/" + "test" + file_exts[currentFormat];
+	    DebugUtil.SRLog("filename = " +filename);
+    	
+	    try {
+			player.setDataSource(filename);
+			player.prepare();
+			//player.seekTo(1);
+			player.start();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	
     }
 
