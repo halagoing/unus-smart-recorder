@@ -50,33 +50,34 @@
         android:layout_alignParentBottom="true"
         android:orientation="horizontal" >
 
-        <Button
+        <ImageButton
             android:id="@+id/textTagBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Button" />
+            android:src="@drawable/collections_new_label" />
 
-        <Button
+        <ImageButton
             android:id="@+id/photoTagBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Button" />
+            android:src="@drawable/content_new_picture" />
 
-        <Button
+        <ImageButton
             android:id="@+id/recordBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Button" />
+            android:src="@drawable/record_icon" />
 
-        <Button
+        <ImageButton
             android:id="@+id/stopBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Button" />
+            android:src="@drawable/av_stop" />
+
     </LinearLayout>
 
 </RelativeLayout>
