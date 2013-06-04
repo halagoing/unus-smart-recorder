@@ -8,5 +8,9 @@
     <string name="sr_searchview">SRSearchView</string>
     <string name="action_bar_search">Search</string>
     <string name="no_title">No title</string>
+    <string name="add_text_tag">Add Text Tag</string>
+    <string name="add_photo_tag">Add Photo Tag</string>
+    <string name="record">Record</string>
+    <string name="stop">Stop</string>
 
 </resources>
