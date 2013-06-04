@@ -8,4 +8,7 @@ public class DebugUtil {
     public static int SRLog(String log) {
         return (DEBUG ? Log.d("SmartRecorder", log) : 1);
     }
+    public static int SRLogError(String log) {
+        return (DEBUG ? Log.e("SmartRecorder", log) : 1);
+    }
 }

@@ -34,6 +34,17 @@
                 android:name="android.app.default_searchable"
                 android:value=".app.SearchQueryResults" />
         </activity>
+        
+        <!-- Test Activity : Only Test -->
+        <activity
+            android:name="com.unus.smartrecorder.TestActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
