@@ -32,6 +32,16 @@
         android:layout_below="@+id/docView"
         android:layout_marginLeft="@dimen/sound_volume_left_margin"
         android:layout_marginRight="@dimen/sound_volume_right_margin" />
+    
+    <!-- Record Time -->
+    
+    <TextView
+        android:id="@+id/recordTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/docView"
+		android:layout_alignParentRight="true"
+        android:text="@string/zero_time" />
 
     <!-- Tag List View -->
 
