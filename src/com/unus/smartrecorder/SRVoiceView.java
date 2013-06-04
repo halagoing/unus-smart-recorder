@@ -14,13 +14,23 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 public class SRVoiceView extends RelativeLayout{
-    Context mContext;
-    private Button mBtnRecorder, mBtnStop, mBtnPlay;
+
+
+    private Context mContext;
+	private Button mBtnRecorder, mBtnStop, mBtnPlay;
+    private ListView mTagListView;
+    private ArrayAdapter<String> mTagListViewAdapter;
     SRVoice mSRVoice;
+    //{{TESTCODE
+    private String[] mStrings = Cheeses.sCheeseStrings;
+    //}}TESTCODE
+
     
     public SRVoiceView(Context context) {
         super(context);
@@ -38,6 +48,7 @@ public class SRVoiceView extends RelativeLayout{
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             inflater.inflate(R.layout.sr_voiceview_layout, this, true);
             
+
             mSRVoice = new SRVoice();
             
             
@@ -71,5 +82,9 @@ public class SRVoiceView extends RelativeLayout{
             		mSRVoice.play();
             	}
             });
+            mTagListView = (ListView) findViewById(R.id.tagListView);
+            mTagListView.setAdapter(mTagListViewAdapter = new ArrayAdapter<String>(
+                    mContext, android.R.layout.simple_list_item_1, mStrings));
+
     }
 }
