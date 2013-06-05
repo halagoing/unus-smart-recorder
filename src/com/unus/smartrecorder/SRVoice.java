@@ -12,6 +12,10 @@ package com.unus.smartrecorder;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 
 
@@ -29,6 +33,9 @@ public class SRVoice {
     private SRDoc mDoc;
     public SRShare mShare;
     
+    private String mVoiceFilePath;
+    private String mDocFilePath;
+    
     boolean isRecorder = false;
     //private MediaRecorder mRecorder = null;
 	private int currentFormat = 0;
@@ -38,7 +45,16 @@ public class SRVoice {
 	private int output_formats[] = { MediaRecorder.OutputFormat.MPEG_4, MediaRecorder.OutputFormat.THREE_GPP };
 	private String file_exts[] = { AUDIO_RECORDER_FILE_EXT_MP4, AUDIO_RECORDER_FILE_EXT_3GP };
     
+	
+    public SRVoice() {
+        super();
+        
+        //TODO: DB Open
+    }
+
     /**
+     * Playing
+     * 
      * 음성녹음 파일과 Tag DB 읽는다
      * 
      * Tag DB는 음성녹음 파일 이름을 Key로 가진다
@@ -49,12 +65,12 @@ public class SRVoice {
 
     }
 
-    public void getDoc() {
-
+    public SRDoc getDoc() {
+        return mDoc;
     }
 
     public void setDoc(SRDoc doc) {
-
+        mDoc = doc;
     }
 
     public void recordStart(Context mContext) {
@@ -150,11 +166,33 @@ public class SRVoice {
 
     }
 
-    public void saveBasicInfo(Object voiceFilePath, Object docFilePath) {
-
-    }
+    /**
+     * Recording
+     * setBasicInfo
+     * 
+     * @param voiceFilePath
+     * @param docFilePath
+     * @return
+     */
+    public boolean setBasicInfo(String voiceFilePath, String docFilePath) {
+        //TODO: docFilePath, voiceFilePath 유효성 검사, error면 return false
+        
+        
+        mVoiceFilePath = voiceFilePath;
+        mDocFilePath = docFilePath;
+        
+        //TODO: DB에 추가 
+        
+        return true;
+     }
 
     public void share() {
 
+    }
+    
+    public String makeDefaultTitle() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
+        
+        return new String("Audio" + "-" + sdf.format(new Date()));
     }
 }

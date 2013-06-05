@@ -248,6 +248,14 @@ public class SearchViewActionBar extends Activity implements
     }
 
     @Override
+    @Deprecated
+    protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
+        if (mSRVoiceView != null) {
+            mSRVoiceView.prepareDialog(this, id);
+        }
+    }
+
+    @Override
     public void showInputBasicInfo() {
         showDialog(SRVoiceView.DIALOG_INPUT_BASIC_INFO);
     }
@@ -285,6 +293,8 @@ public class SearchViewActionBar extends Activity implements
                 if (mSRVoiceView != null) {
                     mSRVoiceView.setDocPath(filePath);
                 }
+            } else {
+                
             }
             break;
         default:

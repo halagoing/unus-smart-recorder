@@ -16,16 +16,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
-import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -39,7 +37,7 @@ public class SRVoiceView extends RelativeLayout{
     private ListView mTagListView;
     private ArrayAdapter<String> mTagListViewAdapter;
     private ImageButton mTextTagBtn, mPhotoTagBtn, mRecordBtn, mStopBtn;
-    SRVoice mSRVoice;
+    private SRVoice mSRVoice;
     private SRVoiceViewListner mSRVoiceViewListner;
     
     private EditText mTitleView;    // Basic Info Dialog
@@ -62,12 +60,16 @@ public class SRVoiceView extends RelativeLayout{
         initView(context);
     }
     
+    /**
+     * View initialization
+     * 
+     * @param context
+     */
     private void initView(Context context) {
         mContext = context;
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             inflater.inflate(R.layout.sr_voiceview_layout, this, true);
-
             
             
 //            SRDataSource datasource = new SRDataSource(mContext);
@@ -85,9 +87,8 @@ public class SRVoiceView extends RelativeLayout{
             
             
             mSRVoice = new SRVoice();
-            
-            
-            
+
+            //{{TESTCODE
             mBtnRecorder = (Button) findViewById(R.id.btnRecorder);
             mBtnRecorder.setOnClickListener(new OnClickListener() {
                 
@@ -121,14 +122,16 @@ public class SRVoiceView extends RelativeLayout{
             mTagListView.setAdapter(mTagListViewAdapter = new ArrayAdapter<String>(
 
             mContext, android.R.layout.simple_list_item_1, Cheeses.sCheeseStrings));
-
+            //{{TESTCODE
             
             
             mTextTagBtn = (ImageButton) findViewById(R.id.textTagBtn);
             mTextTagBtn.setOnClickListener(new OnClickListener(){
                 @Override
                 public void onClick(View v) {
-
+                    SRDebugUtil.SRLog("TextTag Click");
+                    if (mSRVoiceViewListner != null)
+                        mSRVoiceViewListner.showInputBasicInfo();
                 }
             });
             
@@ -136,7 +139,7 @@ public class SRVoiceView extends RelativeLayout{
             mPhotoTagBtn.setOnClickListener(new OnClickListener(){
                 @Override
                 public void onClick(View v) {
-
+                    SRDebugUtil.SRLog("PhotoTag Click");
                 }
             });
             
@@ -146,7 +149,6 @@ public class SRVoiceView extends RelativeLayout{
                 public void onClick(View v) {
                     SRDebugUtil.SRLog("Record Click");
                     if (mSRVoiceViewListner != null)
-                    	//SRDebugUtil.SRLog("good");
                         mSRVoiceViewListner.showInputBasicInfo();
                 }
             });
@@ -155,21 +157,41 @@ public class SRVoiceView extends RelativeLayout{
             mStopBtn.setOnClickListener(new OnClickListener(){
                 @Override
                 public void onClick(View v) {
-
+                    SRDebugUtil.SRLog("Stop Click");
+                    
+                    if (mSRVoice != null)
+                        mSRVoice.recordStop(mContext);
                 }
             });
     }
     
+    /**
+     * Activity Callback을 호출해주기 위해 리스너를 등록해준다.
+     * 
+     * @param listner
+     */
     public void setSRVoiceViewListner(SRVoiceViewListner listner) {
         mSRVoiceViewListner = listner;
     }
     
+    /**
+     * 파일 탐색기 선택한 PDF 파일의 경로를 설정해준다.
+     * 
+     * @param path
+     */
     public void setDocPath(String path) {
         mDocPath = path;
         if (mDocPathView != null)
             mDocPathView.setText(mDocPath);
     }
     
+    /**
+     * Input Basic Info, Input Text Tag Dialog 생성한다
+     * 
+     * @param context
+     * @param id
+     * @return 생성된 Dialog
+     */
     public Dialog createDialog(Context context, int id) {
         LayoutInflater factory = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -200,6 +222,10 @@ public class SRVoiceView extends RelativeLayout{
                                     mTitle = mTitleView.getText().toString();
                                     
                                     SRDebugUtil.SRLog("Input Basic Info : Title : " + mTitle + " Doc : " + mDocPath);
+                                    
+                                    // Set Basic Info & Recording start
+                                    mSRVoice.setBasicInfo(mTitle, mDocPath);
+                                    mSRVoice.recordStart(mContext);
                                 }
                             })
                     .setNegativeButton(android.R.string.cancel,
@@ -235,6 +261,43 @@ public class SRVoiceView extends RelativeLayout{
                             }).create();
         default:
             return null;
+        }
+    }
+    
+    private Runnable mShowImeRunnable = new Runnable() {
+        public void run() {
+            InputMethodManager imm = (InputMethodManager)
+                    getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            if (imm != null) {
+                imm.showSoftInput(mTitleView, InputMethodManager.SHOW_IMPLICIT);
+            }
+        }
+    };
+    
+    /**
+     * showDialog()가 호출될 때마다 호출된다.
+     * Dialog에서 사용하는 view, string등을 초기화 해준다. 
+     * 
+     * @param context
+     * @param id
+     */
+    public void prepareDialog(Context context, int id) {
+        switch(id) {
+        case DIALOG_INPUT_BASIC_INFO:
+            mTitleView.setText(mSRVoice.makeDefaultTitle());
+            mTitleView.selectAll();
+            mTitleView.requestFocus();
+            mTitleView.post(mShowImeRunnable);
+
+            mDocPathView.setText("");
+            break;
+            
+        case DIALOG_INPUT_TEXT_TAG:
+            break;
+
+        default:
+            break;
         }
     }
 }
