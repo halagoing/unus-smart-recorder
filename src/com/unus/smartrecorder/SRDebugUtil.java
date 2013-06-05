@@ -2,7 +2,7 @@ package com.unus.smartrecorder;
 
 import android.util.Log;
 
-public class DebugUtil {
+public class SRDebugUtil {
     public static final boolean DEBUG = true;
     
     public static int SRLog(String log) {

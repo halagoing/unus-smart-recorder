@@ -1,6 +1,6 @@
 package com.unus.smartrecorder;
 
-public class Config {
+public class SRConfig {
 
     public static final String TEAM = "unus";
     

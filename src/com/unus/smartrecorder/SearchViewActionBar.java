@@ -18,12 +18,17 @@ package com.unus.smartrecorder;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MenuItem.OnActionExpandListener;
+import android.view.View;
 import android.view.Window;
 import android.widget.SearchView;
 
@@ -35,39 +40,43 @@ import com.android.debug.hv.ViewServer;
  * queries to.
  */
 public class SearchViewActionBar extends Activity implements
-        SearchView.OnQueryTextListener, SearchView.OnCloseListener  {
-    public static final int STATE_RECORDING = 1;        // Recording
-    public static final int STATE_PLAYING = 2;          // Playing
-    public static final int STATE_SEARCHING = 3;        // Searching
-    
+        SearchView.OnQueryTextListener, SearchView.OnCloseListener, SRVoiceViewListner {
+    public static final int STATE_RECORDING = 1; // Recording
+    public static final int STATE_PLAYING = 2; // Playing
+    public static final int STATE_SEARCHING = 3; // Searching
+
+    public static final int DIALOG_INPUT_BASIC_INFO = 1; // Input Basic Info Dialog
+    public static final int DIALOG_INPUT_TEXT_TAG = 2; // Input Text Tag Dialog
+
     private SearchView mSearchView;
     private ActionBar mActionBar;
-    private int mViewState; 
+    private int mViewState;
     private int mPrevViewState;
-    
+
     private SRSearchView mSRSearchView;
     private SRVoiceView mSRVoiceView;
-
-    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 
-        //setContentView(R.layout.searchview_actionbar);
+        // setContentView(R.layout.searchview_actionbar);
 
         mActionBar = getActionBar();
-        mActionBar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_HOME);   // remove title icon
-        
-        //initial state
-        mActionBar.setTitle(R.string.no_title);         // no title
-        mPrevViewState = mViewState = STATE_RECORDING;  // recording
-        
+        mActionBar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_HOME); // remove
+                                                                      // title
+                                                                      // icon
+
+        // initial state
+        mActionBar.setTitle(R.string.no_title); // no title
+        mPrevViewState = mViewState = STATE_RECORDING; // recording
+
         // TEST
         mSRSearchView = new SRSearchView(getBaseContext());
         mSRVoiceView = new SRVoiceView(getBaseContext());
-        
+        mSRVoiceView.setSRVoiceViewListner(this);
+
         setContentView(mSRVoiceView);
 
         // DEBUG : For Hierarchy Viewer
@@ -81,38 +90,37 @@ public class SearchViewActionBar extends Activity implements
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.searchview_in_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        
+
         searchItem.setOnActionExpandListener(new OnActionExpandListener() {
-            
+
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                DebugUtil.SRLog("onMenuItemActionExpand()");
+                SRDebugUtil.SRLog("onMenuItemActionExpand()");
 
                 setViewState(STATE_SEARCHING);
                 return true;
             }
-            
+
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                DebugUtil.SRLog("onMenuItemActionCollapse()");
+                SRDebugUtil.SRLog("onMenuItemActionCollapse()");
 
                 setViewState(STATE_RECORDING);
                 return true;
             }
         });
-        
+
         mSearchView = (SearchView) searchItem.getActionView();
         setupSearchView(searchItem);
 
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // TODO Auto-generated method stub
-        //return super.onOptionsItemSelected(item);
-        switch(item.getItemId()) {
+        // return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
         case android.R.id.home:
             break;
         case R.id.action_search:
@@ -132,29 +140,30 @@ public class SearchViewActionBar extends Activity implements
                     | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
         }
 
-//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//        if (searchManager != null) {
-//            List<SearchableInfo> searchables = searchManager
-//                    .getSearchablesInGlobalSearch();
-//
-//            // Try to use the "applications" global search provider
-//            SearchableInfo info = searchManager
-//                    .getSearchableInfo(getComponentName());
-//            for (SearchableInfo inf : searchables) {
-//                if (inf.getSuggestAuthority() != null
-//                        && inf.getSuggestAuthority().startsWith("applications")) {
-//                    info = inf;
-//                }
-//            }
-//            mSearchView.setSearchableInfo(info);
-//        }
+        // SearchManager searchManager = (SearchManager)
+        // getSystemService(Context.SEARCH_SERVICE);
+        // if (searchManager != null) {
+        // List<SearchableInfo> searchables = searchManager
+        // .getSearchablesInGlobalSearch();
+        //
+        // // Try to use the "applications" global search provider
+        // SearchableInfo info = searchManager
+        // .getSearchableInfo(getComponentName());
+        // for (SearchableInfo inf : searchables) {
+        // if (inf.getSuggestAuthority() != null
+        // && inf.getSuggestAuthority().startsWith("applications")) {
+        // info = inf;
+        // }
+        // }
+        // mSearchView.setSearchableInfo(info);
+        // }
 
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setOnCloseListener(this);
     }
 
     public boolean onQueryTextChange(String newText) {
-        DebugUtil.SRLog("Query = " + newText);
+        SRDebugUtil.SRLog("Query = " + newText);
         if (TextUtils.isEmpty(newText)) {
             mSRSearchView.clearTextFilter();
         } else {
@@ -164,12 +173,12 @@ public class SearchViewActionBar extends Activity implements
     }
 
     public boolean onQueryTextSubmit(String query) {
-        DebugUtil.SRLog("Query = " + query + " : submitted");
+        SRDebugUtil.SRLog("Query = " + query + " : submitted");
         return false;
     }
 
     public boolean onClose() {
-        DebugUtil.SRLog("onClose()");
+        SRDebugUtil.SRLog("onClose()");
         return false;
     }
 
@@ -192,13 +201,13 @@ public class SearchViewActionBar extends Activity implements
         // DEBUG : For Hierarchy Viewer
         ViewServer.get(this).removeWindow(this);
     }
-    
+
     public int getViewState() {
         return mViewState;
     }
-    
+
     public void setViewState(int state) {
-        switch(state) {
+        switch (state) {
         case STATE_PLAYING:
             setContentView(mSRVoiceView);
             break;
@@ -211,12 +220,31 @@ public class SearchViewActionBar extends Activity implements
         default:
             return;
         }
-        mPrevViewState = mViewState;    // Previous View State
-        mViewState = state;  
+        mPrevViewState = mViewState; // Previous View State
+        mViewState = state;
     }
-    
+
     public int getPrevViewState() {
         return mPrevViewState;
     }
-    
+
+    @Override
+    @Deprecated
+    protected Dialog onCreateDialog(int id) {
+        if (mSRVoiceView != null) {
+            return mSRVoiceView.createDialog(this, id);
+        }
+        
+        return null;
+    }
+
+    @Override
+    public void showInputBasicInfo() {
+        showDialog(SRVoiceView.DIALOG_INPUT_BASIC_INFO);
+    }
+
+    @Override
+    public void showInputTextTag() {
+        showDialog(SRVoiceView.DIALOG_INPUT_TEXT_TAG);
+    }
 }

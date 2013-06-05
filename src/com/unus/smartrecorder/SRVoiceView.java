@@ -10,23 +10,32 @@
 //
 package com.unus.smartrecorder;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 public class SRVoiceView extends RelativeLayout{
-
+    public static final int DIALOG_INPUT_BASIC_INFO = 1; // Input Basic Info Dialog
+    public static final int DIALOG_INPUT_TEXT_TAG = 2; // Input Text Tag Dialog
 
     private Context mContext;
 	private Button mBtnRecorder, mBtnStop, mBtnPlay;
     private ListView mTagListView;
     private ArrayAdapter<String> mTagListViewAdapter;
+    private ImageButton mTextTagBtn, mPhotoTagBtn, mRecordBtn, mStopBtn;
     SRVoice mSRVoice;
+    private SRVoiceViewListner mSRVoiceViewListner;
+    
     //{{TESTCODE
     private String[] mStrings = Cheeses.sCheeseStrings;
     //}}TESTCODE
@@ -85,6 +94,103 @@ public class SRVoiceView extends RelativeLayout{
             mTagListView = (ListView) findViewById(R.id.tagListView);
             mTagListView.setAdapter(mTagListViewAdapter = new ArrayAdapter<String>(
                     mContext, android.R.layout.simple_list_item_1, mStrings));
+            
+            
+            mTextTagBtn = (ImageButton) findViewById(R.id.textTagBtn);
+            mTextTagBtn.setOnClickListener(new OnClickListener(){
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+            
+            mPhotoTagBtn = (ImageButton) findViewById(R.id.photoTagBtn);
+            mPhotoTagBtn.setOnClickListener(new OnClickListener(){
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+            
+            mRecordBtn = (ImageButton) findViewById(R.id.recordBtn);
+            mRecordBtn.setOnClickListener(new OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    SRDebugUtil.SRLog("Record Click");
+                    if (mSRVoiceViewListner != null)
+                        mSRVoiceViewListner.showInputBasicInfo();
+                }
+            });
+            
+            mStopBtn = (ImageButton) findViewById(R.id.stopBtn);
+            mStopBtn.setOnClickListener(new OnClickListener(){
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+    }
+    
+    public void setSRVoiceViewListner(SRVoiceViewListner listner) {
+        mSRVoiceViewListner = listner;
+    }
+    
+    public Dialog createDialog(Context context, int id) {
+        LayoutInflater factory = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        switch(id) {
+        case DIALOG_INPUT_BASIC_INFO:
+            final View inputBasicInfoView = factory.inflate(
+                    R.layout.sr_input_basic_info_dialog, null);
+            EditText title = (EditText)inputBasicInfoView.findViewById(R.id.titleText);
+            EditText doc = (EditText)inputBasicInfoView.findViewById(R.id.docText);
+            return new AlertDialog.Builder(context)
+                    //.setIconAttribute(android.R.attr.alertDialogIcon)
+                    .setTitle(R.string.input_basic_info)
+                    .setView(inputBasicInfoView)
+                    .setPositiveButton(android.R.string.ok,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                        int whichButton) {
+
+                                    
+                                }
+                            })
+                    .setNegativeButton(android.R.string.cancel,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                        int whichButton) {
+
+                                    // do nothing
+                                }
+                            }).create();
+            
+        case DIALOG_INPUT_TEXT_TAG:
+            final View inputTextTagView = factory.inflate(
+                    R.layout.sr_input_basic_info_dialog, null);
+            return new AlertDialog.Builder(context)
+                    .setIconAttribute(android.R.attr.alertDialogIcon)
+                    .setTitle(R.string.input_basic_info)
+                    .setView(inputTextTagView)
+                    .setPositiveButton(android.R.string.ok,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                        int whichButton) {
+
+                                    /* User clicked OK so do some stuff */
+                                }
+                            })
+                    .setNegativeButton(android.R.string.cancel,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                        int whichButton) {
+
+                                    /* User clicked cancel so do some stuff */
+                                }
+                            }).create();
+        default:
+            return null;
+        }
 
     }
 }

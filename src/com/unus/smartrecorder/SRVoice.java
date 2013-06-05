@@ -59,7 +59,7 @@ public class SRVoice {
     }
 
     public void recordStart(Context mContext) {
-    	DebugUtil.SRLog("recordStart -> isRecorder = " + isRecorder);
+    	SRDebugUtil.SRLog("recordStart -> isRecorder = " + isRecorder);
     	mContext.startService(new Intent("com.unus.smartrecorder.Recorder"));
 
     }
@@ -94,7 +94,7 @@ public class SRVoice {
     }
 
     public void play() {
-    	DebugUtil.SRLog("play -> play = ");
+    	SRDebugUtil.SRLog("play -> play = ");
     	MediaPlayer player;
     	player = new MediaPlayer();
 //    	player = MediaPlayer.create(this, R.raw.man);
@@ -108,7 +108,7 @@ public class SRVoice {
 	    }
 	    //String filename = file.getAbsolutePath() + "/" + System.currentTimeMillis() + file_exts[currentFormat];
 	    String filename = file.getAbsolutePath() + "/" + "test" + file_exts[currentFormat];
-	    DebugUtil.SRLog("filename = " +filename);
+	    SRDebugUtil.SRLog("filename = " +filename);
     	
 	    try {
 			player.setDataSource(filename);
