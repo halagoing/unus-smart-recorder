@@ -99,7 +99,7 @@ public class SRDbHandler{
 		return cursor;
     }
 
-    public Cursor selectTagByVoiceId(int voice_id) {
+    public Cursor selectTagsByVoiceId(int voice_id) {
     	Cursor cursor = mDatabase.query(true, SRConfig.DB_TAG_TABLE_NAME, new String[] {"tag_id","created_time","voice_id","type","content","tag_time"}, "voice_id = "+voice_id+"", null, null, null, null, null);
     	return cursor;
     }

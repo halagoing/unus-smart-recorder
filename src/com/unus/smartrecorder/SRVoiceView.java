@@ -65,24 +65,23 @@ public class SRVoiceView extends RelativeLayout{
             SRDebugUtil.SRLog("dbHandler-2");
             int result = dbHandler.insertVoice("/test/voice.mp3", "/test/voice.pdf");
             SRDebugUtil.SRLog("insert result = " + result);
-//            dbHandler.insertTag(2, 1,"TESTTESTTEST6", "00:44");
-//            dbHandler.insertTag(2, 1,"KIM", "00:44");
-//            dbHandler.insertTag(2, 1,"woo", "00:44");
-//            dbHandler.insertTag(2, 1,"hwang", "00:44");
-//            dbHandler.insertTag(2, 1,"미워", "00:44");
-//            dbHandler.insertTag(2, 1,"니가 미", "00:44");
-//            dbHandler.insertTag(2, 1,"맛있다~~", "00:44");
-//            dbHandler.insertTag(2, 1,"후아", "00:44");
-//            dbHandler.insertTag(2, 1,"우카우카", "00:44");
-//            dbHandler.insertTag(2, 1,"민둥", "00:44");
-//            dbHandler.insertTag(2, 1,"집을 팔자", "00:44");
+//            dbHandler.insertTag(2, 1,"TESTTESTTEST6 추가", "00:44");
+//            dbHandler.insertTag(2, 1,"KIM add", "00:44");
+//            dbHandler.insertTag(2, 1,"woo add", "00:44");
+//            dbHandler.insertTag(2, 1,"hwang add", "00:44");
+//            dbHandler.insertTag(2, 1,"han add", "00:44");
+//            dbHandler.insertTag(2, 1,"min hwang 미 add", "00:44");
+//            dbHandler.insertTag(2, 1,"add~~ add", "00:44");
+//            dbHandler.insertTag(2, 1,"han han add", "00:44");
+//            dbHandler.insertTag(2, 1,"woo han min", "00:44");
+//            dbHandler.insertTag(2, 1,"min TESTTESTTEST6 dbHandler", "00:44");
             SRDebugUtil.SRLog("dbHandler-3");
             Cursor cursor = dbHandler.selectAllVoice();
             Cursor cursor4 = dbHandler.selectAllTag();
             
-            Cursor cursor3 = dbHandler.selectTagByVoiceId(2);
+            Cursor cursor3 = dbHandler.selectTagsByVoiceId(2);
             
-            Cursor cursor2 = dbHandler.selectTagsByContent("미워");
+            Cursor cursor2 = dbHandler.selectTagsByContent("han");
             String[] personArr = new String[cursor2.getCount()]; 
             
             
