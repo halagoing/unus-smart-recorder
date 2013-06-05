@@ -52,11 +52,12 @@ public class SRVoiceView extends RelativeLayout{
             DebugUtil.SRLog("dbHandler-1");
             SRDbHandler dbHandler = SRDbHandler.open(mContext);
             DebugUtil.SRLog("dbHandler-2");
-            dbHandler.insertInfo("/test/voice.mp3", "/test/voice.pdf");
+            long result = dbHandler.insertInfo("/test/voice.mp3", "/test/voice.pdf");
+            DebugUtil.SRLog("insert result = " + result);
             DebugUtil.SRLog("dbHandler-3");
             Cursor cursor = dbHandler.selectAll();
             
-            String[] personArr = new String[cursor.getCount()];
+            String[] personArr = new String[cursor.getCount()]; 
             
             DebugUtil.SRLog("personArr count = " + cursor.getCount());
             
