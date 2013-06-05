@@ -36,12 +36,15 @@ public class SRDataSource {
     	values.put(SRDbHelper.VOICE_COLUMN_VOICE_PATH, voiceFilePath);
     	values.put(SRDbHelper.VOICE_COLUMN_DOCUMENT_PATH, docFilePath);
     	long insertId = database.insert(SRDbHelper.TABLE_VOICE, null, values);
+    	SRDebugUtil.SRLog("insertId = "+ insertId);
     	Cursor cursor = database.query(SRDbHelper.TABLE_VOICE,
     			allVoiceColumns, SRDbHelper.VOICE_COLUMN_VOICE_ID + " = " + insertId, null,
     	        null, null, null);
     	cursor.moveToFirst();
     	SRVoiceModel newVoice = cursorToVoice(cursor);
     	return newVoice;
+//    	SRVoiceModel voice = new SRVoiceModel();
+//    	return voice;
 	}
 	
 	private SRVoiceModel cursorToVoice(Cursor cursor) {
@@ -113,6 +116,23 @@ public class SRDataSource {
 
 	    Cursor cursor = database.query(SRDbHelper.TABLE_TAG,
 	    		allTagColumns, null, null, null, null, null);
+
+	    cursor.moveToFirst();
+	    while (!cursor.isAfterLast()) {
+	    	SRTagModel tag = cursorToTag(cursor);
+	    	tags.add(tag);
+	    	cursor.moveToNext();
+	    }
+	    // Make sure to close the cursor
+	    cursor.close();
+	    return tags;
+	}
+	
+	public List<SRTagModel> getTagByVoiceId(long voice_id) {
+		List<SRTagModel> tags = new ArrayList<SRTagModel>();
+
+	    Cursor cursor = database.query(SRDbHelper.TABLE_TAG,
+	    		allTagColumns, SRDbHelper.TAG_COLUMN_VOICE_ID+" = "+voice_id, null, null, null, null);
 
 	    cursor.moveToFirst();
 	    while (!cursor.isAfterLast()) {

@@ -16,7 +16,7 @@ public class SRDbHelper extends SQLiteOpenHelper{
     static final String VOICE_COLUMN_VOICE_PATH = "voice_path";
     static final String VOICE_COLUMN_DOCUMENT_PATH = "document_path";
     
-    private static final String VOICE_CREATE = "create table"
+    private static final String VOICE_CREATE = "create table "
     		+ TABLE_VOICE + "(" + VOICE_COLUMN_VOICE_ID
     		+ " INTEGER primary key autoincrement, " + VOICE_COLUMN_CREATED_DATETIME
     		+ " DATETIME default current_timestamp, " + VOICE_COLUMN_VOICE_PATH
@@ -36,7 +36,7 @@ public class SRDbHelper extends SQLiteOpenHelper{
     private static final int PHOTO_TAG_TYPE = 2;
     private static final int PAGE_TAG_TYPE = 3;
     
-    private static final String TAG_CREATE = "create table"
+    private static final String TAG_CREATE = "create table "
     		+ TABLE_TAG + "(" + TAG_COLUMN_TAG_ID
     		+ " INTEGER primary key autoincrement, " + TAG_COLUMN_CREATED_DATETIME
     		+ " DATETIME default current_timestamp, " + TAG_COLUMN_VOICE_ID
