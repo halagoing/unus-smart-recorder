@@ -70,18 +70,20 @@ public class SRVoiceView extends RelativeLayout{
 
             
             
-            SRDataSource datasource = new SRDataSource(mContext);
-            datasource.open();
-//          
-            datasource.createVoice("testVoicePath", "testDocPath");
+//            SRDataSource datasource = new SRDataSource(mContext);
+//            datasource.open();
+////          
+//            datasource.createVoice("testVoicePath", "testDocPath");
+////            
+//            datasource.createTag(2, 1, "good2", "00:01");
 //            
-            datasource.createTag(2, 1, "good2", "00:01");
+//            List<SRVoiceModel> voices = datasource.getAllVoice();
+//            
+//            List<SRTagModel> tags = datasource.getTagByVoiceId((long) 2);
+//            SRDebugUtil.SRLog("voices = "+voices);
+//            SRDebugUtil.SRLog("tags = "+tags);
             
-            List<SRVoiceModel> voices = datasource.getAllVoice();
             
-            List<SRTagModel> tags = datasource.getTagByVoiceId((long) 2);
-            SRDebugUtil.SRLog("voices = "+voices);
-            SRDebugUtil.SRLog("tags = "+tags);
             mSRVoice = new SRVoice();
             
             
