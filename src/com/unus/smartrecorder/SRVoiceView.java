@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class SRVoiceView extends RelativeLayout{
     public static final int DIALOG_INPUT_BASIC_INFO = 1; // Input Basic Info Dialog
@@ -143,7 +144,7 @@ public class SRVoiceView extends RelativeLayout{
             final View inputBasicInfoView = factory.inflate(
                     R.layout.sr_input_basic_info_dialog, null);
             EditText title = (EditText)inputBasicInfoView.findViewById(R.id.titleText);
-            EditText doc = (EditText)inputBasicInfoView.findViewById(R.id.docText);
+            TextView doc = (TextView)inputBasicInfoView.findViewById(R.id.docText);
             return new AlertDialog.Builder(context)
                     //.setIconAttribute(android.R.attr.alertDialogIcon)
                     .setTitle(R.string.input_basic_info)
