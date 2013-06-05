@@ -18,7 +18,7 @@ public class SRRecorder {
 	public SRRecorder(Context context) {
         mContext = context;
         File sampleDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                + Config.AUDIO_RECORDER_FOLDER);
+                + SRConfig.AUDIO_RECORDER_FOLDER);
         if (!sampleDir.exists()) {
             sampleDir.mkdirs();
         }
@@ -28,7 +28,7 @@ public class SRRecorder {
     }
 	
 	public void startRecording(){
-		DebugUtil.SRLog("SRRecorder startRecording -> sampleDir = " + mrecorderDir);
+		SRDebugUtil.SRLog("SRRecorder startRecording -> sampleDir = " + mrecorderDir);
 		
             
     }

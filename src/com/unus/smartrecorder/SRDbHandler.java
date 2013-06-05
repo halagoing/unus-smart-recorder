@@ -77,7 +77,7 @@ public class SRDbHandler{
 		
 		Cursor cursor = mDatabase.query(true, "voice", new String[] {"voice_id","created_time","voice_path","document_path"}, null, null, null, null, null, null);
 		
-		DebugUtil.SRLog("selectAll cursor = " + cursor);
+		SRDebugUtil.SRLog("selectAll cursor = " + cursor);
 		return cursor;
 
     }

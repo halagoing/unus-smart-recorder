@@ -29,15 +29,15 @@ public class SRRecorderService extends Service{
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
-		DebugUtil.SRLog("call SRRecorderService onStartCommand");
+		SRDebugUtil.SRLog("call SRRecorderService onStartCommand");
 		
-		DebugUtil.SRLog("RecorderService onStartCommand");
+		SRDebugUtil.SRLog("RecorderService onStartCommand");
 
 		recorder = new MediaRecorder();
 		
 		String filepath = Environment.getExternalStorageDirectory().getPath();
 		
-		DebugUtil.SRLog("filepath = " +filepath);
+		SRDebugUtil.SRLog("filepath = " +filepath);
 		
 		File file = new File(filepath, AUDIO_RECORDER_FOLDER);
 	    if (!file.exists()) {
@@ -45,7 +45,7 @@ public class SRRecorderService extends Service{
 	    }
 	    //String filename = file.getAbsolutePath() + "/" + System.currentTimeMillis() + file_exts[currentFormat];
 	    String filename = file.getAbsolutePath() + "/" + "test" + file_exts[currentFormat];
-	    DebugUtil.SRLog("filename = " +filename);
+	    SRDebugUtil.SRLog("filename = " +filename);
 	    
 	    
 	    recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -70,7 +70,7 @@ public class SRRecorderService extends Service{
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
-		DebugUtil.SRLog("call SRRecorderService onDestroy");
+		SRDebugUtil.SRLog("call SRRecorderService onDestroy");
 		recorder.stop();
         //recorder.reset();
         recorder.release();
