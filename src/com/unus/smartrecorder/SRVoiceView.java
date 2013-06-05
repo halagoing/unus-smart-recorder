@@ -15,6 +15,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -61,10 +63,10 @@ public class SRVoiceView extends RelativeLayout{
             SRDebugUtil.SRLog("dbHandler-1");
             SRDbHandler dbHandler = SRDbHandler.open(mContext);
             SRDebugUtil.SRLog("dbHandler-2");
-            long result = dbHandler.insertVoice("/test/voice.mp3", "/test/voice.pdf");
+            int result = dbHandler.insertVoice("/test/voice.mp3", "/test/voice.pdf");
             SRDebugUtil.SRLog("insert result = " + result);
             SRDebugUtil.SRLog("dbHandler-3");
-            Cursor cursor = dbHandler.selectAll();
+            Cursor cursor = dbHandler.selectAllVoice();
  
             String[] personArr = new String[cursor.getCount()]; 
             
@@ -82,7 +84,30 @@ public class SRVoiceView extends RelativeLayout{
 			}
             cursor.close();
             
+//            dbHandler.deleteVoice(result);
+            dbHandler.insertTag(2, 1,"TEST/TEST/TEST6", "00:44");
+//            dbHandler.insertTag(2, 1,"TEST/TEST/TEST7", "00:44");
+//            dbHandler.insertTag(2, 1,"TEST/TEST/TEST8", "00:44");
+            
+            Cursor cursor2 = dbHandler.selectAllTag();
+            
+            Cursor cursor3 = dbHandler.selectTagByVoiceId(1);
+            
+            SRDebugUtil.SRLog("cursor2 count = " + cursor2.getCount());
+            SRDebugUtil.SRLog("cursor3 count = " + cursor3.getCount());
             SRDebugUtil.SRLog("personArr  = " + personArr);
+            
+            ImageView imageView = (ImageView)findViewById(R.id.imgView);
+            
+            //BitmapDrawable frame1 = BitmapDrawable.
+
+            //BitmapDrawable frame1 = (BitmapDrawable)getResources().getDrawable(R.drawable.test);
+            
+            //imageView.setb
+            
+            //imageView.setBackgroundDrawable(frame1);
+            
+            //imageView.setBackground(frame1);
             
             mSRVoice = new SRVoice();
             
@@ -146,6 +171,7 @@ public class SRVoiceView extends RelativeLayout{
                 public void onClick(View v) {
                     SRDebugUtil.SRLog("Record Click");
                     if (mSRVoiceViewListner != null)
+                    	//SRDebugUtil.SRLog("good");
                         mSRVoiceViewListner.showInputBasicInfo();
                 }
             });
@@ -180,7 +206,7 @@ public class SRVoiceView extends RelativeLayout{
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
                                         int whichButton) {
-
+                                	SRDebugUtil.SRLog("TEST1");
                                     
                                 }
                             })
@@ -188,7 +214,7 @@ public class SRVoiceView extends RelativeLayout{
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
                                         int whichButton) {
-
+                                	SRDebugUtil.SRLog("TEST2");
                                     // do nothing
                                 }
                             }).create();

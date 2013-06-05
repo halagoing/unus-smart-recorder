@@ -41,53 +41,71 @@ public class SRDbHandler{
     }
 
     public void close() {
-
+    	
     }
 
-    public long insertVoice(String voiceFilePath, String docFilePath) {
+    public int insertVoice(String voiceFilePath, String docFilePath) {
     	ContentValues values = new ContentValues();
     	values.put("voice_path", voiceFilePath);
     	values.put("document_path", docFilePath);
-    	long result = mDatabase.insert("voice", null, values);
-    	return result;
+    	long result = mDatabase.insert(SRConfig.DB_VOICE_TABLE_NAME, null, values);
+    	return (int)result;
     }
 
-    public void deleteVoice(String voiceFilePath) {
-
+    public void deleteVoice(int voice_id) {
+    	mDatabase.delete(SRConfig.DB_VOICE_TABLE_NAME, "voice_id = "+voice_id+"", null);
     }
 
-    public void updateInfo(String voiceFilePath, String docFilePath) {
-
+    public void updateInfo(int voice_id, String voiceFilePath, String docFilePath) {
+    	ContentValues values = new ContentValues();
+    	values.put("voice_path", voiceFilePath);
+    	values.put("document_path", docFilePath);
+    	mDatabase.update(SRConfig.DB_VOICE_TABLE_NAME, values, "voice_id = "+voice_id+"", null);
     }
 
-    public void insertTag(String voiceFilePath, SRTagItem tagItem) {
-
+    public int insertTag(int voice_id, int type, String content, String tag_time) {
+    	ContentValues values = new ContentValues();
+    	values.put("voice_id", voice_id);
+    	values.put("type", type);
+    	values.put("content", content);
+    	values.put("tag_time", tag_time);
+    	long result = mDatabase.insert(SRConfig.DB_TAG_TABLE_NAME, null, values);
+    	return (int)result;
     }
 
-    public void deleteTag(String voiceFilePath, SRTagItem tagItem) {
-
+    public void deleteTag(int tag_id) {
+    	mDatabase.delete(SRConfig.DB_TAG_TABLE_NAME, "tag_id= "+tag_id+"", null);
     }
 
-    public void updateTag(String voiceFilePath, SRTagItem tagItem) {
-
+    public void updateTag(int tag_id, int voice_id, int type, String content, String tag_time) {
+    	ContentValues values = new ContentValues();
+    	values.put("voice_id", voice_id);
+    	values.put("type", type);
+    	values.put("content", content);
+    	values.put("tag_time", tag_time);
+    	mDatabase.update(SRConfig.DB_TAG_TABLE_NAME, values, "tag_id = "+tag_id+"", null);
     }
 
 
-	public Cursor selectAll() {
-		
-		Cursor cursor = mDatabase.query(true, "voice", new String[] {"voice_id","created_time","voice_path","document_path"}, null, null, null, null, null, null);
-		
-		SRDebugUtil.SRLog("selectAll cursor = " + cursor);
+	public Cursor selectAllVoice() {
+		Cursor cursor = mDatabase.query(true, SRConfig.DB_VOICE_TABLE_NAME, new String[] {"voice_id","created_time","voice_path","document_path"}, null, null, null, null, null, null);
+//		SRDebugUtil.SRLog("selectAllVoice cursor = " + cursor);
 		return cursor;
-
+    }
+	
+	public Cursor selectAllTag() {
+		Cursor cursor = mDatabase.query(true, SRConfig.DB_TAG_TABLE_NAME, new String[] {"tag_id","created_time","voice_id","content","tag_time"}, null, null, null, null, null, null);
+//		SRDebugUtil.SRLog("selectAllTag cursor = " + cursor);
+		return cursor;
     }
 
-    public void selectByText(String text) {
-
+    public Cursor selectTagByVoiceId(int voice_id) {
+    	Cursor cursor = mDatabase.query(true, SRConfig.DB_TAG_TABLE_NAME, new String[] {"tag_id","created_time","voice_id","content","tag_time"}, "voice_id = "+voice_id+"", null, null, null, null, null);
+    	return cursor;
     }
 
     public void selectByText(String voiceFileName, String text) {
-
+    	
     }
 
 
