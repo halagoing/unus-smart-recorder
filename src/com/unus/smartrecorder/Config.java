@@ -12,6 +12,6 @@ public class Config {
     static final int DB_VERSION = 1;
     
     static final String DB_VOICE_TABLE_NAME = "voice";
-    static final String DB_TAG_TABLE_NAME = "voice";
+    static final String DB_TAG_TABLE_NAME = "tag";
     
 }
