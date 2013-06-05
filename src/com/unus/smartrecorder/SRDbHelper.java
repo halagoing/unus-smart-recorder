@@ -10,11 +10,11 @@ public class SRDbHelper extends SQLiteOpenHelper{
     private static final int DB_VERSION = 1;
 	
     // voice table
-    private static final String TABLE_VOICE = "voice";
-    private static final String VOICE_COLUMN_VOICE_ID = "voice_id";
-    private static final String VOICE_COLUMN_CREATED_DATETIME = "created_datetime";
-    private static final String VOICE_COLUMN_VOICE_PATH = "voice_path";
-    private static final String VOICE_COLUMN_DOCUMENT_PATH = "document_path";
+    static final String TABLE_VOICE = "voice";
+    static final String VOICE_COLUMN_VOICE_ID = "voice_id";
+    static final String VOICE_COLUMN_CREATED_DATETIME = "created_datetime";
+    static final String VOICE_COLUMN_VOICE_PATH = "voice_path";
+    static final String VOICE_COLUMN_DOCUMENT_PATH = "document_path";
     
     private static final String VOICE_CREATE = "create table"
     		+ TABLE_VOICE + "(" + VOICE_COLUMN_VOICE_ID
@@ -24,13 +24,13 @@ public class SRDbHelper extends SQLiteOpenHelper{
     		+ " TEXT);";
     
     // tag table
-    private static final String TABLE_TAG = "tag";
-    private static final String TAG_COLUMN_TAG_ID = "tag_id";
-    private static final String TAG_COLUMN_CREATED_DATETIME = "created_datetime";
-    private static final String TAG_COLUMN_VOICE_ID = "voice_id";
-    private static final String TAG_COLUMN_TYPE = "type";
-    private static final String TAG_COLUMN_CONTENT = "content";
-    private static final String TAG_COLUMN_TAG_TIME = "tag_time";
+    static final String TABLE_TAG = "tag";
+    static final String TAG_COLUMN_TAG_ID = "tag_id";
+    static final String TAG_COLUMN_CREATED_DATETIME = "created_datetime";
+    static final String TAG_COLUMN_VOICE_ID = "voice_id";
+    static final String TAG_COLUMN_TYPE = "type";
+    static final String TAG_COLUMN_CONTENT = "content";
+    static final String TAG_COLUMN_TAG_TIME = "tag_time";
     
     private static final int TEXT_TAG_TYPE = 1;
     private static final int PHOTO_TAG_TYPE = 2;
