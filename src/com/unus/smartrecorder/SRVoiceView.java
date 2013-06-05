@@ -13,11 +13,8 @@ package com.unus.smartrecorder;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-<<<<<<< HEAD
-import android.database.Cursor;
-=======
 import android.content.DialogInterface;
->>>>>>> branch 'master' of https://halagoing.bond@code.google.com/p/unus-smart-recorder/
+import android.database.Cursor;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
