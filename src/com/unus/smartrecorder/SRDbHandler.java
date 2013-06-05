@@ -44,7 +44,7 @@ public class SRDbHandler{
 
     }
 
-    public long insertInfo(String voiceFilePath, String docFilePath) {
+    public long insertVoice(String voiceFilePath, String docFilePath) {
     	ContentValues values = new ContentValues();
     	values.put("voice_path", voiceFilePath);
     	values.put("document_path", docFilePath);
@@ -52,7 +52,7 @@ public class SRDbHandler{
     	return result;
     }
 
-    public void deleteInfo(String voiceFilePath) {
+    public void deleteVoice(String voiceFilePath) {
 
     }
 
