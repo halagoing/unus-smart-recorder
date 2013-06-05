@@ -16,11 +16,16 @@
 
 package com.unus.smartrecorder;
 
+import java.util.List;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -31,8 +36,10 @@ import android.view.MenuItem.OnActionExpandListener;
 import android.view.View;
 import android.view.Window;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.android.debug.hv.ViewServer;
+import com.unus.smartrecorder.R;
 
 /**
  * This demonstrates the usage of SearchView in an ActionBar as a menu item. It
@@ -48,6 +55,8 @@ public class SearchViewActionBar extends Activity implements
     public static final int DIALOG_INPUT_BASIC_INFO = 1; // Input Basic Info Dialog
     public static final int DIALOG_INPUT_TEXT_TAG = 2; // Input Text Tag Dialog
 
+    public static final int FILE_EXPLORER_RESULT = 1;   // document file browsing
+    
     private SearchView mSearchView;
     private ActionBar mActionBar;
     private int mViewState;
@@ -247,4 +256,41 @@ public class SearchViewActionBar extends Activity implements
     public void showInputTextTag() {
         showDialog(SRVoiceView.DIALOG_INPUT_TEXT_TAG);
     }
+
+    @Override
+    public void showFileExplorer() {
+        final PackageManager packageManager = getPackageManager();
+        final Intent intent = new Intent(Intent.ACTION_GET_CONTENT); 
+        //intent.setType("file/*");
+        intent.setType("application/pdf");
+        List<ResolveInfo> list = packageManager.queryIntentActivities(intent,
+                                        PackageManager.GET_ACTIVITIES);
+
+        if (list.size() > 0) {
+            startActivityForResult(intent, FILE_EXPLORER_RESULT);
+        } else {
+            SRDebugUtil.SRLogError("File Explorer Activity Not Found");
+            Toast.makeText(getBaseContext(), R.string.file_explorer_not_found, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode) {
+        case FILE_EXPLORER_RESULT:
+            if (resultCode == RESULT_OK) {
+                String filePath = data.getData().getPath();
+                
+                SRDebugUtil.SRLog("onActivityResult() DocumentPath:" + filePath);
+                if (mSRVoiceView != null) {
+                    mSRVoiceView.setDocPath(filePath);
+                }
+            }
+            break;
+        default:
+            break;    
+        }
+    }
+    
+    
 }

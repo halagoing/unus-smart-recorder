@@ -38,6 +38,11 @@ public class SRVoiceView extends RelativeLayout{
     SRVoice mSRVoice;
     private SRVoiceViewListner mSRVoiceViewListner;
     
+    private EditText mTitleView;    // Basic Info Dialog
+    private TextView mDocPathView;  // Basic Info Dialog
+    private String mTitle;         // Basic Info Dialog
+    private String mDocPath;        // Basic Info Dialog
+    
     //{{TESTCODE
     private String[] mStrings = Cheeses.sCheeseStrings;
     //}}TESTCODE
@@ -164,6 +169,12 @@ public class SRVoiceView extends RelativeLayout{
         mSRVoiceViewListner = listner;
     }
     
+    public void setDocPath(String path) {
+        mDocPath = path;
+        if (mDocPathView != null)
+            mDocPathView.setText(mDocPath);
+    }
+    
     public Dialog createDialog(Context context, int id) {
         LayoutInflater factory = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -171,17 +182,29 @@ public class SRVoiceView extends RelativeLayout{
         case DIALOG_INPUT_BASIC_INFO:
             final View inputBasicInfoView = factory.inflate(
                     R.layout.sr_input_basic_info_dialog, null);
-            EditText title = (EditText)inputBasicInfoView.findViewById(R.id.titleText);
-            TextView doc = (TextView)inputBasicInfoView.findViewById(R.id.docText);
+            mTitleView = (EditText)inputBasicInfoView.findViewById(R.id.titleText);
+            mDocPathView = (TextView)inputBasicInfoView.findViewById(R.id.docPathText);
+            mDocPathView.setSelected(true);
+            final ImageButton explorerBtn = (ImageButton)inputBasicInfoView.findViewById(R.id.explorerBtn);
+            explorerBtn.setOnClickListener(new OnClickListener() {
+                
+                @Override
+                public void onClick(View v) {
+                    if (mSRVoiceViewListner != null) 
+                        mSRVoiceViewListner.showFileExplorer();
+                }
+            });
+            
             return new AlertDialog.Builder(context)
-                    //.setIconAttribute(android.R.attr.alertDialogIcon)
                     .setTitle(R.string.input_basic_info)
                     .setView(inputBasicInfoView)
                     .setPositiveButton(android.R.string.ok,
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
                                         int whichButton) {
-
+                                    mTitle = mTitleView.getText().toString();
+                                    
+                                    SRDebugUtil.SRLog("Title : " + mTitle + " Doc : " + mDocPath);
                                     
                                 }
                             })
@@ -190,7 +213,8 @@ public class SRVoiceView extends RelativeLayout{
                                 public void onClick(DialogInterface dialog,
                                         int whichButton) {
 
-                                    // do nothing
+                                    mTitle = "";
+                                    mDocPath = "";
                                 }
                             }).create();
             
@@ -198,7 +222,6 @@ public class SRVoiceView extends RelativeLayout{
             final View inputTextTagView = factory.inflate(
                     R.layout.sr_input_basic_info_dialog, null);
             return new AlertDialog.Builder(context)
-                    .setIconAttribute(android.R.attr.alertDialogIcon)
                     .setTitle(R.string.input_basic_info)
                     .setView(inputTextTagView)
                     .setPositiveButton(android.R.string.ok,
@@ -220,7 +243,5 @@ public class SRVoiceView extends RelativeLayout{
         default:
             return null;
         }
-
-
     }
 }

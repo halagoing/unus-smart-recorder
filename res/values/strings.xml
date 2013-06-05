@@ -16,5 +16,8 @@
     <string name="title">Title</string>
     <string name="doc">Doc</string>
     <string name="input_basic_info">Input Basic Info</string>
+    <string name="no_document">No document</string>
+    <string name="document">Document</string>
+    <string name="file_explorer_not_found">File Explorer not found</string>
 
 </resources>
