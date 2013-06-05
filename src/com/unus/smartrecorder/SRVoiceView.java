@@ -65,8 +65,7 @@ public class SRVoiceView extends RelativeLayout{
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             inflater.inflate(R.layout.sr_voiceview_layout, this, true);
-            
-           
+
             
             mSRVoice = new SRVoice();
             
