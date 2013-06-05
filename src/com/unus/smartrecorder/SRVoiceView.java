@@ -65,36 +65,72 @@ public class SRVoiceView extends RelativeLayout{
             SRDebugUtil.SRLog("dbHandler-2");
             int result = dbHandler.insertVoice("/test/voice.mp3", "/test/voice.pdf");
             SRDebugUtil.SRLog("insert result = " + result);
+//            dbHandler.insertTag(2, 1,"TESTTESTTEST6", "00:44");
+//            dbHandler.insertTag(2, 1,"KIM", "00:44");
+//            dbHandler.insertTag(2, 1,"woo", "00:44");
+//            dbHandler.insertTag(2, 1,"hwang", "00:44");
+//            dbHandler.insertTag(2, 1,"미워", "00:44");
+//            dbHandler.insertTag(2, 1,"니가 미", "00:44");
+//            dbHandler.insertTag(2, 1,"맛있다~~", "00:44");
+//            dbHandler.insertTag(2, 1,"후아", "00:44");
+//            dbHandler.insertTag(2, 1,"우카우카", "00:44");
+//            dbHandler.insertTag(2, 1,"민둥", "00:44");
+//            dbHandler.insertTag(2, 1,"집을 팔자", "00:44");
             SRDebugUtil.SRLog("dbHandler-3");
             Cursor cursor = dbHandler.selectAllVoice();
- 
-            String[] personArr = new String[cursor.getCount()]; 
+            Cursor cursor4 = dbHandler.selectAllTag();
+            
+            Cursor cursor3 = dbHandler.selectTagByVoiceId(2);
+            
+            Cursor cursor2 = dbHandler.selectTagsByContent("미워");
+            String[] personArr = new String[cursor2.getCount()]; 
+            
+            
+            
+            
             
             SRDebugUtil.SRLog("personArr count = " + cursor.getCount());
+            SRDebugUtil.SRLog("cursor2 count = " + cursor2.getCount());
+            SRDebugUtil.SRLog("cursor3 count = " + cursor3.getCount());
+            SRDebugUtil.SRLog("cursor4 count = " + cursor4.getCount());
             
             int count = 0;
             
-            while (cursor.moveToNext()) {
-				int id = cursor.getInt(0);
-				String created_time = cursor.getString(1);
-				String voice_path = cursor.getString(2);
-				String document_path = cursor.getString(3);
-				personArr[count] = id + " " + created_time + " " + voice_path + " " + document_path;
+//            while (cursor.moveToNext()) {
+//				int id = cursor.getInt(0);
+//				String created_time = cursor.getString(1);
+//				String voice_path = cursor.getString(2);
+//				String document_path = cursor.getString(3);
+//				personArr[count] = id + " " + created_time + " " + voice_path + " " + document_path;
+//				count++;
+//			}
+            
+            while (cursor2.moveToNext()) {
+//            	SRDebugUtil.SRLog("cursor2 step1 ");
+				int id = cursor2.getInt(0);
+//				SRDebugUtil.SRLog("cursor2 step2 ");
+				String tag_time = cursor2.getString(5);
+//				SRDebugUtil.SRLog("cursor2 step3 ");
+				String content = cursor2.getString(4);
+//				SRDebugUtil.SRLog("cursor2 step4 ");
+//				SRDebugUtil.SRLog("cursor2 id = " +id);
+//				SRDebugUtil.SRLog("cursor2 step5 ");
+//				SRDebugUtil.SRLog("cursor2 created_time = " +created_time);
+//				SRDebugUtil.SRLog("cursor2 content = " +content);
+//				SRDebugUtil.SRLog("Wow = " + id + " " + created_time + " " + content);
+				personArr[count] = id + " " + tag_time + " " + content;
+				//personArr[count] = "good";
 				count++;
 			}
-            cursor.close();
             
-//            dbHandler.deleteVoice(result);
-            dbHandler.insertTag(2, 1,"TEST/TEST/TEST6", "00:44");
-//            dbHandler.insertTag(2, 1,"TEST/TEST/TEST7", "00:44");
-//            dbHandler.insertTag(2, 1,"TEST/TEST/TEST8", "00:44");
+            cursor2.close();
             
-            Cursor cursor2 = dbHandler.selectAllTag();
+            dbHandler.deleteVoice(result);
             
-            Cursor cursor3 = dbHandler.selectTagByVoiceId(1);
             
-            SRDebugUtil.SRLog("cursor2 count = " + cursor2.getCount());
-            SRDebugUtil.SRLog("cursor3 count = " + cursor3.getCount());
+            
+            
+            
             SRDebugUtil.SRLog("personArr  = " + personArr);
             
             ImageView imageView = (ImageView)findViewById(R.id.imgView);

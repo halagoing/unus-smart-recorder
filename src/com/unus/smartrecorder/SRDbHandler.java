@@ -94,16 +94,21 @@ public class SRDbHandler{
     }
 	
 	public Cursor selectAllTag() {
-		Cursor cursor = mDatabase.query(true, SRConfig.DB_TAG_TABLE_NAME, new String[] {"tag_id","created_time","voice_id","content","tag_time"}, null, null, null, null, null, null);
+		Cursor cursor = mDatabase.query(true, SRConfig.DB_TAG_TABLE_NAME, new String[] {"tag_id","created_time","voice_id","type","content","tag_time"}, null, null, null, null, null, null);
 //		SRDebugUtil.SRLog("selectAllTag cursor = " + cursor);
 		return cursor;
     }
 
     public Cursor selectTagByVoiceId(int voice_id) {
-    	Cursor cursor = mDatabase.query(true, SRConfig.DB_TAG_TABLE_NAME, new String[] {"tag_id","created_time","voice_id","content","tag_time"}, "voice_id = "+voice_id+"", null, null, null, null, null);
+    	Cursor cursor = mDatabase.query(true, SRConfig.DB_TAG_TABLE_NAME, new String[] {"tag_id","created_time","voice_id","type","content","tag_time"}, "voice_id = "+voice_id+"", null, null, null, null, null);
     	return cursor;
     }
-
+    
+    public Cursor selectTagsByContent(String text) {
+    	Cursor cursor = mDatabase.query(true, SRConfig.DB_TAG_TABLE_NAME, new String[] {"tag_id","created_time","voice_id","type","content","tag_time"}, "content like '%"+text+"%'", null, null, null, null, null);
+    	return cursor;
+    }
+    
     public void selectByText(String voiceFileName, String text) {
     	
     }
