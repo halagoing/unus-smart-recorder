@@ -69,19 +69,23 @@ public class SRVoiceView extends RelativeLayout{
             SRDebugUtil.SRLog("dbHandler-1");
             SRDbHandler dbHandler = SRDbHandler.open(mContext);
             SRDebugUtil.SRLog("dbHandler-2");
+            
             int result = dbHandler.insertVoice("/test/voice.mp3", "/test/voice.pdf");
+            
+            
             SRDebugUtil.SRLog("insert result = " + result);
-//            dbHandler.insertTag(2, 1,"TESTTESTTEST6 추가", "00:44");
-//            dbHandler.insertTag(2, 1,"KIM add", "00:44");
-//            dbHandler.insertTag(2, 1,"woo add", "00:44");
-//            dbHandler.insertTag(2, 1,"hwang add", "00:44");
-//            dbHandler.insertTag(2, 1,"han add", "00:44");
-//            dbHandler.insertTag(2, 1,"min hwang 미 add", "00:44");
-//            dbHandler.insertTag(2, 1,"add~~ add", "00:44");
-//            dbHandler.insertTag(2, 1,"han han add", "00:44");
-//            dbHandler.insertTag(2, 1,"woo han min", "00:44");
-//            dbHandler.insertTag(2, 1,"min TESTTESTTEST6 dbHandler", "00:44");
+            dbHandler.insertTag(2, 1,"TESTTESTTEST6 추가", "00:44");
+            dbHandler.insertTag(2, 1,"KIM add", "00:44");
+            dbHandler.insertTag(2, 1,"woo add", "00:44");
+            dbHandler.insertTag(2, 1,"hwang add", "00:44");
+            dbHandler.insertTag(2, 1,"han add", "00:44");
+            dbHandler.insertTag(2, 1,"min hwang 미 add", "00:44");
+            dbHandler.insertTag(2, 1,"add~~ add", "00:44");
+            dbHandler.insertTag(2, 1,"han han add", "00:44");
+            dbHandler.insertTag(2, 1,"woo han min", "00:44");
+            dbHandler.insertTag(2, 1,"min TESTTESTTEST6 dbHandler", "00:44");
             SRDebugUtil.SRLog("dbHandler-3");
+            
             Cursor cursor = dbHandler.selectAllVoice();
             Cursor cursor4 = dbHandler.selectAllTag();
             
