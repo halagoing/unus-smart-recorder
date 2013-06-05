@@ -11,6 +11,7 @@
 package com.unus.smartrecorder;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,7 +49,31 @@ public class SRVoiceView extends RelativeLayout{
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             inflater.inflate(R.layout.sr_voiceview_layout, this, true);
             
-
+            DebugUtil.SRLog("dbHandler-1");
+            SRDbHandler dbHandler = SRDbHandler.open(mContext);
+            DebugUtil.SRLog("dbHandler-2");
+            dbHandler.insertInfo("/test/voice.mp3", "/test/voice.pdf");
+            DebugUtil.SRLog("dbHandler-3");
+            Cursor cursor = dbHandler.selectAll();
+            
+            String[] personArr = new String[cursor.getCount()];
+            
+            DebugUtil.SRLog("personArr count = " + cursor.getCount());
+            
+            int count = 0;
+            
+            while (cursor.moveToNext()) {
+				int id = cursor.getInt(0);
+				String created_time = cursor.getString(1);
+				String voice_path = cursor.getString(2);
+				String document_path = cursor.getString(3);
+				personArr[count] = id + " " + created_time + " " + voice_path + " " + document_path;
+				count++;
+			}
+            cursor.close();
+            
+            DebugUtil.SRLog("personArr  = " + personArr);
+            
             mSRVoice = new SRVoice();
             
             
@@ -84,7 +109,7 @@ public class SRVoiceView extends RelativeLayout{
             });
             mTagListView = (ListView) findViewById(R.id.tagListView);
             mTagListView.setAdapter(mTagListViewAdapter = new ArrayAdapter<String>(
-                    mContext, android.R.layout.simple_list_item_1, mStrings));
+                    mContext, android.R.layout.simple_list_item_1, personArr));
 
     }
 }

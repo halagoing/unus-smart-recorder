@@ -27,7 +27,7 @@ import android.util.Log;
 public class SRVoice {
     private SRTag mTag;
     private SRDoc mDoc;
-    public SRDB mDB;
+    public SRDbHandler mDB;
     public SRShare mShare;
     
     boolean isRecorder = false;
