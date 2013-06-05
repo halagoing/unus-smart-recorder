@@ -123,5 +123,11 @@
         android:layout_marginLeft="16dp"
         android:layout_toRightOf="@+id/btnStop"
         android:text="Play" />
+
+    <ImageView
+        android:id="@+id/imgView"
+        android:layout_width="100dp"
+        android:layout_height="100dp" />
+
 </RelativeLayout>
 

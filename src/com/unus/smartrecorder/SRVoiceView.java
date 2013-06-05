@@ -15,6 +15,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -67,28 +69,86 @@ public class SRVoiceView extends RelativeLayout{
             SRDebugUtil.SRLog("dbHandler-1");
             SRDbHandler dbHandler = SRDbHandler.open(mContext);
             SRDebugUtil.SRLog("dbHandler-2");
-            long result = dbHandler.insertVoice("/test/voice.mp3", "/test/voice.pdf");
+            int result = dbHandler.insertVoice("/test/voice.mp3", "/test/voice.pdf");
             SRDebugUtil.SRLog("insert result = " + result);
+//            dbHandler.insertTag(2, 1,"TESTTESTTEST6 Ãß°¡", "00:44");
+//            dbHandler.insertTag(2, 1,"KIM add", "00:44");
+//            dbHandler.insertTag(2, 1,"woo add", "00:44");
+//            dbHandler.insertTag(2, 1,"hwang add", "00:44");
+//            dbHandler.insertTag(2, 1,"han add", "00:44");
+//            dbHandler.insertTag(2, 1,"min hwang ¹Ì add", "00:44");
+//            dbHandler.insertTag(2, 1,"add~~ add", "00:44");
+//            dbHandler.insertTag(2, 1,"han han add", "00:44");
+//            dbHandler.insertTag(2, 1,"woo han min", "00:44");
+//            dbHandler.insertTag(2, 1,"min TESTTESTTEST6 dbHandler", "00:44");
             SRDebugUtil.SRLog("dbHandler-3");
-            Cursor cursor = dbHandler.selectAll();
- 
-            String[] personArr = new String[cursor.getCount()]; 
+            Cursor cursor = dbHandler.selectAllVoice();
+            Cursor cursor4 = dbHandler.selectAllTag();
+            
+            Cursor cursor3 = dbHandler.selectTagsByVoiceId(2);
+            
+            Cursor cursor2 = dbHandler.selectTagsByContent("han");
+            String[] personArr = new String[cursor2.getCount()]; 
+            
+            
+            
+            
             
             SRDebugUtil.SRLog("personArr count = " + cursor.getCount());
+            SRDebugUtil.SRLog("cursor2 count = " + cursor2.getCount());
+            SRDebugUtil.SRLog("cursor3 count = " + cursor3.getCount());
+            SRDebugUtil.SRLog("cursor4 count = " + cursor4.getCount());
             
             int count = 0;
             
-            while (cursor.moveToNext()) {
-				int id = cursor.getInt(0);
-				String created_time = cursor.getString(1);
-				String voice_path = cursor.getString(2);
-				String document_path = cursor.getString(3);
-				personArr[count] = id + " " + created_time + " " + voice_path + " " + document_path;
+//            while (cursor.moveToNext()) {
+//				int id = cursor.getInt(0);
+//				String created_time = cursor.getString(1);
+//				String voice_path = cursor.getString(2);
+//				String document_path = cursor.getString(3);
+//				personArr[count] = id + " " + created_time + " " + voice_path + " " + document_path;
+//				count++;
+//			}
+            
+            while (cursor2.moveToNext()) {
+//            	SRDebugUtil.SRLog("cursor2 step1 ");
+				int id = cursor2.getInt(0);
+//				SRDebugUtil.SRLog("cursor2 step2 ");
+				String tag_time = cursor2.getString(5);
+//				SRDebugUtil.SRLog("cursor2 step3 ");
+				String content = cursor2.getString(4);
+//				SRDebugUtil.SRLog("cursor2 step4 ");
+//				SRDebugUtil.SRLog("cursor2 id = " +id);
+//				SRDebugUtil.SRLog("cursor2 step5 ");
+//				SRDebugUtil.SRLog("cursor2 created_time = " +created_time);
+//				SRDebugUtil.SRLog("cursor2 content = " +content);
+//				SRDebugUtil.SRLog("Wow = " + id + " " + created_time + " " + content);
+				personArr[count] = id + " " + tag_time + " " + content;
+				//personArr[count] = "good";
 				count++;
 			}
-            cursor.close();
+            
+            cursor2.close();
+            
+            dbHandler.deleteVoice(result);
+            
+            
+            
+            
             
             SRDebugUtil.SRLog("personArr  = " + personArr);
+            
+            ImageView imageView = (ImageView)findViewById(R.id.imgView);
+            
+            //BitmapDrawable frame1 = BitmapDrawable.
+
+            //BitmapDrawable frame1 = (BitmapDrawable)getResources().getDrawable(R.drawable.test);
+            
+            //imageView.setb
+            
+            //imageView.setBackgroundDrawable(frame1);
+            
+            //imageView.setBackground(frame1);
             
             mSRVoice = new SRVoice();
             
@@ -152,6 +212,7 @@ public class SRVoiceView extends RelativeLayout{
                 public void onClick(View v) {
                     SRDebugUtil.SRLog("Record Click");
                     if (mSRVoiceViewListner != null)
+                    	//SRDebugUtil.SRLog("good");
                         mSRVoiceViewListner.showInputBasicInfo();
                 }
             });
@@ -204,15 +265,13 @@ public class SRVoiceView extends RelativeLayout{
                                         int whichButton) {
                                     mTitle = mTitleView.getText().toString();
                                     
-                                    SRDebugUtil.SRLog("Title : " + mTitle + " Doc : " + mDocPath);
-                                    
+                                    SRDebugUtil.SRLog("Input Basic Info : Title : " + mTitle + " Doc : " + mDocPath);
                                 }
                             })
                     .setNegativeButton(android.R.string.cancel,
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
                                         int whichButton) {
-
                                     mTitle = "";
                                     mDocPath = "";
                                 }
