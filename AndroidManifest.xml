@@ -35,6 +35,13 @@
                 android:value=".app.SearchQueryResults" />
         </activity>
         
+        <!-- Logo Activity -->
+		<activity
+            android:name="com.unus.smartrecorder.SRLogoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+
+        </activity>
         <!-- Test Activity : Only Test -->
         <activity
             android:name="com.unus.smartrecorder.TestActivity"

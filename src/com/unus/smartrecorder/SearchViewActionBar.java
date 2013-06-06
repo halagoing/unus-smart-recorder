@@ -90,6 +90,9 @@ public class SearchViewActionBar extends Activity implements
 
         setContentView(mSRVoiceView);
 
+        // Logo
+        startActivity(new Intent(this, SRLogoActivity.class));
+        
         // DEBUG : For Hierarchy Viewer
         ViewServer.get(this).addWindow(this);
     }
