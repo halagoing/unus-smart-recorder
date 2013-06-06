@@ -143,6 +143,12 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     }
     
     public void setDocPath(String docPath) {
+        if (docPath == null || docPath.length() ==0) {
+            if (mDocView != null)
+                mDocFrame.removeView(mDocView);
+            return;
+        }
+        
         try {
     		mCore = new MuPDFCore(getContext(), docPath);
     	} catch (Exception e) {

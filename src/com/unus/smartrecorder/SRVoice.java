@@ -51,8 +51,8 @@ public class SRVoice implements SRVoiceInterface {
 	
 	private long mRecordStartTime;
 	private Handler mHandler = new Handler();
-	private Timer mTimer = new Timer();
-	private TimerTask mTimerTask = new TimerTask() {
+	private Timer mTimer;
+	private class TimeTimerTask extends TimerTask {
         
         @Override
         public void run() {
@@ -108,7 +108,8 @@ public class SRVoice implements SRVoiceInterface {
     	recorderIntent.putExtra(SRConfig.VOICE_PATH_KEY, mVoiceFilePath);
     	mContext.startService(recorderIntent);
     	mRecordStartTime = System.currentTimeMillis();
-    	mTimer.schedule(mTimerTask, 1000, 1000);
+    	mTimer = new Timer();
+    	mTimer.schedule(new TimeTimerTask(), 1000, 1000);
     	
     	// Add Voice
     	mVoiceDb = mDataSource.createVoice(mVoiceFilePath, mDocFilePath);
@@ -139,6 +140,7 @@ public class SRVoice implements SRVoiceInterface {
 //		mRecorder = null;
     	
     	mTimer.cancel();
+    	mTimer = null;
     	mVoiceDb = null;
     }
 

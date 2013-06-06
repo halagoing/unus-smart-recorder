@@ -92,10 +92,10 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     @Override
     public void tagPhoto() {
         // move to Camera
-        
         Intent intent = new Intent();
         intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
         mActivity.startActivityForResult(intent, TAKE_PICTURE_RESULT);
+        mTagTime = mModel.getCurrentRecordTime();
     }
     
     @Override
