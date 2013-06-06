@@ -22,8 +22,8 @@ import android.widget.ListView;
 public class SRSearchView extends FrameLayout {
     private Context mContext;
     private SRSearchControllerInterface mController;
-    ListView mListView;
-    private ArrayAdapter<String> mAdapter;
+    private ListView mListView;
+    private SRTagListAdapter tagListAdapter;
     
     //{{TESTCODE
     private String[] mStrings = Cheeses.sCheeseStrings;
@@ -54,7 +54,7 @@ public class SRSearchView extends FrameLayout {
           
         SRDataSource datasource = new SRDataSource(mContext);
         datasource.open();
-
+        
         ArrayList<SRTagDb> tags = datasource.getAllTag();
 
         datasource.close();
@@ -62,11 +62,16 @@ public class SRSearchView extends FrameLayout {
         
         mListView = (ListView)findViewById(R.id.SRSearchListView);
         
-        SRTagListAdapter tagListAdapter = new SRTagListAdapter(mContext, R.layout.sr_tag_list, tags);
-
+        tagListAdapter = new SRTagListAdapter(mContext, R.layout.sr_tag_list, tags);
         mListView.setAdapter(tagListAdapter);
-
+        
         mListView.setTextFilterEnabled(true);
+        
+        SRTagDb tag = new SRTagDb();
+        tag.setType(1);
+        tag.setContent("add tag");
+        tags.add(tag);
+        tagListAdapter.notifyDataSetChanged();
     }
     
     public void clearTextFilter() {

@@ -9,6 +9,8 @@
 //
 package com.unus.smartrecorder;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -74,10 +76,12 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         SRDataSource datasource = new SRDataSource(mContext);
         datasource.open();
         // {{TESTCODE
-        mTagListView = (ListView) findViewById(R.id.tagListView);
-        mTagListView.setAdapter(mTagListViewAdapter = new ArrayAdapter<String>(
-
-        mContext, android.R.layout.simple_list_item_1, Cheeses.sCheeseStrings));
+       
+        
+        datasource.close();
+//        mTagListView.setAdapter(mTagListViewAdapter = new ArrayAdapter<String>(
+//
+//        mContext, android.R.layout.simple_list_item_1, Cheeses.sCheeseStrings));
         // }}TESTCODE
 
         mTextTagBtn = (ImageButton) findViewById(R.id.textTagBtn);

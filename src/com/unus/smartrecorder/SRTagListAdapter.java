@@ -41,6 +41,11 @@ public class SRTagListAdapter extends BaseAdapter{
 		layout = alayout;
 	}
 	
+	public void add(SRTagDb tag){
+		tags.add(tag);
+		notifyDataSetChanged();
+	}
+	
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
@@ -83,5 +88,12 @@ public class SRTagListAdapter extends BaseAdapter{
 		text.setText(tagTitle);
 		return convertView;
 
+	}
+	
+	@Override
+	public void notifyDataSetChanged() {
+		// TODO Auto-generated method stub
+		super.notifyDataSetChanged();
+		
 	}
 }

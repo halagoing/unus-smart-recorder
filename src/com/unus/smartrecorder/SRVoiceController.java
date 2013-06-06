@@ -88,6 +88,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     @Override
     public void tagPhoto() {
         // move to Camera
+    	
         
         
     }
