@@ -100,7 +100,8 @@ public class SRVoiceView extends RelativeLayout {
             @Override
             public void onClick(View v) {
                 SRDebugUtil.SRLog("Stop Click");
-
+                if (mController != null)
+                    mController.recordStop();
             }
         });
     }

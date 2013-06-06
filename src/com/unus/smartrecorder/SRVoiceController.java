@@ -57,6 +57,11 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     }
 
     @Override
+    public void recordStop() {
+        mModel.recordStop(mContext);
+    }
+    
+    @Override
     public Dialog createDialog(int id) {
         LayoutInflater factory = (LayoutInflater) mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -84,8 +89,12 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                                 public void onClick(DialogInterface dialog,
                                         int whichButton) {
                                     
+                                    // Set Title, DocFilePath
                                     mModel.setTitle(mTitleView.getText().toString());
                                     mModel.setDocFilePath(mDocPathView.getText().toString());
+                                    
+                                    // Record Start
+                                    mModel.recordStart(mContext);
                                 }
                             })
                     .setNegativeButton(android.R.string.cancel,
