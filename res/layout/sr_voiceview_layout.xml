@@ -11,17 +11,20 @@
         android:text="@string/sr_voiceview" />
     
     <!-- PDF Document View -->
-
-    <com.unus.smartrecorder.SRDocView
-        android:id="@+id/docView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentTop="true"
-        android:adjustViewBounds="true"
-        android:scaleType="fitStart"
-        android:src="@drawable/pdf_icon_large" />
-
+	<FrameLayout
+	    android:id="@+id/docFrame"
+	    android:layout_width="match_parent"
+	    android:layout_height="300dip" >
+	    <ImageView
+	        android:id="@+id/dummyView"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="false"
+	        android:layout_alignParentTop="true"
+	        android:adjustViewBounds="true"
+	        android:scaleType="fitStart"
+	        android:src="@drawable/pdf_icon_large" />
+	</FrameLayout>
     <!-- Sound Input Volume -->
 
     <ProgressBar
@@ -29,7 +32,7 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/docView"
+        android:layout_below="@+id/docFrame"
         android:layout_marginLeft="@dimen/sound_volume_left_margin"
         android:layout_marginRight="@dimen/sound_volume_right_margin" />
     
@@ -39,7 +42,7 @@
         android:id="@+id/recordTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/docView"
+        android:layout_below="@+id/docFrame"
 		android:layout_alignParentRight="true"
         android:text="@string/zero_time" />
 

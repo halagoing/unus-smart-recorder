@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -30,7 +31,7 @@ public class MuPDFReaderView extends ReaderView {
 		mMode = m;
 	}
 
-	public MuPDFReaderView(Activity act) {
+	public MuPDFReaderView(Context act) {
 		super(act);
 		mContext = act;
 		// Get the screen size etc to customise tap margins.
@@ -40,15 +41,28 @@ public class MuPDFReaderView extends ReaderView {
 		// less than 100 pixels (the smallest Android device screen
 		// dimension I've seen is 480 pixels or so). Then we check
 		// to ensure we are never more than 1/5 of the screen width.
-		DisplayMetrics dm = new DisplayMetrics();
-		act.getWindowManager().getDefaultDisplay().getMetrics(dm);
-		tapPageMargin = (int)dm.xdpi;
-		if (tapPageMargin < 100)
-			tapPageMargin = 100;
-		if (tapPageMargin > dm.widthPixels/5)
-			tapPageMargin = dm.widthPixels/5;
+//		DisplayMetrics dm = new DisplayMetrics();
+//		act.getWindowManager().getDefaultDisplay().getMetrics(dm);
+//		tapPageMargin = (int)dm.xdpi;
+//		if (tapPageMargin < 100)
+//			tapPageMargin = 100;
+//		if (tapPageMargin > dm.widthPixels/5)
+//			tapPageMargin = dm.widthPixels/5;
+		tapPageMargin = 0;
 	}
 
+	public MuPDFReaderView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		mContext = context;
+		tapPageMargin = 0;
+	}
+	
+	public MuPDFReaderView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		mContext = context;
+		tapPageMargin = 0;
+	}
+	
 	public boolean onSingleTapUp(MotionEvent e) {
 		LinkInfo link = null;
 

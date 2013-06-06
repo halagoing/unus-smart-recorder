@@ -92,7 +92,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                                     // Set Title, DocFilePath
                                     mModel.setTitle(mTitleView.getText().toString());
                                     mModel.setDocFilePath(mDocPathView.getText().toString());
-                                    
+                                    mView.setDocPath(mDocPathView.getText().toString());
                                     // Record Start
                                     mModel.recordStart(mContext);
                                 }
