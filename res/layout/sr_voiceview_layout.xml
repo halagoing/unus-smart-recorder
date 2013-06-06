@@ -19,10 +19,9 @@
 	        android:id="@+id/dummyView"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:layout_alignParentLeft="false"
-	        android:layout_alignParentTop="true"
 	        android:adjustViewBounds="true"
 	        android:scaleType="fitStart"
+	        android:layout_gravity="center"
 	        android:src="@drawable/pdf_icon_large" />
 	</FrameLayout>
     <!-- Sound Input Volume -->

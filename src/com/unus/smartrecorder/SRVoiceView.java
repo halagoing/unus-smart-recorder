@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.artifex.mupdfdemo.MuPDFCore;
 import com.artifex.mupdfdemo.MuPDFPageAdapter;
@@ -32,6 +33,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     private ListView mTagListView;
     private ArrayAdapter<String> mTagListViewAdapter;
     private ImageButton mTextTagBtn, mPhotoTagBtn, mRecordBtn, mStopBtn;
+    private TextView mRecordTimeView;
     
     private ImageView mDummyView;
     private FrameLayout mDocFrame;
@@ -126,6 +128,8 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         });
         mStopBtn.setEnabled(false);
         
+        mRecordTimeView = (TextView)findViewById(R.id.recordTime);
+        
         
         //mSRDocView = new SRDocView(getContext());
         //addView(mSRDocView);
@@ -161,7 +165,16 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     }
 
     @Override
-    public void updateTime() {
-        
+    public void updateTime(long time) {
+        final long t = time;
+        post(new Runnable() {
+            
+            @Override
+            public void run() {
+                long sec = t / 1000;
+                
+                mRecordTimeView.setText(String.format("%02d:%02d", sec/60, sec % 60));
+            }
+        });
     }
 }

@@ -16,12 +16,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
+import android.os.Handler;
 
 public class SRVoice implements SRVoiceInterface {
     private SRTag mTag;
@@ -47,7 +50,15 @@ public class SRVoice implements SRVoiceInterface {
 	private SRVoiceDb mVoiceDb;
 	
 	private long mRecordStartTime;
-	
+	private Handler mHandler = new Handler();
+	private Timer mTimer = new Timer();
+	private TimerTask mTimerTask = new TimerTask() {
+        
+        @Override
+        public void run() {
+            notifyTimeObservers(getCurrentRecordTime());
+        }
+    };
 	
 	@Override
     public void initialize(Context context) {
@@ -97,7 +108,8 @@ public class SRVoice implements SRVoiceInterface {
     	recorderIntent.putExtra(SRConfig.VOICE_PATH_KEY, mVoiceFilePath);
     	mContext.startService(recorderIntent);
     	mRecordStartTime = System.currentTimeMillis();
-
+    	mTimer.schedule(mTimerTask, 1000, 1000);
+    	
     	// Add Voice
     	mVoiceDb = mDataSource.createVoice(mVoiceFilePath, mDocFilePath);
     }
@@ -125,6 +137,8 @@ public class SRVoice implements SRVoiceInterface {
 //		mRecorder.stop();
 //		mRecorder.release();
 //		mRecorder = null;
+    	
+    	mTimer.cancel();
     	mVoiceDb = null;
     }
 
@@ -234,7 +248,7 @@ public class SRVoice implements SRVoiceInterface {
 
     public interface SRVoiceObserver {
         public void updateTags();
-        public void updateTime();
+        public void updateTime(long time);
     }
     
     ArrayList<SRVoiceObserver> mSRVoiceObserver = new ArrayList<SRVoiceObserver>();
@@ -249,10 +263,10 @@ public class SRVoice implements SRVoiceInterface {
         }
     }
     
-    public void notifyTimeObservers() {
+    public void notifyTimeObservers(long time) {
         for (int i = 0; i < mSRVoiceObserver.size(); i++) {
             SRVoiceObserver observer = mSRVoiceObserver.get(i);
-            observer.updateTime();
+            observer.updateTime(time);
         }
     }    
     

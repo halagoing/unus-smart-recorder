@@ -27,7 +27,7 @@ public interface SRVoiceInterface {
     
     public void notifyTagsObservers();
     
-    public void notifyTimeObservers();   
+    public void notifyTimeObservers(long timer);   
     
     public void removeObserver(SRVoiceObserver o);
 
