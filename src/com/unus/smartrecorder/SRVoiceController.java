@@ -10,7 +10,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,6 +28,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     public static final int DIALOG_INPUT_TEXT_TAG = 2; // Input Text Tag Dialog
     
     public static final int FILE_EXPLORER_RESULT = 1;   // document file browsing
+    public static final int TAKE_PICTURE_RESULT = 2;   // camera
     
     private SRVoiceInterface mModel;
     private Activity mActivity;
@@ -89,7 +93,9 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     public void tagPhoto() {
         // move to Camera
         
-        
+        Intent intent = new Intent();
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        mActivity.startActivityForResult(intent, TAKE_PICTURE_RESULT);
     }
     
     @Override
@@ -210,6 +216,14 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         }
     }
     
+    public String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = mActivity.managedQuery(contentUri, proj, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+    
     public void activityResult(int requestCode, int resultCode, Intent data)  {
         switch(requestCode) {
         case FILE_EXPLORER_RESULT:
@@ -221,6 +235,17 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                 mDocPathView.setText(filePath);
             } else {
 
+            }
+            break;
+        case TAKE_PICTURE_RESULT:
+            if (resultCode == Activity.RESULT_OK) {
+                String filePath = getRealPathFromURI(data.getData());
+                
+                SRDebugUtil.SRLog("onActivityResult() PhotoPath:" + filePath);
+                
+                mModel.addTag(SRDbHelper.PHOTO_TAG_TYPE, filePath, Long.toString(mTagTime));
+            } else {
+                mTagTime = 0;
             }
             break;
         default:
