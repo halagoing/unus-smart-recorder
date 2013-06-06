@@ -7,6 +7,8 @@ public class SRTagModel {
 	private int type;
 	private String content;
 	private String tag_time;
+	
+	
 	public long getTag_id() {
 		return tag_id;
 	}

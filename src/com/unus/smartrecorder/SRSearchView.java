@@ -30,7 +30,7 @@ public class SRSearchView extends FrameLayout {
         super(context);
         initView(context);
     }
-
+    
     public SRSearchView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView(context);
@@ -41,6 +41,10 @@ public class SRSearchView extends FrameLayout {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.sr_searchview_layout, this, true);
+        
+        
+        SRSearch mSearch = new SRSearch();
+        
         
         mListView = (ListView)findViewById(R.id.SRSearchListView);
         mListView.setAdapter(mAdapter = new ArrayAdapter<String>(mContext,
