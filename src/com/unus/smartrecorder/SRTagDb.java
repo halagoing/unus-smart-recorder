@@ -1,12 +1,14 @@
 package com.unus.smartrecorder;
 
-public class SRTagModel {
+public class SRTagDb {
 	private long tag_id;
 	private String created_datetime;
 	private long voice_id;
 	private int type;
 	private String content;
 	private String tag_time;
+	
+	
 	public long getTag_id() {
 		return tag_id;
 	}

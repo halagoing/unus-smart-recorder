@@ -59,7 +59,9 @@ public class SRVoiceView extends RelativeLayout {
         mContext = context;
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         inflater.inflate(R.layout.sr_voiceview_layout, this, true);
+
 
         // {{TESTCODE
         mTagListView = (ListView) findViewById(R.id.tagListView);

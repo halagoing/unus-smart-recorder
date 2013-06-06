@@ -31,7 +31,7 @@ public class SRDataSource {
 		dbHelper.close();
 	}
 	
-	public SRVoiceModel createVoice(String voiceFilePath, String docFilePath){
+	public SRVoiceDb createVoice(String voiceFilePath, String docFilePath){
     	ContentValues values = new ContentValues();
     	values.put(SRDbHelper.VOICE_COLUMN_VOICE_PATH, voiceFilePath);
     	values.put(SRDbHelper.VOICE_COLUMN_DOCUMENT_PATH, docFilePath);
@@ -41,14 +41,14 @@ public class SRDataSource {
     			allVoiceColumns, SRDbHelper.VOICE_COLUMN_VOICE_ID + " = " + insertId, null,
     	        null, null, null);
     	cursor.moveToFirst();
-    	SRVoiceModel newVoice = cursorToVoice(cursor);
+    	SRVoiceDb newVoice = cursorToVoice(cursor);
     	return newVoice;
 //    	SRVoiceModel voice = new SRVoiceModel();
 //    	return voice;
 	}
 	
-	private SRVoiceModel cursorToVoice(Cursor cursor) {
-		SRVoiceModel voice = new SRVoiceModel();
+	private SRVoiceDb cursorToVoice(Cursor cursor) {
+		SRVoiceDb voice = new SRVoiceDb();
 		voice.setVoice_id(cursor.getLong(0));
 		voice.setCreated_datetime(cursor.getString(1));
 		voice.setVoice_path(cursor.getString(2));
@@ -56,21 +56,21 @@ public class SRDataSource {
 		return voice;
 	}
 	
-	public void deleteVoice(SRVoiceModel voice) {
+	public void deleteVoice(SRVoiceDb voice) {
 		long voice_id = voice.getVoice_id();
 		database.delete(SRDbHelper.TABLE_VOICE, SRDbHelper.VOICE_COLUMN_VOICE_ID
 		    + " = " + voice_id, null);
     }
 	
-	public List<SRVoiceModel> getAllVoice() {
-	    List<SRVoiceModel> voices = new ArrayList<SRVoiceModel>();
+	public List<SRVoiceDb> getAllVoice() {
+	    List<SRVoiceDb> voices = new ArrayList<SRVoiceDb>();
 
 	    Cursor cursor = database.query(SRDbHelper.TABLE_VOICE,
 	    		allVoiceColumns, null, null, null, null, null);
 
 	    cursor.moveToFirst();
 	    while (!cursor.isAfterLast()) {
-	    	SRVoiceModel voice = cursorToVoice(cursor);
+	    	SRVoiceDb voice = cursorToVoice(cursor);
 	    	voices.add(voice);
 	    	cursor.moveToNext();
 	    }
@@ -79,7 +79,7 @@ public class SRDataSource {
 	    return voices;
 	}
 	
-	public SRTagModel createTag(int voice_id, int type, String content, String tag_time){
+	public SRTagDb createTag(int voice_id, int type, String content, String tag_time){
     	ContentValues values = new ContentValues();
     	values.put(SRDbHelper.TAG_COLUMN_VOICE_ID, voice_id);
     	values.put(SRDbHelper.TAG_COLUMN_TYPE, type);
@@ -90,12 +90,12 @@ public class SRDataSource {
     			allTagColumns, SRDbHelper.TAG_COLUMN_TAG_ID + " = " + insertId, null,
     	        null, null, null);
     	cursor.moveToFirst();
-    	SRTagModel newTag = cursorToTag(cursor);
+    	SRTagDb newTag = cursorToTag(cursor);
     	return newTag;
 	}
 	
-	private SRTagModel cursorToTag(Cursor cursor) {
-		SRTagModel tag = new SRTagModel();
+	private SRTagDb cursorToTag(Cursor cursor) {
+		SRTagDb tag = new SRTagDb();
 		tag.setTag_id(cursor.getLong(0));
 		tag.setCreated_datetime(cursor.getString(1));
 		tag.setVoice_id(cursor.getLong(2));
@@ -105,21 +105,21 @@ public class SRDataSource {
 		return tag;
 	}
 	
-	public void deleteTag(SRTagModel tag) {
+	public void deleteTag(SRTagDb tag) {
 		long tag_id = tag.getTag_id();
 		database.delete(SRDbHelper.TABLE_TAG, SRDbHelper.TAG_COLUMN_TAG_ID
 		    + " = " + tag_id, null);
     }
 	
-	public List<SRTagModel> getAllTag() {
-	    List<SRTagModel> tags = new ArrayList<SRTagModel>();
+	public List<SRTagDb> getAllTag() {
+	    List<SRTagDb> tags = new ArrayList<SRTagDb>();
 
 	    Cursor cursor = database.query(SRDbHelper.TABLE_TAG,
 	    		allTagColumns, null, null, null, null, null);
 
 	    cursor.moveToFirst();
 	    while (!cursor.isAfterLast()) {
-	    	SRTagModel tag = cursorToTag(cursor);
+	    	SRTagDb tag = cursorToTag(cursor);
 	    	tags.add(tag);
 	    	cursor.moveToNext();
 	    }
@@ -128,15 +128,15 @@ public class SRDataSource {
 	    return tags;
 	}
 	
-	public List<SRTagModel> getTagByVoiceId(long voice_id) {
-		List<SRTagModel> tags = new ArrayList<SRTagModel>();
+	public List<SRTagDb> getTagByVoiceId(long voice_id) {
+		List<SRTagDb> tags = new ArrayList<SRTagDb>();
 
 	    Cursor cursor = database.query(SRDbHelper.TABLE_TAG,
 	    		allTagColumns, SRDbHelper.TAG_COLUMN_VOICE_ID+" = "+voice_id, null, null, null, null);
 
 	    cursor.moveToFirst();
 	    while (!cursor.isAfterLast()) {
-	    	SRTagModel tag = cursorToTag(cursor);
+	    	SRTagDb tag = cursorToTag(cursor);
 	    	tags.add(tag);
 	    	cursor.moveToNext();
 	    }
