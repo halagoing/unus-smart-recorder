@@ -47,9 +47,9 @@ public class SRDbHelper extends SQLiteOpenHelper{
     static final String TAG_COLUMN_CONTENT = "content";
     static final String TAG_COLUMN_TAG_TIME = "tag_time";
     
-    private static final int TEXT_TAG_TYPE = 1;
-    private static final int PHOTO_TAG_TYPE = 2;
-    private static final int PAGE_TAG_TYPE = 3;
+    public static final int TEXT_TAG_TYPE = 1;
+    public static final int PHOTO_TAG_TYPE = 2;
+    public static final int PAGE_TAG_TYPE = 3;
     
     private static final String TAG_CREATE = "create table "
     		+ TABLE_TAG + "(" + TAG_COLUMN_TAG_ID
