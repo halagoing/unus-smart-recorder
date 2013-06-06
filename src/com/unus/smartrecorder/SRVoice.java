@@ -13,26 +13,21 @@ package com.unus.smartrecorder;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-
 
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
-import android.os.Handler;
-import android.sax.StartElementListener;
-import android.util.Log;
 
-public class SRVoice {
+public class SRVoice implements SRVoiceInterface {
     private SRTag mTag;
     private SRDoc mDoc;
     public SRShare mShare;
     
+    private String mTitle;
     private String mVoiceFilePath;
     private String mDocFilePath;
     
@@ -46,10 +41,12 @@ public class SRVoice {
 	private String file_exts[] = { AUDIO_RECORDER_FILE_EXT_MP4, AUDIO_RECORDER_FILE_EXT_3GP };
     
 	
-    public SRVoice() {
-        super();
+	@Override
+    public void initialize() {
+	    mTag = new SRTag();
         
         //TODO: DB Open
+        
     }
 
     /**
@@ -166,33 +163,33 @@ public class SRVoice {
 
     }
 
-    /**
-     * Recording
-     * setBasicInfo
-     * 
-     * @param voiceFilePath
-     * @param docFilePath
-     * @return
-     */
-    public boolean setBasicInfo(String voiceFilePath, String docFilePath) {
-        //TODO: docFilePath, voiceFilePath 유효성 검사, error면 return false
-        
-        
-        mVoiceFilePath = voiceFilePath;
-        mDocFilePath = docFilePath;
-        
-        //TODO: DB에 추가 
-        
-        return true;
-     }
-
     public void share() {
 
     }
     
+    @Override
     public String makeDefaultTitle() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
         
         return new String("Audio" + "-" + sdf.format(new Date()));
     }
+
+    @Override
+    public void setTitle(String title) {
+        SRDebugUtil.SRLog("setTitle(): " + title);
+        mTitle = title;
+        
+        mVoiceFilePath = String.format("%s/%s/%s.pdf", 
+                Environment.getExternalStorageDirectory().getPath(),
+                SRConfig.AUDIO_RECORDER_FOLDER, mTitle);
+        SRDebugUtil.SRLog("VoiceFilePath: " + mVoiceFilePath);
+    }
+
+    @Override
+    public void setDocFilePath(String filePath) {
+        SRDebugUtil.SRLog("setDocFilePath(): " + filePath);
+        
+        mDocFilePath = filePath;
+    }
+
 }
