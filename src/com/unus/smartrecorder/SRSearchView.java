@@ -10,6 +10,8 @@
 //
 package com.unus.smartrecorder;
 
+import java.util.List;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -18,7 +20,8 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 
 public class SRSearchView extends FrameLayout {
-    Context mContext;
+    private Context mContext;
+    private SRSearchControllerInterface mController;
     ListView mListView;
     private ArrayAdapter<String> mAdapter;
     
@@ -28,6 +31,13 @@ public class SRSearchView extends FrameLayout {
 
     public SRSearchView(Context context) {
         super(context);
+        initView(context);
+    }
+    
+    
+    public SRSearchView(Context context, SRSearchControllerInterface controller) {
+        super(context);
+        mController = controller;
         initView(context);
     }
     
@@ -41,14 +51,16 @@ public class SRSearchView extends FrameLayout {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.sr_searchview_layout, this, true);
-        
-        
-        SRSearch mSearch = new SRSearch();
+          
         
         
         mListView = (ListView)findViewById(R.id.SRSearchListView);
+
+        //ArrayAdapter<SRTagDb> adapter1 = new ArrayAdapter<SRTagDb>(mContext, android.R.layout.simple_list_item_2, tags);
         mListView.setAdapter(mAdapter = new ArrayAdapter<String>(mContext,
                 android.R.layout.simple_list_item_1, mStrings));
+        //mListView.setAdapter(adapter1);
+
         mListView.setTextFilterEnabled(true);
     }
     

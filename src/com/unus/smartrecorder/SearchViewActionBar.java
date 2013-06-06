@@ -62,6 +62,7 @@ public class SearchViewActionBar extends Activity implements
     
     private SRVoice mSRVoice;
     private SRVoiceController mSRVoiceController;
+    private SRSearchController mSRSearchController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,10 +81,15 @@ public class SearchViewActionBar extends Activity implements
         mPrevViewState = mViewState = STATE_RECORDING; // recording
 
         // TEST
-        mSRSearchView = new SRSearchView(getBaseContext());
+        //mSRSearchView = new SRSearchView(getBaseContext());
         
         //mSRVoiceView = new SRVoiceView(getBaseContext());
         //mSRVoiceView.setSRVoiceViewListner(this);
+        
+        
+        mSRSearchController = new SRSearchController(this);
+        mSRSearchView = mSRSearchController.getView();
+        
         mSRVoice = new SRVoice();
         mSRVoiceController = new SRVoiceController(mSRVoice, this);
         mSRVoiceView = mSRVoiceController.getView();

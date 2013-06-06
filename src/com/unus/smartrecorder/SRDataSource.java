@@ -25,6 +25,7 @@ public class SRDataSource {
 	
 	public void open() throws SQLException{
 		database = dbHelper.getWritableDatabase();
+		
 	}
 	
 	public void close() {
@@ -79,7 +80,7 @@ public class SRDataSource {
 	    return voices;
 	}
 	
-	public SRTagDb createTag(int voice_id, int type, String content, String tag_time){
+	public SRTagDb createTag(long voice_id, int type, String content, String tag_time){
     	ContentValues values = new ContentValues();
     	values.put(SRDbHelper.TAG_COLUMN_VOICE_ID, voice_id);
     	values.put(SRDbHelper.TAG_COLUMN_TYPE, type);
