@@ -112,8 +112,8 @@ public class SRDataSource {
 		    + " = " + tag_id, null);
     }
 	
-	public List<SRTagDb> getAllTag() {
-	    List<SRTagDb> tags = new ArrayList<SRTagDb>();
+	public ArrayList<SRTagDb> getAllTag() {
+		ArrayList<SRTagDb> tags = new ArrayList<SRTagDb>();
 
 	    Cursor cursor = database.query(SRDbHelper.TABLE_TAG,
 	    		allTagColumns, null, null, null, null, null);
@@ -129,8 +129,8 @@ public class SRDataSource {
 	    return tags;
 	}
 	
-	public List<SRTagDb> getTagByVoiceId(long voice_id) {
-		List<SRTagDb> tags = new ArrayList<SRTagDb>();
+	public ArrayList<SRTagDb> getTagByVoiceId(long voice_id) {
+		ArrayList<SRTagDb> tags = new ArrayList<SRTagDb>();
 
 	    Cursor cursor = database.query(SRDbHelper.TABLE_TAG,
 	    		allTagColumns, SRDbHelper.TAG_COLUMN_VOICE_ID+" = "+voice_id, null, null, null, null);

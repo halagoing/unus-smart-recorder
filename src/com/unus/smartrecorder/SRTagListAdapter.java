@@ -30,10 +30,10 @@ import android.widget.TextView;
 public class SRTagListAdapter extends BaseAdapter{
 	Context mContext;
 	LayoutInflater Inflater;
-	List<SRTagDb> tags;
+	ArrayList<SRTagDb> tags;
 	int layout;
 	
-	public SRTagListAdapter(Context context, int alayout, List<SRTagDb> tags) {
+	public SRTagListAdapter(Context context, int alayout, ArrayList<SRTagDb> tags) {
 		// TODO Auto-generated constructor stub
 		mContext = context;
 		Inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

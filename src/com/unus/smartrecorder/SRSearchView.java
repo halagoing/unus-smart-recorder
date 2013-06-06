@@ -10,6 +10,7 @@
 //
 package com.unus.smartrecorder;
 
+import java.util.ArrayList;
 import java.util.List;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -53,41 +54,16 @@ public class SRSearchView extends FrameLayout {
           
         SRDataSource datasource = new SRDataSource(mContext);
         datasource.open();
-//      
-//        datasource.createVoice("testVoicePath", "testDocPath");
-//////        
-//        datasource.createTag(2, 1, "good2", "00:01");
-//        datasource.createTag(2, 2, "1", "00:01");
-//        datasource.createTag(2, 3, "image", "00:01");
-//        datasource.createTag(2, 1, "good2", "00:01");
-//        datasource.createTag(2, 2, "2", "00:01");
-//        datasource.createTag(2, 3, "image", "00:01");
-//        datasource.createTag(2, 1, "good2", "00:01");
-//        datasource.createTag(2, 2, "3", "00:01");
-//        datasource.createTag(2, 3, "image", "00:01");
-//        datasource.createTag(2, 1, "good2", "00:01");
-//        datasource.createTag(2, 2, "4", "00:01");
-//        datasource.createTag(2, 3, "image", "00:01");
-//        datasource.createTag(2, 1, "good2", "00:01");
-//        datasource.createTag(2, 2, "5", "00:01");
-//        datasource.createTag(2, 3, "image", "00:01");
-//        
-//        List<SRVoiceModel> voices = datasource.getAllVoice();
-//        
-        List<SRTagDb> tags = datasource.getAllTag();
-//        SRDebugUtil.SRLog("voices = "+voices);
-        
+
+        ArrayList<SRTagDb> tags = datasource.getAllTag();
+
         datasource.close();
         SRDebugUtil.SRLog("tags = "+tags);
         
         mListView = (ListView)findViewById(R.id.SRSearchListView);
         
         SRTagListAdapter tagListAdapter = new SRTagListAdapter(mContext, R.layout.sr_tag_list, tags);
-        //MyListAdapter MyAdapter = new MyListAdapter(this, R.layout.icontext, arItem);
 
-//        ArrayAdapter<SRTagDb> adapter1 = new ArrayAdapter<SRTagDb>(mContext, android.R.layout.simple_list_item_1, tags);
-////        mListView.setAdapter(mAdapter = new ArrayAdapter<String>(mContext,
-////                android.R.layout.simple_list_item_1, mStrings));
         mListView.setAdapter(tagListAdapter);
 
         mListView.setTextFilterEnabled(true);
