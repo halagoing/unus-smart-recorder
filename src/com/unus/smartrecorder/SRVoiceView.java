@@ -14,11 +14,9 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 public class SRVoiceView extends RelativeLayout {
 
@@ -75,6 +73,8 @@ public class SRVoiceView extends RelativeLayout {
             @Override
             public void onClick(View v) {
                 SRDebugUtil.SRLog("TextTag Click");
+                if (mController != null)
+                    mController.tagText();
 
             }
         });
@@ -84,6 +84,8 @@ public class SRVoiceView extends RelativeLayout {
             @Override
             public void onClick(View v) {
                 SRDebugUtil.SRLog("PhotoTag Click");
+                if (mController != null)
+                    mController.tagPhoto();                
             }
         });
 

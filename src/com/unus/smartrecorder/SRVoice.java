@@ -27,6 +27,8 @@ public class SRVoice implements SRVoiceInterface {
     private SRDoc mDoc;
     public SRShare mShare;
     
+    private Context mContext;
+    
     private String mTitle;
     private String mVoiceFilePath;
     private String mDocFilePath;
@@ -40,13 +42,23 @@ public class SRVoice implements SRVoiceInterface {
 	private int output_formats[] = { MediaRecorder.OutputFormat.MPEG_4, MediaRecorder.OutputFormat.THREE_GPP };
 	private String file_exts[] = { AUDIO_RECORDER_FILE_EXT_MP4, AUDIO_RECORDER_FILE_EXT_3GP };
     
+	private SRDataSource mDataSource;
+	private SRVoiceDb mVoiceDb;
 	
 	@Override
-    public void initialize() {
-	    mTag = new SRTag();
-        
-        //TODO: DB Open
-        
+    public void initialize(Context context) {
+	    mContext = context;
+	    
+        //DB Open
+	    mDataSource = new SRDataSource(context);
+    }
+	
+    @Override
+    public void finalize() {
+        // TODO: DB Close
+        if (mDataSource != null) {
+            mDataSource.close();
+        }
     }
 
     /**
@@ -70,12 +82,14 @@ public class SRVoice implements SRVoiceInterface {
         mDoc = doc;
     }
 
-    public void recordStart(Context mContext) {
+    public void recordStart() {
     	SRDebugUtil.SRLog("recordStart -> isRecorder = " + isRecorder);
     	Intent recorderIntent = new Intent("com.unus.smartrecorder.Recorder");
     	recorderIntent.putExtra(SRConfig.VOICE_PATH_KEY, mVoiceFilePath);
     	mContext.startService(recorderIntent);
 
+    	// Add Voice
+    	mVoiceDb = mDataSource.createVoice(mVoiceFilePath, mDocFilePath);
     }
     /*
      *  recorder error handling
@@ -94,13 +108,14 @@ public class SRVoice implements SRVoiceInterface {
 //    };
 
 
-    public void recordStop(Context mContext) {
+    public void recordStop() {
     	mContext.stopService(new Intent("com.unus.smartrecorder.Recorder"));
 //    	SRVoiceView.mBtnRecorder.setText("recorder");
 //		isRecorder = false;
 //		mRecorder.stop();
 //		mRecorder.release();
 //		mRecorder = null;
+    	mVoiceDb = null;
     }
 
     public void save() {
@@ -193,5 +208,35 @@ public class SRVoice implements SRVoiceInterface {
         
         mDocFilePath = filePath;
     }
+    
+    @Override
+    public void addTag(int type, String data, String position) {
+        if (mDataSource == null || mVoiceDb == null) {
+            SRDebugUtil.SRLogError("addTag(): DB is null");
+            return;
+        }
+        
+        SRDebugUtil.SRLog("addTag(): " + Integer.toString(i));
+        SRTagDb tag = mDataSource.createTag(mVoiceDb.getVoice_id(), type, data, position);
+    }
 
+    /*
+    public void registerObserver(BeatObserver o) {
+        beatObservers.add(o);
+    }
+
+    public void notifyBeatObservers() {
+        for (int i = 0; i < beatObservers.size(); i++) {
+            BeatObserver observer = (BeatObserver) beatObservers.get(i);
+            observer.updateBeat();
+        }
+    }
+
+    public void removeObserver(BeatObserver o) {
+        int i = beatObservers.indexOf(o);
+        if (i >= 0) {
+            beatObservers.remove(i);
+        }
+    }
+    */
 }

@@ -3,7 +3,9 @@ package com.unus.smartrecorder;
 import android.content.Context;
 
 public interface SRVoiceInterface {
-    public void initialize();
+    public void initialize(Context context);
+    
+    public void finalize();
 
     public String makeDefaultTitle();
     
@@ -11,7 +13,9 @@ public interface SRVoiceInterface {
 
     public void setDocFilePath(String filePath);
 
-    public void recordStart(Context context);
+    public void recordStart();
     
-    public void recordStop(Context context);
+    public void recordStop();
+    
+    public void addTag(int type, String data, String position);
 }

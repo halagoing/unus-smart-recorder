@@ -19,5 +19,7 @@
     <string name="no_document">No document</string>
     <string name="document">Document</string>
     <string name="file_explorer_not_found">File Explorer not found</string>
+    <string name="text_tag">Text Tag</string>
+    <string name="input_text_tag">Input Text Tag</string>
 
 </resources>
