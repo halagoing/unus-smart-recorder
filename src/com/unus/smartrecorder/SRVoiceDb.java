@@ -1,6 +1,6 @@
 package com.unus.smartrecorder;
 
-public class SRVoiceModel {
+public class SRVoiceDb {
 	private long voice_id;
 	private String created_datetime;
 	private String voice_path;
