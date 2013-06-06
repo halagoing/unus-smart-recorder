@@ -30,28 +30,21 @@ public class SRRecorderService extends Service{
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
 		SRDebugUtil.SRLog("call SRRecorderService onStartCommand");
-		
-		SRDebugUtil.SRLog("RecorderService onStartCommand");
+		String voicePath = intent.getStringExtra(SRConfig.VOICE_PATH_KEY);
 
 		recorder = new MediaRecorder();
 		
-		String filepath = Environment.getExternalStorageDirectory().getPath();
+//		String filepath = Environment.getExternalStorageDirectory().getPath();
+//		File file = new File(filepath, AUDIO_RECORDER_FOLDER);
+//	    if (!file.exists()) {
+//	        file.mkdirs();
+//	    }
+
 		
-		SRDebugUtil.SRLog("filepath = " +filepath);
-		
-		File file = new File(filepath, AUDIO_RECORDER_FOLDER);
-	    if (!file.exists()) {
-	        file.mkdirs();
-	    }
-	    //String filename = file.getAbsolutePath() + "/" + System.currentTimeMillis() + file_exts[currentFormat];
-	    String filename = file.getAbsolutePath() + "/" + "test" + file_exts[currentFormat];
-	    SRDebugUtil.SRLog("filename = " +filename);
-	    
-	    
 	    recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 	    recorder.setOutputFormat(output_formats[currentFormat]);
 	    recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-	    recorder.setOutputFile(filename);
+	    recorder.setOutputFile(voicePath);
 	    recorder.setOnErrorListener(errorListener);
 	    recorder.setOnInfoListener(infoListener);
 	    
@@ -63,7 +56,7 @@ public class SRRecorderService extends Service{
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }
-		
+	
 		return super.onStartCommand(intent, flags, startId);
 	}
 	 

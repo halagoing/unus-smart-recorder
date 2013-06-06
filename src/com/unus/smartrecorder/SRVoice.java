@@ -72,7 +72,9 @@ public class SRVoice implements SRVoiceInterface {
 
     public void recordStart(Context mContext) {
     	SRDebugUtil.SRLog("recordStart -> isRecorder = " + isRecorder);
-    	mContext.startService(new Intent("com.unus.smartrecorder.Recorder"));
+    	Intent recorderIntent = new Intent("com.unus.smartrecorder.Recorder");
+    	recorderIntent.putExtra(SRConfig.VOICE_PATH_KEY, mVoiceFilePath);
+    	mContext.startService(recorderIntent);
 
     }
     /*
@@ -179,7 +181,7 @@ public class SRVoice implements SRVoiceInterface {
         SRDebugUtil.SRLog("setTitle(): " + title);
         mTitle = title;
         
-        mVoiceFilePath = String.format("%s/%s/%s.pdf", 
+        mVoiceFilePath = String.format("%s/%s/%s.mp4", 
                 Environment.getExternalStorageDirectory().getPath(),
                 SRConfig.AUDIO_RECORDER_FOLDER, mTitle);
         SRDebugUtil.SRLog("VoiceFilePath: " + mVoiceFilePath);
