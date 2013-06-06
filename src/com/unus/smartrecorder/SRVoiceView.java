@@ -108,6 +108,8 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 SRDebugUtil.SRLog("Record Click");
                 if (mController != null)
                     mController.record();
+                mRecordBtn.setEnabled(false);
+                mStopBtn.setEnabled(true);
             }
         });
 
@@ -118,8 +120,12 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 SRDebugUtil.SRLog("Stop Click");
                 if (mController != null)
                     mController.recordStop();
+                mRecordBtn.setEnabled(true);
+                mStopBtn.setEnabled(false);
             }
         });
+        mStopBtn.setEnabled(false);
+        
         
         //mSRDocView = new SRDocView(getContext());
         //addView(mSRDocView);
