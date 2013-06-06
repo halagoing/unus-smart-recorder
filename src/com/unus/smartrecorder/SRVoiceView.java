@@ -34,6 +34,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
 
     private ListView mTagListView;
     private ArrayAdapter<String> mTagListViewAdapter;
+    private SRTagListAdapter tagListAdapter;
     private ImageButton mTextTagBtn, mPhotoTagBtn, mRecordBtn, mStopBtn;
     private TextView mRecordTimeView;
     
@@ -78,9 +79,19 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         SRDataSource datasource = new SRDataSource(mContext);
         datasource.open();
         // {{TESTCODE
-       
+        
+        mTagListView = (ListView)findViewById(R.id.tagListView);
+        
+        //ArrayList<SRTagDb> tags = datasource.getAllTag();
+        
+        tagListAdapter = new SRTagListAdapter(mContext, R.layout.sr_tag_list, new ArrayList<SRTagDb>());
+        
+        mTagListView.setAdapter(tagListAdapter);
         
         datasource.close();
+        
+        
+        
 //        mTagListView.setAdapter(mTagListViewAdapter = new ArrayAdapter<String>(
 //
 //        mContext, android.R.layout.simple_list_item_1, Cheeses.sCheeseStrings));
@@ -164,8 +175,9 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     }
 
     @Override
-    public void updateTags() {
-        
+    public void updateTags(SRTagDb tag) {
+    	
+    	tagListAdapter.add(tag);
     }
 
     @Override

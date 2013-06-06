@@ -71,7 +71,7 @@ public class SRSearchView extends FrameLayout {
         tag.setType(1);
         tag.setContent("add tag");
         tags.add(tag);
-        tagListAdapter.notifyDataSetChanged();
+        //tagListAdapter.notifyDataSetChanged();
     }
     
     public void clearTextFilter() {

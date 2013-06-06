@@ -48,6 +48,8 @@ public class SRVoice implements SRVoiceInterface {
     
 	private SRDataSource mDataSource;
 	private SRVoiceDb mVoiceDb;
+	private ArrayList<SRTagDb> mTagList = new ArrayList<SRTagDb>();
+
 	
 	private long mRecordStartTime;
 	private Handler mHandler = new Handler();
@@ -90,11 +92,26 @@ public class SRVoice implements SRVoiceInterface {
      * 
      * @param filePath
      **/
+    
+    
+    
+    
     public void open(String filePath) {
 
     }
+    
+    
+    
 
-    public SRDoc getDoc() {
+    public ArrayList<SRTagDb> getmTagList() {
+		return mTagList;
+	}
+
+	public void setmTagList(ArrayList<SRTagDb> mTagList) {
+		this.mTagList = mTagList;
+	}
+
+	public SRDoc getDoc() {
         return mDoc;
     }
 
@@ -110,8 +127,10 @@ public class SRVoice implements SRVoiceInterface {
     	mRecordStartTime = System.currentTimeMillis();
     	mTimer.schedule(mTimerTask, 1000, 1000);
     	
-    	// Add Voice
+    	// Add Voice ddd
     	mVoiceDb = mDataSource.createVoice(mVoiceFilePath, mDocFilePath);
+    	addTag(SRDbHelper.TEXT_TAG_TYPE, "START TAG", "0");
+    	//mView.setTagList();
     }
     /*
      *  recorder error handling
@@ -243,11 +262,12 @@ public class SRVoice implements SRVoiceInterface {
         
         SRDebugUtil.SRLog("addTag(): " + Integer.toString(type) + " [" + data + "] " +position);
         SRTagDb tag = mDataSource.createTag(mVoiceDb.getVoice_id(), type, data, position);
-        notifyTagsObservers();
+        mTagList.add(tag);
+        notifyTagsObservers(tag);
     }
 
     public interface SRVoiceObserver {
-        public void updateTags();
+        public void updateTags(SRTagDb tag);
         public void updateTime(long time);
     }
     
@@ -256,10 +276,10 @@ public class SRVoice implements SRVoiceInterface {
         mSRVoiceObserver.add(observer);
     }
         
-    public void notifyTagsObservers() {
+    public void notifyTagsObservers(SRTagDb tag) {
         for (int i = 0; i < mSRVoiceObserver.size(); i++) {
             SRVoiceObserver observer = mSRVoiceObserver.get(i);
-            observer.updateTags();
+            observer.updateTags(tag);
         }
     }
     
