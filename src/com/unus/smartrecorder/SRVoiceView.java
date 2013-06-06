@@ -62,7 +62,8 @@ public class SRVoiceView extends RelativeLayout {
 
         inflater.inflate(R.layout.sr_voiceview_layout, this, true);
 
-
+        SRDataSource datasource = new SRDataSource(mContext);
+        datasource.open();
         // {{TESTCODE
         mTagListView = (ListView) findViewById(R.id.tagListView);
         mTagListView.setAdapter(mTagListViewAdapter = new ArrayAdapter<String>(

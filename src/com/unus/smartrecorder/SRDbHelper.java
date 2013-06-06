@@ -1,3 +1,18 @@
+/*
+ *             SRDataSource datasource = new SRDataSource(mContext);
+            datasource.open();
+//          
+            datasource.createVoice("testVoicePath", "testDocPath");
+////            
+//            datasource.createTag(2, 1, "good2", "00:01");
+//            
+//            List<SRVoiceModel> voices = datasource.getAllVoice();
+//            
+            List<SRTagModel> tags = datasource.getTagByVoiceId((long) 2);
+//            SRDebugUtil.SRLog("voices = "+voices);
+//            SRDebugUtil.SRLog("tags = "+tags);
+ */
+
 package com.unus.smartrecorder;
 
 import android.content.Context;
@@ -60,8 +75,8 @@ public class SRDbHelper extends SQLiteOpenHelper{
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// TODO Auto-generated method stub
-		db.execSQL("DROP TABLE IF EXISTS" + TABLE_VOICE);
-		db.execSQL("DROP TABLE IF EXISTS" + TABLE_TAG);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_VOICE);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_TAG);
 		onCreate(db);
 	}
 }
