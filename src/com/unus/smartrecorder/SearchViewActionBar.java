@@ -212,6 +212,9 @@ public class SearchViewActionBar extends Activity implements
     protected void onDestroy() {
         super.onDestroy();
 
+        if (mSRVoice != null)
+            mSRVoice.finalize();
+        
         // DEBUG : For Hierarchy Viewer
         ViewServer.get(this).removeWindow(this);
     }

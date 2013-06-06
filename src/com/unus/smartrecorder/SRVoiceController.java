@@ -33,7 +33,22 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     
     private EditText mTitleView;    // Basic Info Dialog
     private TextView mDocPathView;  // Basic Info Dialog
+    private EditText mTextTagView;  // Text Tag Dialog
     
+    private long mTagTime;
+    
+    // for show Keyboard 
+    private EditText mActiveEditText;
+    private Runnable mShowImeRunnable = new Runnable() {
+        public void run() {
+            InputMethodManager imm = (InputMethodManager)
+                    mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            if (imm != null) {
+                imm.showSoftInput(mActiveEditText, InputMethodManager.SHOW_IMPLICIT);
+            }
+        }
+    };    
     
     public SRVoiceController(SRVoiceInterface model, Activity activity) {
         super();
@@ -42,7 +57,8 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         mContext = mActivity;
         mView = new SRVoiceView(mContext, this);
         
-        mModel.initialize();
+        mModel.initialize(mContext);
+        mModel.registerObserver(mView);
     }
     
     public SRVoiceView getView() {
@@ -58,7 +74,22 @@ public class SRVoiceController implements SRVoiceControllerInterface {
 
     @Override
     public void recordStop() {
-        mModel.recordStop(mContext);
+        mModel.recordStop();
+        Toast.makeText(mContext, R.string.stop, Toast.LENGTH_SHORT).show();
+    }
+    
+    @Override
+    public void tagText() {
+        // show Input Basic Info Dialog
+        mActivity.showDialog(DIALOG_INPUT_TEXT_TAG);
+        mTagTime = mModel.getCurrentRecordTime();
+    }
+    
+    @Override
+    public void tagPhoto() {
+        // move to Camera
+        
+        
     }
     
     @Override
@@ -91,10 +122,13 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                                     
                                     // Set Title, DocFilePath
                                     mModel.setTitle(mTitleView.getText().toString());
+                                    mActivity.getActionBar().setTitle(mModel.getTitle());
+                                    
                                     mModel.setDocFilePath(mDocPathView.getText().toString());
                                     mView.setDocPath(mDocPathView.getText().toString());
                                     // Record Start
-                                    mModel.recordStart(mContext);
+                                    mModel.recordStart();
+                                    Toast.makeText(mContext, R.string.record, Toast.LENGTH_SHORT).show();
                                 }
                             })
                     .setNegativeButton(android.R.string.cancel,
@@ -108,16 +142,18 @@ public class SRVoiceController implements SRVoiceControllerInterface {
             
         case DIALOG_INPUT_TEXT_TAG:
             final View inputTextTagView = factory.inflate(
-                    R.layout.sr_input_basic_info_dialog, null);
+                    R.layout.sr_input_text_tag_dialog, null);
+            mTextTagView = (EditText)inputTextTagView.findViewById(R.id.textTagText);
             return new AlertDialog.Builder(mContext)
-                    .setTitle(R.string.input_basic_info)
+                    .setTitle(R.string.input_text_tag)
                     .setView(inputTextTagView)
                     .setPositiveButton(android.R.string.ok,
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
                                         int whichButton) {
 
-                                    /* User clicked OK so do some stuff */
+                                    // add Text Tag
+                                    mModel.addTag(SRDbHelper.TEXT_TAG_TYPE, mTextTagView.getText().toString(), Long.toString(mTagTime));
                                 }
                             })
                     .setNegativeButton(android.R.string.cancel,
@@ -125,24 +161,13 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                                 public void onClick(DialogInterface dialog,
                                         int whichButton) {
 
-                                    /* User clicked cancel so do some stuff */
+                                    // do nothing
                                 }
                             }).create();
         default:
             return null;
         }
     }
-    
-    private Runnable mShowImeRunnable = new Runnable() {
-        public void run() {
-            InputMethodManager imm = (InputMethodManager)
-                    mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-
-            if (imm != null) {
-                imm.showSoftInput(mTitleView, InputMethodManager.SHOW_IMPLICIT);
-            }
-        }
-    };
     
     @Override
     public void prepareDialog(int id, Dialog dialog, Bundle args) {
@@ -151,12 +176,17 @@ public class SRVoiceController implements SRVoiceControllerInterface {
             mTitleView.setText(mModel.makeDefaultTitle());
             mTitleView.selectAll();
             mTitleView.requestFocus();
+            mActiveEditText = mTitleView;
             mTitleView.post(mShowImeRunnable);
 
             mDocPathView.setText("");
             break;
             
         case DIALOG_INPUT_TEXT_TAG:
+            mTextTagView.setText("");
+            mTextTagView.requestFocus();
+            mActiveEditText = mTextTagView;
+            mTextTagView.post(mShowImeRunnable);
             break;
 
         default:

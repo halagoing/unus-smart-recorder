@@ -11,4 +11,8 @@ public interface SRVoiceControllerInterface {
     public void record();
     
     public void recordStop();
+
+    public void tagText();
+
+    public void tagPhoto();
 }

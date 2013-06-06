@@ -9,24 +9,22 @@
 //
 package com.unus.smartrecorder;
 
-import com.artifex.mupdfdemo.MuPDFCore;
-import com.artifex.mupdfdemo.MuPDFPageAdapter;
-import com.artifex.mupdfdemo.MuPDFReaderView;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-public class SRVoiceView extends RelativeLayout {
+import com.artifex.mupdfdemo.MuPDFCore;
+import com.artifex.mupdfdemo.MuPDFPageAdapter;
+import com.artifex.mupdfdemo.MuPDFReaderView;
+
+public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserver {
 
     private Context mContext;
     private SRVoiceControllerInterface mController;
@@ -86,6 +84,8 @@ public class SRVoiceView extends RelativeLayout {
             @Override
             public void onClick(View v) {
                 SRDebugUtil.SRLog("TextTag Click");
+                if (mController != null)
+                    mController.tagText();
 
             }
         });
@@ -95,6 +95,8 @@ public class SRVoiceView extends RelativeLayout {
             @Override
             public void onClick(View v) {
                 SRDebugUtil.SRLog("PhotoTag Click");
+                if (mController != null)
+                    mController.tagPhoto();                
             }
         });
 
@@ -144,5 +146,15 @@ public class SRVoiceView extends RelativeLayout {
         }
         //mDocFrame.removeView(mDocView);
         mDocFrame.addView(mDocView);    	
+    }
+
+    @Override
+    public void updateTags() {
+        
+    }
+
+    @Override
+    public void updateTime() {
+        
     }
 }
