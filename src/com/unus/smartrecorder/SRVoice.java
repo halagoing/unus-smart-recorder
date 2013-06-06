@@ -13,6 +13,7 @@ package com.unus.smartrecorder;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -45,12 +46,16 @@ public class SRVoice implements SRVoiceInterface {
 	private SRDataSource mDataSource;
 	private SRVoiceDb mVoiceDb;
 	
+	private long mRecordStartTime;
+	
+	
 	@Override
     public void initialize(Context context) {
 	    mContext = context;
 	    
         //DB Open
 	    mDataSource = new SRDataSource(context);
+	    mDataSource.open();
     }
 	
     @Override
@@ -61,6 +66,10 @@ public class SRVoice implements SRVoiceInterface {
         }
     }
 
+    @Override
+    public long getCurrentRecordTime() {
+        return System.currentTimeMillis() - mRecordStartTime;
+    }
     /**
      * Playing
      * 
@@ -87,6 +96,7 @@ public class SRVoice implements SRVoiceInterface {
     	Intent recorderIntent = new Intent("com.unus.smartrecorder.Recorder");
     	recorderIntent.putExtra(SRConfig.VOICE_PATH_KEY, mVoiceFilePath);
     	mContext.startService(recorderIntent);
+    	mRecordStartTime = System.currentTimeMillis();
 
     	// Add Voice
     	mVoiceDb = mDataSource.createVoice(mVoiceFilePath, mDocFilePath);
@@ -172,10 +182,6 @@ public class SRVoice implements SRVoiceInterface {
 
     }
 
-    public void getCurrentPosition() {
-
-    }
-
     public void getDuration() {
 
     }
@@ -201,6 +207,11 @@ public class SRVoice implements SRVoiceInterface {
                 SRConfig.AUDIO_RECORDER_FOLDER, mTitle);
         SRDebugUtil.SRLog("VoiceFilePath: " + mVoiceFilePath);
     }
+    
+    @Override
+    public String getTitle() {
+        return mTitle;
+    }
 
     @Override
     public void setDocFilePath(String filePath) {
@@ -218,25 +229,37 @@ public class SRVoice implements SRVoiceInterface {
         
         SRDebugUtil.SRLog("addTag(): " + Integer.toString(type) + " [" + data + "] " +position);
         SRTagDb tag = mDataSource.createTag(mVoiceDb.getVoice_id(), type, data, position);
+        notifyTagsObservers();
     }
 
-    /*
-    public void registerObserver(BeatObserver o) {
-        beatObservers.add(o);
+    public interface SRVoiceObserver {
+        public void updateTags();
+        public void updateTime();
     }
-
-    public void notifyBeatObservers() {
-        for (int i = 0; i < beatObservers.size(); i++) {
-            BeatObserver observer = (BeatObserver) beatObservers.get(i);
-            observer.updateBeat();
+    
+    ArrayList<SRVoiceObserver> mSRVoiceObserver = new ArrayList<SRVoiceObserver>();
+    public void registerObserver(SRVoiceObserver observer) {
+        mSRVoiceObserver.add(observer);
+    }
+        
+    public void notifyTagsObservers() {
+        for (int i = 0; i < mSRVoiceObserver.size(); i++) {
+            SRVoiceObserver observer = mSRVoiceObserver.get(i);
+            observer.updateTags();
         }
     }
-
-    public void removeObserver(BeatObserver o) {
-        int i = beatObservers.indexOf(o);
+    
+    public void notifyTimeObservers() {
+        for (int i = 0; i < mSRVoiceObserver.size(); i++) {
+            SRVoiceObserver observer = mSRVoiceObserver.get(i);
+            observer.updateTime();
+        }
+    }    
+    
+    public void removeObserver(SRVoiceObserver o) {
+        int i = mSRVoiceObserver.indexOf(o);
         if (i >= 0) {
-            beatObservers.remove(i);
+            mSRVoiceObserver.remove(i);
         }
     }
-    */
 }

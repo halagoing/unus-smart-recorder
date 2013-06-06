@@ -35,6 +35,8 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     private TextView mDocPathView;  // Basic Info Dialog
     private EditText mTextTagView;  // Text Tag Dialog
     
+    private long mTagTime;
+    
     // for show Keyboard 
     private EditText mActiveEditText;
     private Runnable mShowImeRunnable = new Runnable() {
@@ -56,6 +58,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         mView = new SRVoiceView(mContext, this);
         
         mModel.initialize(mContext);
+        mModel.registerObserver(mView);
     }
     
     public SRVoiceView getView() {
@@ -72,13 +75,14 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     @Override
     public void recordStop() {
         mModel.recordStop();
+        Toast.makeText(mContext, R.string.stop, Toast.LENGTH_SHORT).show();
     }
     
     @Override
     public void tagText() {
         // show Input Basic Info Dialog
         mActivity.showDialog(DIALOG_INPUT_TEXT_TAG);
-        
+        mTagTime = mModel.getCurrentRecordTime();
     }
     
     @Override
@@ -118,10 +122,13 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                                     
                                     // Set Title, DocFilePath
                                     mModel.setTitle(mTitleView.getText().toString());
+                                    mActivity.getActionBar().setTitle(mModel.getTitle());
+                                    
                                     mModel.setDocFilePath(mDocPathView.getText().toString());
                                     
                                     // Record Start
                                     mModel.recordStart();
+                                    Toast.makeText(mContext, R.string.record, Toast.LENGTH_SHORT).show();
                                 }
                             })
                     .setNegativeButton(android.R.string.cancel,
@@ -146,6 +153,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                                         int whichButton) {
 
                                     // add Text Tag
+                                    mModel.addTag(SRDbHelper.TEXT_TAG_TYPE, mTextTagView.getText().toString(), Long.toString(mTagTime));
                                 }
                             })
                     .setNegativeButton(android.R.string.cancel,
@@ -175,6 +183,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
             break;
             
         case DIALOG_INPUT_TEXT_TAG:
+            mTextTagView.setText("");
             mTextTagView.requestFocus();
             mActiveEditText = mTextTagView;
             mTextTagView.post(mShowImeRunnable);

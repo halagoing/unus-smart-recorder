@@ -18,7 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-public class SRVoiceView extends RelativeLayout {
+public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserver {
 
     private Context mContext;
     private SRVoiceControllerInterface mController;
@@ -108,5 +108,15 @@ public class SRVoiceView extends RelativeLayout {
                     mController.recordStop();
             }
         });
+    }
+
+    @Override
+    public void updateTags() {
+        
+    }
+
+    @Override
+    public void updateTime() {
+        
     }
 }
