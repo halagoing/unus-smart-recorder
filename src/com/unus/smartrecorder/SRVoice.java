@@ -216,7 +216,7 @@ public class SRVoice implements SRVoiceInterface {
             return;
         }
         
-        SRDebugUtil.SRLog("addTag(): " + Integer.toString(i));
+        SRDebugUtil.SRLog("addTag(): " + Integer.toString(type) + " [" + data + "] " +position);
         SRTagDb tag = mDataSource.createTag(mVoiceDb.getVoice_id(), type, data, position);
     }
 
