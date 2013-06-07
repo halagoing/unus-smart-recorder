@@ -1,5 +1,8 @@
 package com.unus.smartrecorder;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +12,10 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,9 +120,58 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 					tagTitle = "Tag#"+position+" Page is "+tag.getContent();
 				}
 				else if(tag.getType() == SRDbHelper.PHOTO_TAG_TYPE){
-					ImageView image = (ImageView)convertView.findViewById(R.id.tagListImage);
-					Resources res = mContext.getResources(); /** from an Activity */
-					image.setImageDrawable(res.getDrawable(R.drawable.test));
+					
+					File imgFile = new  File(tag.getContent());
+					ImageView imageView = (ImageView)convertView.findViewById(R.id.tagListImage);
+					
+					if(imgFile.exists()){
+						
+						try{
+							//Drawable d = Drawable.createFromPath(imgFile.getAbsolutePath());
+							//imageView.setImageDrawable(d);
+							
+							SRDebugUtil.SRLog("imgFile.getAbsolutePath() = " +imgFile.getAbsolutePath());
+//							Bitmap myBitmap = BitmapFactory.decodeFile("/mnt/sdcard/DCIM/100LGDSC/test.jpg");
+							
+							BitmapFactory.Options options=new BitmapFactory.Options();
+							options.inSampleSize = 8;
+							BitmapFactory.decodeStream(new FileInputStream(imgFile),null,options);
+							
+							
+							final int REQUIRED_SIZE=70;
+
+					        //Find the correct scale value. It should be the power of 2.
+					        int scale=1;
+					        while(options.outWidth/scale/2>=REQUIRED_SIZE && options.outHeight/scale/2>=REQUIRED_SIZE)
+					            scale*=2;
+
+					        //Decode with inSampleSize
+					        BitmapFactory.Options o2 = new BitmapFactory.Options();
+					        o2.inSampleSize=scale;
+					        Bitmap myBitmap = BitmapFactory.decodeStream(new FileInputStream(imgFile), null, o2);
+					        imageView.setImageBitmap(myBitmap);
+						}
+						catch (FileNotFoundException e){
+							
+						}
+						
+						
+						
+//						Bitmap myBitmap = BitmapFactory.decodeFile("/mnt/sdcard/DCIM/100LGDSC/CAM00016.jpg");
+//						imageView.setImageBitmap(myBitmap);
+					}
+					else{
+						Resources res = mContext.getResources(); /** from an Activity */
+						imageView.setImageDrawable(res.getDrawable(R.drawable.test));
+					}
+					
+					
+					
+					
+//					
+//					
+					
+					
 					tagTitle = "Tag#"+position+" Image path "+tag.getContent();
 				}
 				text.setText(tagTitle);

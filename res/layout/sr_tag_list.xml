@@ -15,19 +15,23 @@
             android:layout_height="2dip"
             android:orientation="vertical" >
         </LinearLayout>
-        
-        <LinearLayout
+
+        <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-           	android:padding="5dip" >
+            android:layout_height="fill_parent" >
 
             <TextView
                 android:id="@+id/tagListTitle"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_width="280dip"
+                android:layout_gravity="center_vertical"
+        		android:gravity="fill_horizontal"
+        		android:singleLine="true"
+        		android:ellipsize="marquee"
                 android:layout_alignParentLeft="true"
         		android:layout_centerVertical="true"
-                android:text="TextView" />
+                android:text="TextView" 
+            />
 
             <ImageView
                 android:id="@+id/tagListImage"
@@ -37,7 +41,7 @@
         		android:layout_centerVertical="true"
                 android:layout_marginRight="10dp" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </LinearLayout>
     

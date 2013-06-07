@@ -38,7 +38,7 @@ public class SRRecorderService extends Service{
 		// TODO Auto-generated method stub
 		SRDebugUtil.SRLog("call SRRecorderService onStartCommand");
 		String voicePath = intent.getStringExtra(SRConfig.VOICE_PATH_KEY);
-		
+		SRDebugUtil.SRLog("voicePath = "+ voicePath);
 		if(mRecorder==null){
 			mRecorder = new MediaRecorder();
 			mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
