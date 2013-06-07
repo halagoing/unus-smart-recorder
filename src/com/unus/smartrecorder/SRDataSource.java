@@ -80,6 +80,16 @@ public class SRDataSource {
 	    return voices;
 	}
 	
+	public SRVoiceDb getVoiceByVoiceId(long voice_id){
+		Cursor cursor = database.query(SRDbHelper.TABLE_VOICE,
+    			allVoiceColumns, SRDbHelper.VOICE_COLUMN_VOICE_ID + " = " + voice_id, null,
+    	        null, null, null);
+    	cursor.moveToFirst();
+    	cursor.moveToFirst();
+    	SRVoiceDb newVoice = cursorToVoice(cursor);
+    	return newVoice;
+	}
+	
 	public SRTagDb createTag(long voice_id, int type, String content, String tag_time){
     	ContentValues values = new ContentValues();
     	values.put(SRDbHelper.TAG_COLUMN_VOICE_ID, voice_id);
