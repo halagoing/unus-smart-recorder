@@ -30,15 +30,20 @@ import android.widget.TextView;
 public class SRTagListAdapter extends BaseAdapter{
 	Context mContext;
 	LayoutInflater Inflater;
-	List<SRTagDb> tags;
+	ArrayList<SRTagDb> tags;
 	int layout;
 	
-	public SRTagListAdapter(Context context, int alayout, List<SRTagDb> tags) {
+	public SRTagListAdapter(Context context, int alayout, ArrayList<SRTagDb> tags) {
 		// TODO Auto-generated constructor stub
 		mContext = context;
 		Inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.tags = tags;
 		layout = alayout;
+	}
+	
+	public void add(SRTagDb tag){
+		tags.add(tag);
+		notifyDataSetChanged();
 	}
 	
 	@Override
@@ -83,5 +88,12 @@ public class SRTagListAdapter extends BaseAdapter{
 		text.setText(tagTitle);
 		return convertView;
 
+	}
+	
+	@Override
+	public void notifyDataSetChanged() {
+		// TODO Auto-generated method stub
+		super.notifyDataSetChanged();
+		
 	}
 }

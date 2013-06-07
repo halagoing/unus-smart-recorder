@@ -133,6 +133,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                                     mModel.setDocFilePath(mDocPathView.getText().toString());
                                     mView.setDocPath(mDocPathView.getText().toString());
                                     // Record Start
+                                    
                                     mModel.recordStart();
                                     Toast.makeText(mContext, R.string.record, Toast.LENGTH_SHORT).show();
                                 }
@@ -157,7 +158,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
                                         int whichButton) {
-
+                                	
                                     // add Text Tag
                                     mModel.addTag(SRDbHelper.TEXT_TAG_TYPE, mTextTagView.getText().toString(), Long.toString(mTagTime));
                                 }

@@ -25,7 +25,7 @@ public interface SRVoiceInterface {
     
     public void registerObserver(SRVoiceObserver observer);
     
-    public void notifyTagsObservers();
+    public void notifyTagsObservers(SRTagDb tag);
     
     public void notifyTimeObservers(long timer);   
     
