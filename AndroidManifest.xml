@@ -23,6 +23,7 @@
             android:name="com.unus.smartrecorder.SearchViewActionBar"
             android:icon="@drawable/device_access_mic"
             android:label="@string/app_name"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
