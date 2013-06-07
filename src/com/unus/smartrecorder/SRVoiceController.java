@@ -1,6 +1,8 @@
 package com.unus.smartrecorder;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -51,6 +54,10 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     private EditText mTextTagView;  // Text Tag Dialog
     
     private long mTagTime;
+    
+	private static final String DOC_PATTERN = "([^*]+(\\.(?i)(pdf))$)";
+	private Pattern pattern;
+	private Matcher matcher;
     
     // for show Keyboard 
     private EditText mActiveEditText;
@@ -170,17 +177,25 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
                                         int whichButton) {
-                                    
-                                    // Set Title, DocFilePath
-                                    mModel.setTitle(mTitleView.getText().toString());
-                                    mActivity.getActionBar().setTitle(mModel.getTitle());
-                                    
-                                    mModel.setDocFilePath(mDocPathView.getText().toString());
-                                    mSRVoiceView.setDocPath(mDocPathView.getText().toString());
-                                    // Record Start
-                                    
-                                    mModel.recordStart();
-                                    Toast.makeText(mContext, R.string.record, Toast.LENGTH_SHORT).show();
+                                	
+                                	String voiceTitle = mTitleView.getText().toString();
+                            		String docFilePath = mDocPathView.getText().toString();
+                            		String resultMsg = "Start Recording";
+                            		if(isNull(voiceTitle)){
+                            			resultMsg = "제목을 입력하세요!!";
+                            		}
+                            		else if(!validateDocFilePath(docFilePath)){
+                            			resultMsg = "pdf 파일을 선택하세요!!";
+                            		}
+                            		else{
+                            			 mModel.setTitle(voiceTitle);
+                                         mActivity.getActionBar().setTitle(mModel.getTitle());
+                                         mModel.setDocFilePath(docFilePath);
+                                         mSRVoiceView.setDocPath(docFilePath);
+                                         mModel.recordStart();
+                            		}
+                            		Toast.makeText(mContext, resultMsg, Toast.LENGTH_SHORT).show();
+                    
                                 }
                             })
                     .setNegativeButton(android.R.string.cancel,
@@ -220,6 +235,22 @@ public class SRVoiceController implements SRVoiceControllerInterface {
             return null;
         }
     }
+    
+    private Boolean	isNull(String voiceTitle) {
+    	Boolean result = false;
+    	if (voiceTitle==null || voiceTitle.length() ==0){
+    		result = true;
+		}
+    	return result;
+	}
+    
+    private Boolean validateDocFilePath(String docFilePath) {
+    	if (isNull(docFilePath)) return true;
+    	SRDebugUtil.SRLog("docFilePath = " + docFilePath);
+    	pattern = Pattern.compile(DOC_PATTERN);
+		matcher = pattern.matcher(docFilePath);
+		return matcher.matches();
+	}
     
     @Override
     public void prepareDialog(int id, Dialog dialog, Bundle args) {

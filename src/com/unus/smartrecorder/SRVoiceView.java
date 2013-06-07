@@ -134,8 +134,8 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 SRDebugUtil.SRLog("Record Click");
                 if (mController != null)
                     mController.record();
-                mRecordBtn.setEnabled(false);
-                mStopRecordBtn.setEnabled(true);
+                //mRecordBtn.setEnabled(false);
+                //mStopRecordBtn.setEnabled(true);
             }
         });
 
