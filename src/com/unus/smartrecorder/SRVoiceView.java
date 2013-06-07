@@ -20,7 +20,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.artifex.mupdfdemo.MuPDFCore;
@@ -36,10 +38,12 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     private ArrayAdapter<String> mTagListViewAdapter;
     private SRTagListAdapter tagListAdapter;
     private ImageButton mTextTagBtn, mPhotoTagBtn, mRecordBtn, mStopBtn;
-    private TextView mRecordTimeView;
+    private TextView mTimeView;
     
     private ImageView mDummyView;
     private FrameLayout mDocFrame;
+    private ProgressBar mVolumeView;
+    private SeekBar mSeekBarView;
     private MuPDFReaderView mDocView;
     private MuPDFCore mCore;
 
@@ -143,7 +147,10 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         });
         mStopBtn.setEnabled(false);
         
-        mRecordTimeView = (TextView)findViewById(R.id.recordTime);
+        mVolumeView = (ProgressBar)findViewById(R.id.volumeView);
+        mSeekBarView = (SeekBar)findViewById(R.id.seekBarView);
+        
+        mTimeView = (TextView)findViewById(R.id.timeView);
         
         
         //mSRDocView = new SRDocView(getContext());
@@ -194,9 +201,38 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
             @Override
             public void run() {
                 long sec = t / 1000;
-                
-                mRecordTimeView.setText(String.format("%02d:%02d", sec/60, sec % 60));
+                long h, m, s, tmp;
+
+                if (sec < 3600) {
+                    h = 0;
+                    m = sec / 60;
+                    s = sec % 60;
+                } else {
+                    h = sec / 3600;
+                    tmp = sec % 3600;
+                    m = tmp / 60;
+                    s = tmp % 60;
+                }
+                if (mTimeView != null)
+                    mTimeView.setText(String.format("%d:%02d:%02d", h, m, s));
             }
         });
+    }
+    
+    /**
+     * Recorder view or Player view
+     * 
+     * @param mode
+     */
+    public void setVoiceViewMode(int mode) {
+        if (SRVoice.RECORDER_MODE == mode) {
+            mTimeView.setText(R.string.zero_time);
+            mVolumeView.setVisibility(View.VISIBLE);
+            mSeekBarView.setVisibility(View.INVISIBLE);
+        } else if (SRVoice.PLAYER_MODE == mode) {
+            mTimeView.setText(R.string.zero_time);
+            mVolumeView.setVisibility(View.INVISIBLE);
+            mSeekBarView.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -27,8 +27,13 @@ import android.os.Environment;
 import android.os.Handler;
 
 public class SRVoice implements SRVoiceInterface {
+    public static final int RECORDER_MODE = 1;
+    public static final int PLAYER_MODE = 2;
+    public static final int SEARCH_MODE = 3;
+    private int mMode = RECORDER_MODE;
+    private int mPrevMode = RECORDER_MODE;
+    
     private SRTag mTag;
-    private SRDoc mDoc;
     public SRShare mShare;
     
     private Context mContext;
@@ -49,6 +54,7 @@ public class SRVoice implements SRVoiceInterface {
 	private SRDataSource mDataSource;
 	private SRVoiceDb mVoiceDb;
 	private ArrayList<SRTagDb> mTagList = new ArrayList<SRTagDb>();
+
 
 	
 	private long mRecordStartTime;
@@ -84,31 +90,28 @@ public class SRVoice implements SRVoiceInterface {
             mTimer = null;
         }
     }
+    
+    @Override
+    public int getMode() {
+        return mMode;
+    }
+    
+    @Override
+    public void setMode(int mode) {
+        mPrevMode = mMode;
+        mMode = mode;
+    }
+    
+    @Override
+    public int getPrevMode() {
+        return mPrevMode;
+    }
 
     @Override
     public long getCurrentRecordTime() {
         return System.currentTimeMillis() - mRecordStartTime;
     }
-    /**
-     * Playing
-     * 
-     * 음성녹음 파일과 Tag DB 읽는다
-     * 
-     * Tag DB는 음성녹음 파일 이름을 Key로 가진다
-     * 
-     * @param filePath
-     **/
-    
-    
-    
-    
-    public void open(String filePath) {
-
-    }
-    
-    
-    
-
+ 
     public ArrayList<SRTagDb> getmTagList() {
 		return mTagList;
 	}
@@ -116,14 +119,6 @@ public class SRVoice implements SRVoiceInterface {
 	public void setmTagList(ArrayList<SRTagDb> mTagList) {
 		this.mTagList = mTagList;
 	}
-
-	public SRDoc getDoc() {
-        return mDoc;
-    }
-
-    public void setDoc(SRDoc doc) {
-        mDoc = doc;
-    }
 
     public void recordStart() {
     	SRDebugUtil.SRLog("recordStart -> isRecorder = " + isRecorder);
@@ -167,10 +162,6 @@ public class SRVoice implements SRVoiceInterface {
     	mTimer.cancel();
     	mTimer = null;
     	mVoiceDb = null;
-    }
-
-    public void save() {
-
     }
 
     public void play() {

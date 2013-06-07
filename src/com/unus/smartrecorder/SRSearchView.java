@@ -15,13 +15,16 @@ import java.util.List;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
 public class SRSearchView extends FrameLayout {
     private Context mContext;
-    private SRSearchControllerInterface mController;
+    private SRVoiceControllerInterface mController;
     private ListView mListView;
     private SRTagListAdapter tagListAdapter;
     
@@ -35,7 +38,7 @@ public class SRSearchView extends FrameLayout {
     }
     
     
-    public SRSearchView(Context context, SRSearchControllerInterface controller) {
+    public SRSearchView(Context context, SRVoiceControllerInterface controller) {
         super(context);
         mController = controller;
         initView(context);
@@ -66,6 +69,17 @@ public class SRSearchView extends FrameLayout {
         mListView.setAdapter(tagListAdapter);
         
         mListView.setTextFilterEnabled(true);
+        
+        mListView.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id) {
+                SRDebugUtil.SRLog("SRSearchView : onItemClick() pos = " + position);
+                mController.playBySearchListPos(position);
+            }
+            
+        });
         
         SRTagDb tag = new SRTagDb();
         tag.setType(1);

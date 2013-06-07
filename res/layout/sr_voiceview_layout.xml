@@ -24,26 +24,40 @@
 	        android:layout_gravity="center"
 	        android:src="@drawable/pdf_icon_large" />
 	</FrameLayout>
-    <!-- Sound Input Volume -->
-
-    <ProgressBar
-        android:id="@+id/volumeView"
-        style="?android:attr/progressBarStyleHorizontal"
+    <FrameLayout
+        android:id="@+id/statusFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/docFrame"
-        android:layout_marginLeft="@dimen/sound_volume_left_margin"
-        android:layout_marginRight="@dimen/sound_volume_right_margin" />
-    
-    <!-- Record Time -->
-    
-    <TextView
-        android:id="@+id/recordTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/docFrame"
-		android:layout_alignParentRight="true"
-        android:text="@string/zero_time" />
+        android:layout_below="@+id/docFrame" >
+	    
+		<!-- Sound Input Volume -->
+        <ProgressBar
+            android:id="@+id/volumeView"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center_vertical"
+            android:layout_marginLeft="@dimen/sound_volume_left_margin"
+            android:layout_marginRight="@dimen/sound_volume_right_margin" />
+
+        <!-- Record Time -->
+        <TextView
+            android:id="@+id/timeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="5dip"
+            android:text="@string/zero_time" />
+
+        <SeekBar
+            android:id="@+id/seekBarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center_vertical"
+            android:layout_marginLeft="@dimen/sound_volume_left_margin"
+            android:layout_marginRight="@dimen/sound_volume_right_margin"  />
+
+    </FrameLayout>
 
     <!-- Tag List View -->
 
@@ -52,7 +66,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/buttonsLayout"
-        android:layout_below="@+id/volumeView" >
+        android:layout_below="@+id/statusFrame" >
     </ListView>
 
     <LinearLayout

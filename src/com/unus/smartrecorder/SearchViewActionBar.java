@@ -16,30 +16,20 @@
 
 package com.unus.smartrecorder;
 
-import java.util.List;
-
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MenuItem.OnActionExpandListener;
-import android.view.View;
 import android.view.Window;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import com.android.debug.hv.ViewServer;
-import com.unus.smartrecorder.R;
 
 /**
  * This demonstrates the usage of SearchView in an ActionBar as a menu item. It
@@ -48,21 +38,12 @@ import com.unus.smartrecorder.R;
  */
 public class SearchViewActionBar extends Activity implements
         SearchView.OnQueryTextListener, SearchView.OnCloseListener {
-    public static final int STATE_RECORDING = 1; // Recording
-    public static final int STATE_PLAYING = 2; // Playing
-    public static final int STATE_SEARCHING = 3; // Searching
 
     private SearchView mSearchView;
     private ActionBar mActionBar;
-    private int mViewState;
-    private int mPrevViewState;
-
-    private SRSearchView mSRSearchView;
-    private SRVoiceView mSRVoiceView;
-    
+   
     private SRVoice mSRVoice;
     private SRVoiceController mSRVoiceController;
-    private SRSearchController mSRSearchController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,23 +59,10 @@ public class SearchViewActionBar extends Activity implements
 
         // initial state
         mActionBar.setTitle(R.string.no_title); // no title
-        mPrevViewState = mViewState = STATE_RECORDING; // recording
-
-        // TEST
-        //mSRSearchView = new SRSearchView(getBaseContext());
-        
-        //mSRVoiceView = new SRVoiceView(getBaseContext());
-        //mSRVoiceView.setSRVoiceViewListner(this);
-        
-        
-        mSRSearchController = new SRSearchController(this);
-        mSRSearchView = mSRSearchController.getView();
         
         mSRVoice = new SRVoice();
         mSRVoiceController = new SRVoiceController(mSRVoice, this);
-        mSRVoiceView = mSRVoiceController.getView();
-
-        setContentView(mSRVoiceView);
+        mSRVoiceController.setViewMode(SRVoice.RECORDER_MODE);
 
         // Logo
         startActivity(new Intent(this, SRLogoActivity.class));
@@ -117,7 +85,9 @@ public class SearchViewActionBar extends Activity implements
             public boolean onMenuItemActionExpand(MenuItem item) {
                 SRDebugUtil.SRLog("onMenuItemActionExpand()");
 
-                setViewState(STATE_SEARCHING);
+                //setViewState(STATE_SEARCHING);
+                if (mSRVoiceController != null)
+                    mSRVoiceController.setViewMode(SRVoice.SEARCH_MODE);
                 return true;
             }
 
@@ -125,7 +95,9 @@ public class SearchViewActionBar extends Activity implements
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 SRDebugUtil.SRLog("onMenuItemActionCollapse()");
 
-                setViewState(STATE_RECORDING);
+                //setViewState(STATE_RECORDING);
+                if (mSRVoiceController != null)
+                    mSRVoiceController.setViewMode(mSRVoice.getPrevMode());                
                 return true;
             }
         });
@@ -185,9 +157,9 @@ public class SearchViewActionBar extends Activity implements
     public boolean onQueryTextChange(String newText) {
         SRDebugUtil.SRLog("Query = " + newText);
         if (TextUtils.isEmpty(newText)) {
-            mSRSearchView.clearTextFilter();
+            mSRVoiceController.clearTextFilter();
         } else {
-            mSRSearchView.setFilterText(newText.toString());
+            mSRVoiceController.setFilterText(newText.toString());
         }
         return true;
     }
@@ -218,37 +190,11 @@ public class SearchViewActionBar extends Activity implements
     protected void onDestroy() {
         super.onDestroy();
 
-        if (mSRVoice != null)
-            mSRVoice.finalize();
+        if (mSRVoiceController != null)
+            mSRVoiceController.finalize();
         
         // DEBUG : For Hierarchy Viewer
         ViewServer.get(this).removeWindow(this);
-    }
-
-    public int getViewState() {
-        return mViewState;
-    }
-
-    public void setViewState(int state) {
-        switch (state) {
-        case STATE_PLAYING:
-            setContentView(mSRVoiceView);
-            break;
-        case STATE_RECORDING:
-            setContentView(mSRVoiceView);
-            break;
-        case STATE_SEARCHING:
-            setContentView(mSRSearchView);
-            break;
-        default:
-            return;
-        }
-        mPrevViewState = mViewState; // Previous View State
-        mViewState = state;
-    }
-
-    public int getPrevViewState() {
-        return mPrevViewState;
     }
 
     @Override

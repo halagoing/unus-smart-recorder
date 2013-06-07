@@ -32,4 +32,10 @@ public interface SRVoiceInterface {
     public void removeObserver(SRVoiceObserver o);
 
     public long getCurrentRecordTime();
+
+    public int getMode();
+    
+    public int getPrevMode();
+    
+    public void setMode(int mode);
 }

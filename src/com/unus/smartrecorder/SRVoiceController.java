@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,7 +34,8 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     private SRVoiceInterface mModel;
     private Activity mActivity;
     private Context mContext;
-    private SRVoiceView mView;
+    private SRVoiceView mVoiceView;
+    private SRSearchView mSearchView;
     
     private EditText mTitleView;    // Basic Info Dialog
     private TextView mDocPathView;  // Basic Info Dialog
@@ -59,14 +61,48 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         mModel = model;
         mActivity = activity;
         mContext = mActivity;
-        mView = new SRVoiceView(mContext, this);
+        mVoiceView = new SRVoiceView(mContext, this);
+        mSearchView = new SRSearchView(mContext, this);
         
         mModel.initialize(mContext);
-        mModel.registerObserver(mView);
+        mModel.registerObserver(mVoiceView);
     }
     
-    public SRVoiceView getView() {
-        return mView;
+    public void finalize() {
+        if (mModel != null) {
+            mModel.finalize();
+        }
+        if (mVoiceView != null) {
+            //TODO: if need
+        }
+    }
+    
+    /**
+     * Set Recorder, Player, Search View
+     * 
+     * @param mode
+     */
+    @Override
+    public void setViewMode(int mode) {
+        mModel.setMode(mode);
+        
+        if (SRVoice.RECORDER_MODE == mode) {
+            mVoiceView.setVoiceViewMode(SRVoice.RECORDER_MODE);
+            mActivity.setContentView(mVoiceView);
+        } else if (SRVoice.PLAYER_MODE == mode) {
+            mVoiceView.setVoiceViewMode(SRVoice.PLAYER_MODE);
+            mActivity.setContentView(mVoiceView);
+        } else if (SRVoice.SEARCH_MODE == mode) {
+            mActivity.setContentView(mSearchView);
+        }
+    }
+    
+    public SRVoiceView getVoiceView() {
+        return mVoiceView;
+    }
+    
+    public SRVoiceView getSearchView() {
+        return mVoiceView;
     }
 
     @Override
@@ -131,7 +167,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                                     mActivity.getActionBar().setTitle(mModel.getTitle());
                                     
                                     mModel.setDocFilePath(mDocPathView.getText().toString());
-                                    mView.setDocPath(mDocPathView.getText().toString());
+                                    mVoiceView.setDocPath(mDocPathView.getText().toString());
                                     // Record Start
                                     
                                     mModel.recordStart();
@@ -252,5 +288,21 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         default:
             break;    
         }
+    }
+
+    @Override
+    public void playBySearchListPos(int position) {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    public void clearTextFilter() {
+        if (mSearchView != null)
+            mSearchView.clearTextFilter();
+    }
+    
+    public void setFilterText(String filter) {
+        if (mSearchView != null)
+            mSearchView.setFilterText(filter);
     }
 }
