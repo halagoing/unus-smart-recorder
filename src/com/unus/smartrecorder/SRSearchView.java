@@ -81,11 +81,7 @@ public class SRSearchView extends FrameLayout {
             
         });
         
-        SRTagDb tag = new SRTagDb();
-        tag.setType(1);
-        tag.setContent("add tag");
-        tags.add(tag);
-        //tagListAdapter.notifyDataSetChanged();
+
     }
     
     public void clearTextFilter() {
