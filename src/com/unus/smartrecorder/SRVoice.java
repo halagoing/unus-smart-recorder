@@ -164,6 +164,30 @@ public class SRVoice implements SRVoiceInterface {
     	mVoiceDb = null;
     }
 
+    public void play(long voiceId, int position) {
+        MediaPlayer player;
+        String filePath = "/sdcard/aaa.mp4";
+                
+        player = new MediaPlayer();
+ 
+        SRDebugUtil.SRLog("play(): filePath = " + filePath + " pos = " + Integer.toString(position));
+        
+        try {
+            player.setDataSource(filePath);
+            player.prepare();
+            player.seekTo(position);
+            player.start();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }        
+    }
+    
     public void play() {
     	SRDebugUtil.SRLog("play -> play = ");
     	MediaPlayer player;

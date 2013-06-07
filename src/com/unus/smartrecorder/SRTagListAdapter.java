@@ -96,4 +96,8 @@ public class SRTagListAdapter extends BaseAdapter{
 		super.notifyDataSetChanged();
 		
 	}
+	
+	public SRTagDb getTagDb(int position) {
+	    return tags.get(position);
+	}
 }

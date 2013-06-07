@@ -301,9 +301,21 @@ public class SRVoiceController implements SRVoiceControllerInterface {
 
     @Override
     public void playBySearchListPos(int position) {
-        // TODO Auto-generated method stub
         if (mActionBarSearchItem != null)
             mActionBarSearchItem.collapseActionView();
+        
+        // TODO: if need
+    }
+    
+    @Override
+    public void playBySearchList(SRTagDb tagDb) {
+        if (mActionBarSearchItem != null)
+            mActionBarSearchItem.collapseActionView();
+        
+        long voiceId = tagDb.getVoice_id();
+        String tagTime = tagDb.getTag_time();
+        
+        
     }
 
     public void setActionBarSearchItem(MenuItem searchItem) {
@@ -344,6 +356,12 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         });
     }
     
+    /**
+     * ActionBar menu create (Search, Share etc)
+     * 
+     * @param menu
+     * @return
+     */
     public boolean createOptionMenu(Menu menu) {
         MenuInflater inflater = mActivity.getMenuInflater();
         inflater.inflate(R.menu.searchview_in_menu, menu);
