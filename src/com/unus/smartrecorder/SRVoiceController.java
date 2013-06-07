@@ -44,6 +44,8 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     private SRVoiceView mSRVoiceView;
     private SRSearchView mSRSearchView;
     private MenuItem mActionBarSearchItem;
+    private MenuItem mActionBarAddItem;
+    private MenuItem mActionBarShareItem;
     private SearchView mSearchView;
     
     private EditText mTitleView;    // Basic Info Dialog
@@ -79,11 +81,15 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     
     public void finalize() {
         if (mModel != null) {
+            mModel.removeObserver(mSRVoiceView);
             mModel.finalize();
         }
         if (mSRVoiceView != null) {
             //TODO: if need
         }
+        mActionBarSearchItem = null;
+        mActionBarAddItem = null;
+        mActionBarShareItem = null;
     }
     
     /**
@@ -98,11 +104,37 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         if (SRVoice.RECORDER_MODE == mode) {
             mSRVoiceView.setVoiceViewMode(SRVoice.RECORDER_MODE);
             mActivity.setContentView(mSRVoiceView);
+            
+            //ActionBar : only Search
+            if (mActionBarAddItem != null)
+                mActionBarAddItem.setVisible(false);
+            if (mActionBarSearchItem != null)
+                mActionBarSearchItem.setVisible(true);
+            if (mActionBarShareItem != null)
+                mActionBarShareItem.setVisible(false);
+            
         } else if (SRVoice.PLAYER_MODE == mode) {
             mSRVoiceView.setVoiceViewMode(SRVoice.PLAYER_MODE);
             mActivity.setContentView(mSRVoiceView);
+            
+            //ActionBar : All
+            if (mActionBarAddItem != null)
+                mActionBarAddItem.setVisible(true);
+            if (mActionBarSearchItem != null)
+                mActionBarSearchItem.setVisible(true);
+            if (mActionBarShareItem != null)
+                mActionBarShareItem.setVisible(true);
+            
         } else if (SRVoice.SEARCH_MODE == mode) {
             mActivity.setContentView(mSRSearchView);
+            
+            //ActionBar : only Search
+            if (mActionBarAddItem != null)
+                mActionBarAddItem.setVisible(false);
+            if (mActionBarSearchItem != null)
+                mActionBarSearchItem.setVisible(true);
+            if (mActionBarShareItem != null)
+                mActionBarShareItem.setVisible(false);
         }
     }
     
@@ -246,6 +278,10 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         }
     }
     
+    /**
+     * For File browsing
+     * launch File explorer (ex. Astro app)
+     */
     public void showFileExplorer() {
         final PackageManager packageManager = mContext.getPackageManager();
         final Intent intent = new Intent(Intent.ACTION_GET_CONTENT); 
@@ -262,6 +298,13 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         }
     }
     
+    /**
+     * get real path by Uri
+     * for camera photo tag
+     * 
+     * @param contentUri
+     * @return
+     */
     public String getRealPathFromURI(Uri contentUri) {
         String[] proj = { MediaStore.Images.Media.DATA };
         Cursor cursor = mActivity.managedQuery(contentUri, proj, null, null, null);
@@ -318,9 +361,10 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         
         mModel.play(voiceId, Integer.parseInt(tagTime));
     }
-
-    public void setActionBarSearchItem(MenuItem searchItem) {
-        mActionBarSearchItem = searchItem;
+    
+    @Override
+    public void playStop() {
+        mModel.playStop();
     }
     
     private void setupSearchView(MenuItem searchItem) {
@@ -367,6 +411,12 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         MenuInflater inflater = mActivity.getMenuInflater();
         inflater.inflate(R.menu.searchview_in_menu, menu);
         mActionBarSearchItem = menu.findItem(R.id.action_search);
+        mActionBarAddItem = menu.findItem(R.id.action_add);
+        mActionBarShareItem = menu.findItem(R.id.action_share);
+        
+        //Default : Recorder
+        mActionBarAddItem.setVisible(false);
+        mActionBarShareItem.setVisible(false);
 
         mActionBarSearchItem.setOnActionExpandListener(new OnActionExpandListener() {
     
@@ -393,8 +443,29 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         return true;
     }
 
-    @Override
-    public void playStop() {
-        mModel.playStop();
+    /**
+     * ActionBar Menu (Add, Share)
+     * 
+     * @param item
+     */
+    public void optionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+        case R.id.action_add:
+            SRDebugUtil.SRLog("ActionBar: add");
+            if (mModel.getMode() == SRVoice.PLAYER_MODE) {
+                // Stop Player
+                playStop();
+                
+                // Record
+                setViewMode(SRVoice.RECORDER_MODE);
+                record();
+            } else {
+                SRDebugUtil.SRLogError("ERROR: Not in PLAYER_MODE");
+            }
+            break;
+        case R.id.action_share:
+            SRDebugUtil.SRLog("ActionBar: share");
+            break;
+        }
     }
 }

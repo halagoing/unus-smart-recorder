@@ -49,6 +49,8 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     private ImageButton mFFBtn, mRewindBtn, mPlayToggleBtn, mStopPlayBtn; 
     private MuPDFReaderView mDocView;
     private MuPDFCore mCore;
+    
+    private boolean mIsPlaying, mIsRecording;
 
     // {{TESTCODE
     private String[] mStrings = Cheeses.sCheeseStrings;
@@ -134,8 +136,6 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 SRDebugUtil.SRLog("Record Click");
                 if (mController != null)
                     mController.record();
-                mRecordBtn.setEnabled(false);
-                mStopRecordBtn.setEnabled(true);
             }
         });
 
@@ -146,11 +146,8 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 SRDebugUtil.SRLog("Stop Click");
                 if (mController != null)
                     mController.recordStop();
-                mRecordBtn.setEnabled(true);
-                mStopRecordBtn.setEnabled(false);
             }
         });
-        mStopRecordBtn.setEnabled(false);
         
         mPlayerBtnsLayout = (LinearLayout) findViewById(R.id.playerBtnsLayout);
         mFFBtn = (ImageButton) findViewById(R.id.ffBtn);
@@ -259,6 +256,52 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
             }
         });
     }
+
+    @Override
+    public void updateRecorderBtnState(boolean isRecording) {
+        mIsRecording = isRecording;
+        
+        post(new Runnable() {
+
+            @Override
+            public void run() {
+                if (mIsRecording == true) {
+                    mTextTagBtn.setEnabled(true);
+                    mPhotoTagBtn.setEnabled(true);
+                    mRecordBtn.setEnabled(false);
+                    mStopRecordBtn.setEnabled(true);
+                } else {
+                    mTextTagBtn.setEnabled(false);
+                    mPhotoTagBtn.setEnabled(false);
+                    mRecordBtn.setEnabled(true);
+                    mStopRecordBtn.setEnabled(false);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void updatePlayerBtnState(boolean isPlaying) {
+        mIsPlaying = isPlaying;
+        
+        post(new Runnable() {
+
+            @Override
+            public void run() {
+                if (mIsPlaying == true) {
+                    mFFBtn.setEnabled(true);
+                    mRewindBtn.setEnabled(true);
+                    mPlayToggleBtn.setEnabled(false);
+                    mStopPlayBtn.setEnabled(true);
+                } else {
+                    mFFBtn.setEnabled(false);
+                    mRewindBtn.setEnabled(false);
+                    mPlayToggleBtn.setEnabled(true);
+                    mStopPlayBtn.setEnabled(false);
+                }
+            }
+        });
+    }   
     
     /**
      * Recorder view or Player view
@@ -282,4 +325,5 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
             mPlayerBtnsLayout.setVisibility(View.VISIBLE);
         }
     }
+
 }
