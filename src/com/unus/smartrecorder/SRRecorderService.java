@@ -12,7 +12,7 @@ import android.util.Log;
 
 public class SRRecorderService extends Service{
 	
-	private MediaRecorder recorder = null;
+	private MediaRecorder mRecorder = null;
 	private int currentFormat = 0;
 	private static final String AUDIO_RECORDER_FILE_EXT_3GP = ".3gp";
 	private static final String AUDIO_RECORDER_FILE_EXT_MP4 = ".mp4";
@@ -27,12 +27,36 @@ public class SRRecorderService extends Service{
 	}
 	
 	@Override
+	public void onCreate() {
+		// TODO Auto-generated method stub
+		super.onCreate();
+		mRecorder = null;
+	}
+	
+	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
 		SRDebugUtil.SRLog("call SRRecorderService onStartCommand");
 		String voicePath = intent.getStringExtra(SRConfig.VOICE_PATH_KEY);
-
-		recorder = new MediaRecorder();
+		
+		if(mRecorder==null){
+			mRecorder = new MediaRecorder();
+			mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+			mRecorder.setOutputFormat(output_formats[currentFormat]);
+		    mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+		    mRecorder.setOutputFile(voicePath);
+		    mRecorder.setOnErrorListener(errorListener);
+		    mRecorder.setOnInfoListener(infoListener);
+		    
+		    try {
+		    	mRecorder.prepare();
+		    	mRecorder.start();
+		    } catch (IllegalStateException e) {
+		        e.printStackTrace();
+		    } catch (IOException e) {
+		        e.printStackTrace();
+		    }
+		}
 		
 //		String filepath = Environment.getExternalStorageDirectory().getPath();
 //		File file = new File(filepath, AUDIO_RECORDER_FOLDER);
@@ -41,21 +65,7 @@ public class SRRecorderService extends Service{
 //	    }
 
 		
-	    recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-	    recorder.setOutputFormat(output_formats[currentFormat]);
-	    recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-	    recorder.setOutputFile(voicePath);
-	    recorder.setOnErrorListener(errorListener);
-	    recorder.setOnInfoListener(infoListener);
-	    
-	    try {
-	        recorder.prepare();
-	        recorder.start();
-	    } catch (IllegalStateException e) {
-	        e.printStackTrace();
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
+		
 	
 		return super.onStartCommand(intent, flags, startId);
 	}
@@ -64,10 +74,12 @@ public class SRRecorderService extends Service{
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		SRDebugUtil.SRLog("call SRRecorderService onDestroy");
-		recorder.stop();
-        //recorder.reset();
-        recorder.release();
-        recorder = null;
+		if(mRecorder!=null){
+			mRecorder.stop();
+	        //recorder.reset();
+			mRecorder.release();
+			mRecorder = null;
+		}
 		super.onDestroy();
 	}
 	
