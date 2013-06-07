@@ -21,13 +21,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MenuItem.OnActionExpandListener;
 import android.view.Window;
-import android.widget.SearchView;
 
 import com.android.debug.hv.ViewServer;
 
@@ -36,10 +31,8 @@ import com.android.debug.hv.ViewServer;
  * sets a SearchableInfo on the SearchView for suggestions and submitting
  * queries to.
  */
-public class SearchViewActionBar extends Activity implements
-        SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+public class SearchViewActionBar extends Activity {
 
-    private SearchView mSearchView;
     private ActionBar mActionBar;
    
     private SRVoice mSRVoice;
@@ -74,110 +67,13 @@ public class SearchViewActionBar extends Activity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.searchview_in_menu, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-
-        searchItem.setOnActionExpandListener(new OnActionExpandListener() {
-
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                SRDebugUtil.SRLog("onMenuItemActionExpand()");
-
-                //setViewState(STATE_SEARCHING);
-                if (mSRVoiceController != null)
-                    mSRVoiceController.setViewMode(SRVoice.SEARCH_MODE);
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                SRDebugUtil.SRLog("onMenuItemActionCollapse()");
-
-                //setViewState(STATE_RECORDING);
-                if (mSRVoiceController != null)
-                    mSRVoiceController.setViewMode(mSRVoice.getPrevMode());                
-                return true;
-            }
-        });
-
-        mSearchView = (SearchView) searchItem.getActionView();
-        setupSearchView(searchItem);
-
+        
+        if (mSRVoiceController != null)
+            mSRVoiceController.createOptionMenu(menu);
+        
         return true;
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
-        // return super.onOptionsItemSelected(item);
-        switch (item.getItemId()) {
-        case android.R.id.home:
-            break;
-        case R.id.action_search:
-            break;
-        default:
-            break;
-        }
-        return true;
-    }
-
-    private void setupSearchView(MenuItem searchItem) {
-
-        if (isAlwaysExpanded()) {
-            mSearchView.setIconifiedByDefault(false);
-        } else {
-            searchItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM
-                    | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-        }
-
-        // SearchManager searchManager = (SearchManager)
-        // getSystemService(Context.SEARCH_SERVICE);
-        // if (searchManager != null) {
-        // List<SearchableInfo> searchables = searchManager
-        // .getSearchablesInGlobalSearch();
-        //
-        // // Try to use the "applications" global search provider
-        // SearchableInfo info = searchManager
-        // .getSearchableInfo(getComponentName());
-        // for (SearchableInfo inf : searchables) {
-        // if (inf.getSuggestAuthority() != null
-        // && inf.getSuggestAuthority().startsWith("applications")) {
-        // info = inf;
-        // }
-        // }
-        // mSearchView.setSearchableInfo(info);
-        // }
-
-        mSearchView.setOnQueryTextListener(this);
-        mSearchView.setOnCloseListener(this);
-    }
-
-    public boolean onQueryTextChange(String newText) {
-        SRDebugUtil.SRLog("Query = " + newText);
-        if (TextUtils.isEmpty(newText)) {
-            mSRVoiceController.clearTextFilter();
-        } else {
-            mSRVoiceController.setFilterText(newText.toString());
-        }
-        return true;
-    }
-
-    public boolean onQueryTextSubmit(String query) {
-        SRDebugUtil.SRLog("Query = " + query + " : submitted");
-        return false;
-    }
-
-    public boolean onClose() {
-        SRDebugUtil.SRLog("onClose()");
-        return false;
-    }
-
-    protected boolean isAlwaysExpanded() {
-        return false;
-    }
-
+    
     @Override
     protected void onResume() {
         super.onResume();
