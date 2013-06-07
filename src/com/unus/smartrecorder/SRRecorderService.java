@@ -3,9 +3,18 @@ package com.unus.smartrecorder;
 import java.io.File;
 import java.io.IOException;
 
+
+
+
+
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
@@ -13,12 +22,17 @@ import android.util.Log;
 public class SRRecorderService extends Service{
 	
 	private MediaRecorder mRecorder = null;
+	private String NOTI_RECORDING = "Recording...";
+	private String NOTI_RECORDING_STOP = "Recording is stopped...";
 	private int currentFormat = 0;
 	private static final String AUDIO_RECORDER_FILE_EXT_3GP = ".3gp";
 	private static final String AUDIO_RECORDER_FILE_EXT_MP4 = ".mp4";
 	private static final String AUDIO_RECORDER_FOLDER = SRConfig.AUDIO_RECORDER_FOLDER;
 	private int output_formats[] = { MediaRecorder.OutputFormat.MPEG_4, MediaRecorder.OutputFormat.THREE_GPP };
 	private String file_exts[] = { AUDIO_RECORDER_FILE_EXT_MP4, AUDIO_RECORDER_FILE_EXT_3GP };
+	public final static int NOTIFICATION_ID = 1357234;
+	
+	private NotificationManager mNotifiManager;
 	
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -31,6 +45,7 @@ public class SRRecorderService extends Service{
 		// TODO Auto-generated method stub
 		super.onCreate();
 		mRecorder = null;
+		mNotifiManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 	}
 	
 	@Override
@@ -56,6 +71,7 @@ public class SRRecorderService extends Service{
 		    } catch (IOException e) {
 		        e.printStackTrace();
 		    }
+		    showRecordingNotification();
 		}
 		
 //		String filepath = Environment.getExternalStorageDirectory().getPath();
@@ -79,6 +95,7 @@ public class SRRecorderService extends Service{
 	        //recorder.reset();
 			mRecorder.release();
 			mRecorder = null;
+			showStoppedNotification();
 		}
 		super.onDestroy();
 	}
@@ -100,4 +117,24 @@ public class SRRecorderService extends Service{
             //Toast.makeText(this, "Warning: " + what + ", " + extra, Toast.LENGTH_SHORT).show();
         }
     };
+    
+    private void showRecordingNotification() {
+    	showNotification(NOTI_RECORDING);
+    	
+  
+    }
+    
+    private void showStoppedNotification() {
+    	showNotification(NOTI_RECORDING_STOP);
+    	mNotifiManager.cancelAll();
+    }
+    
+    private void showNotification(String notiMsg) {
+    	Notification notification = new Notification(R.drawable.stat_sys_call_record,
+    			notiMsg, System.currentTimeMillis());
+    	Intent intent = new Intent("com.blank");
+    	PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
+    	notification.setLatestEventInfo(this, "Smart Recorder", notiMsg, pendingIntent);
+    	mNotifiManager.notify(NOTIFICATION_ID, notification);
+	}
 }
