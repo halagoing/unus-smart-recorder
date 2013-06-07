@@ -59,7 +59,7 @@ public class SRSearchView extends FrameLayout {
         datasource.open();
         
         ArrayList<SRTagDb> tags = datasource.getAllTag();
-
+        
         datasource.close();
         SRDebugUtil.SRLog("tags = "+tags);
         

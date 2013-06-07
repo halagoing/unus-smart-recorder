@@ -9,6 +9,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 /*
  * Context maincon;
@@ -34,7 +36,10 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 	LayoutInflater mInflater;
 	ArrayList<SRTagDb> mTags;
 	ArrayList<SRTagDb> mOriginalTags;
-
+	
+	
+	private static final int TITLE_TYPE = 1;
+	private static final int TAG_TYPE = 2;
 	int layout;
 	
 	public SRTagListAdapter(Context context, int alayout, ArrayList<SRTagDb> tags) {
@@ -66,6 +71,16 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		// TODO Auto-generated method stub
 		return position;
 	}
+	
+	private int getLayoutType(String tagTime) {
+		int intTagTime = Integer.parseInt(tagTime);
+		int layoutType = TAG_TYPE;
+		if(intTagTime==0){
+			layoutType = TITLE_TYPE;
+		}
+		return layoutType;
+	}
+	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
@@ -77,20 +92,41 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		String tagTitle = "";
 		SRTagDb tag = mTags.get(position);
 		
-		if(tag.getType() == SRDbHelper.TEXT_TAG_TYPE){
-			tagTitle = "Tag#"+position+" "+tag.getContent();
-		}
-		else if(tag.getType() == SRDbHelper.PAGE_TAG_TYPE){
-			tagTitle = "Tag#"+position+" Page is "+tag.getContent();
-		}
-		else if(tag.getType() == SRDbHelper.PHOTO_TAG_TYPE){
-			ImageView image = (ImageView)convertView.findViewById(R.id.tagListImage);
-			Resources res = mContext.getResources(); /** from an Activity */
-			image.setImageDrawable(res.getDrawable(R.drawable.test));
-			tagTitle = "Tag#"+position+" Image path "+tag.getContent();
-		}
 		TextView text = (TextView)convertView.findViewById(R.id.tagListTitle);
-		text.setText(tagTitle);
+		switch (getLayoutType(tag.getTag_time())) {
+			case TITLE_TYPE:
+				
+				//RelativeLayout rl = (RelativeLayout)fin
+				RelativeLayout tagListMainLayout = (RelativeLayout)convertView.findViewById(R.id.tagListMainLayout);
+				
+				
+//				tagListMainLayout.setBackgroundColor(Color.BLACK);
+//				tagListMainLayout.setH
+//				text.setTextColor(Color.WHITE);
+				tagTitle = "Voice_"+tag.getVoice_id()+" "+tag.getContent();
+				text.setText(tagTitle);
+				break;
+			case TAG_TYPE:
+				if(tag.getType() == SRDbHelper.TEXT_TAG_TYPE){
+					tagTitle = "Tag#"+position+" "+tag.getContent();
+				}
+				else if(tag.getType() == SRDbHelper.PAGE_TAG_TYPE){
+					tagTitle = "Tag#"+position+" Page is "+tag.getContent();
+				}
+				else if(tag.getType() == SRDbHelper.PHOTO_TAG_TYPE){
+					ImageView image = (ImageView)convertView.findViewById(R.id.tagListImage);
+					Resources res = mContext.getResources(); /** from an Activity */
+					image.setImageDrawable(res.getDrawable(R.drawable.test));
+					tagTitle = "Tag#"+position+" Image path "+tag.getContent();
+				}
+				text.setText(tagTitle);
+				break;
+			default:
+				break;
+		}
+		
+		
+		
 		return convertView;
 
 	}
@@ -140,24 +176,7 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
             	results.count = filteredArrList.size();
             	results.values = filteredArrList;
             }
-//                List<String> FilteredArrList = new ArrayList<String>();
-//
-//                if (constraint == null || constraint.length() == 0) {
-//                    results.count = mOriginalValues.size();
-//                    results.values = mOriginalValues;
-//                } else {
-//                    constraint = constraint.toString();
-//
-//                    for (int i = 0; i < mOriginalValues.size(); i++) {
-//                        String data = mOriginalValues.get(i);
-//                        if (data.toLowerCase().startsWith(constraint.toString()))   {
-//                            FilteredArrList.add(data);
-//                        }
-//                    }
-//
-//                    results.count = FilteredArrList.size();
-//                    results.values = FilteredArrList;
-//                }
+
 
                 return results;
             }

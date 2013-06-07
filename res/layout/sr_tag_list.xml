@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tagListMainLayout"
 	android:layout_width="match_parent" 
 	android:layout_height="60dip"
 	android:padding="5dip">
@@ -14,11 +15,49 @@
 
     <ImageView
         android:id="@+id/tagListImage"
-        android:layout_width="58dip"
-        android:layout_height="58dip"
+        android:layout_width="60dip"
+        android:layout_height="60dip"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"
-        android:src="@drawable/av_stop" />
+        android:layout_marginRight="10dp"/>
+    
+</RelativeLayout>
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tagListMainLayout"
+	android:layout_width="match_parent" 
+	android:layout_height="60dip"
+	android:padding="5dip">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <TextView
+                android:id="@+id/tagListTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+        		android:layout_centerVertical="true"
+                android:text="TextView" />
+
+            <ImageView
+                android:id="@+id/tagListImage"
+                android:layout_width="60dip"
+                android:layout_height="60dip"
+                android:layout_alignParentRight="true"
+        		android:layout_centerVertical="true"
+                android:layout_marginRight="10dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
     
 </RelativeLayout>
