@@ -16,11 +16,18 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.MenuItem.OnActionExpandListener;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.SearchView;
+import android.widget.SearchView.OnCloseListener;
+import android.widget.SearchView.OnQueryTextListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,8 +41,10 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     private SRVoiceInterface mModel;
     private Activity mActivity;
     private Context mContext;
-    private SRVoiceView mVoiceView;
-    private SRSearchView mSearchView;
+    private SRVoiceView mSRVoiceView;
+    private SRSearchView mSRSearchView;
+    private MenuItem mActionBarSearchItem;
+    private SearchView mSearchView;
     
     private EditText mTitleView;    // Basic Info Dialog
     private TextView mDocPathView;  // Basic Info Dialog
@@ -61,18 +70,18 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         mModel = model;
         mActivity = activity;
         mContext = mActivity;
-        mVoiceView = new SRVoiceView(mContext, this);
-        mSearchView = new SRSearchView(mContext, this);
+        mSRVoiceView = new SRVoiceView(mContext, this);
+        mSRSearchView = new SRSearchView(mContext, this);
         
         mModel.initialize(mContext);
-        mModel.registerObserver(mVoiceView);
+        mModel.registerObserver(mSRVoiceView);
     }
     
     public void finalize() {
         if (mModel != null) {
             mModel.finalize();
         }
-        if (mVoiceView != null) {
+        if (mSRVoiceView != null) {
             //TODO: if need
         }
     }
@@ -87,22 +96,22 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         mModel.setMode(mode);
         
         if (SRVoice.RECORDER_MODE == mode) {
-            mVoiceView.setVoiceViewMode(SRVoice.RECORDER_MODE);
-            mActivity.setContentView(mVoiceView);
+            mSRVoiceView.setVoiceViewMode(SRVoice.RECORDER_MODE);
+            mActivity.setContentView(mSRVoiceView);
         } else if (SRVoice.PLAYER_MODE == mode) {
-            mVoiceView.setVoiceViewMode(SRVoice.PLAYER_MODE);
-            mActivity.setContentView(mVoiceView);
+            mSRVoiceView.setVoiceViewMode(SRVoice.PLAYER_MODE);
+            mActivity.setContentView(mSRVoiceView);
         } else if (SRVoice.SEARCH_MODE == mode) {
-            mActivity.setContentView(mSearchView);
+            mActivity.setContentView(mSRSearchView);
         }
     }
     
     public SRVoiceView getVoiceView() {
-        return mVoiceView;
+        return mSRVoiceView;
     }
     
     public SRVoiceView getSearchView() {
-        return mVoiceView;
+        return mSRVoiceView;
     }
 
     @Override
@@ -167,7 +176,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                                     mActivity.getActionBar().setTitle(mModel.getTitle());
                                     
                                     mModel.setDocFilePath(mDocPathView.getText().toString());
-                                    mVoiceView.setDocPath(mDocPathView.getText().toString());
+                                    mSRVoiceView.setDocPath(mDocPathView.getText().toString());
                                     // Record Start
                                     
                                     mModel.recordStart();
@@ -293,16 +302,75 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     @Override
     public void playBySearchListPos(int position) {
         // TODO Auto-generated method stub
-        
+        if (mActionBarSearchItem != null)
+            mActionBarSearchItem.collapseActionView();
+    }
+
+    public void setActionBarSearchItem(MenuItem searchItem) {
+        mActionBarSearchItem = searchItem;
     }
     
-    public void clearTextFilter() {
-        if (mSearchView != null)
-            mSearchView.clearTextFilter();
+    private void setupSearchView(MenuItem searchItem) {
+
+        searchItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM
+                | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
+        mSearchView.setOnQueryTextListener(new OnQueryTextListener() {
+            
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                SRDebugUtil.SRLog("Query = " + query + " : submitted");
+                return false;
+            }
+            
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                SRDebugUtil.SRLog("Query = " + newText);
+                if (TextUtils.isEmpty(newText)) {
+                    mSRSearchView.clearTextFilter();
+                } else {
+                    mSRSearchView.setFilterText(newText.toString());
+                }                
+                return false;
+            }
+        });
+        mSearchView.setOnCloseListener(new OnCloseListener() {
+            
+            @Override
+            public boolean onClose() {
+                SRDebugUtil.SRLog("onClose()");
+                return false;
+            }
+        });
     }
     
-    public void setFilterText(String filter) {
-        if (mSearchView != null)
-            mSearchView.setFilterText(filter);
+    public boolean createOptionMenu(Menu menu) {
+        MenuInflater inflater = mActivity.getMenuInflater();
+        inflater.inflate(R.menu.searchview_in_menu, menu);
+        mActionBarSearchItem = menu.findItem(R.id.action_search);
+
+        mActionBarSearchItem.setOnActionExpandListener(new OnActionExpandListener() {
+    
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                SRDebugUtil.SRLog("onMenuItemActionExpand()");
+    
+                //setViewState(STATE_SEARCHING);
+                setViewMode(SRVoice.SEARCH_MODE);
+                return true;
+            }
+    
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                SRDebugUtil.SRLog("onMenuItemActionCollapse()");
+    
+                setViewMode(mModel.getPrevMode());                
+                return true;
+            }
+        });
+    
+        mSearchView = (SearchView) mActionBarSearchItem.getActionView();
+        setupSearchView(mActionBarSearchItem);
+        return true;
     }
 }
