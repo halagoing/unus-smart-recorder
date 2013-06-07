@@ -182,7 +182,9 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
             @Override
             public void onClick(View v) {
                 SRDebugUtil.SRLog("StopPlay Click");
-
+                
+                if (mController != null)
+                    mController.playStop();
             }
         });
         

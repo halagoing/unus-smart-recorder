@@ -21,4 +21,6 @@ public interface SRVoiceControllerInterface {
     public void playBySearchList(SRTagDb tagDb);
 
     public void setViewMode(int mode);
+
+    public void playStop();
 }

@@ -55,7 +55,7 @@ public class SRVoice implements SRVoiceInterface {
 	private SRVoiceDb mVoiceDb;
 	private ArrayList<SRTagDb> mTagList = new ArrayList<SRTagDb>();
 
-
+	private MediaPlayer mPlayer;
 	
 	private long mRecordStartTime;
 	private Handler mHandler = new Handler();
@@ -75,6 +75,8 @@ public class SRVoice implements SRVoiceInterface {
         //DB Open
 	    mDataSource = new SRDataSource(context);
 	    mDataSource.open();
+	    
+	    mPlayer = new MediaPlayer();
     }
 	
     @Override
@@ -88,6 +90,10 @@ public class SRVoice implements SRVoiceInterface {
         if (mTimer != null) {
             mTimer.cancel();
             mTimer = null;
+        }
+        
+        if (mPlayer != null) {
+            mPlayer.release();
         }
     }
     
@@ -166,7 +172,6 @@ public class SRVoice implements SRVoiceInterface {
 
     @Override
     public void play(long voiceId, int position) {
-        MediaPlayer player;
         String filePath;
         
         if (mDataSource == null) {
@@ -184,12 +189,12 @@ public class SRVoice implements SRVoiceInterface {
  
         SRDebugUtil.SRLog("play(): filePath = " + filePath + " pos = " + Integer.toString(position));
         
-        player = new MediaPlayer(); 
+        mPlayer.reset();
         try {
-            player.setDataSource(filePath);
-            player.prepare();
-            player.seekTo(position);
-            player.start();
+            mPlayer.setDataSource(filePath);
+            mPlayer.prepare();
+            mPlayer.seekTo(position);
+            mPlayer.start();
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         } catch (SecurityException e) {
@@ -243,12 +248,16 @@ public class SRVoice implements SRVoiceInterface {
 
     }
 
+    @Override
     public void playPause() {
 
     }
 
+    @Override
     public void playStop() {
-
+        if (mPlayer != null && mPlayer.isPlaying()) {
+            mPlayer.stop();
+        }
     }
 
     public void getDuration() {

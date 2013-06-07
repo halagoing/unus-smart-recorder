@@ -392,4 +392,9 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         setupSearchView(mActionBarSearchItem);
         return true;
     }
+
+    @Override
+    public void playStop() {
+        mModel.playStop();
+    }
 }
