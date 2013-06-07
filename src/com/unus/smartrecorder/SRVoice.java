@@ -164,14 +164,27 @@ public class SRVoice implements SRVoiceInterface {
     	mVoiceDb = null;
     }
 
+    @Override
     public void play(long voiceId, int position) {
         MediaPlayer player;
-        String filePath = "/sdcard/aaa.mp4";
-                
-        player = new MediaPlayer();
+        String filePath;
+        
+        if (mDataSource == null) {
+            SRDebugUtil.SRLogError("play() : mDataSource is null");
+            return;
+        }
+        
+        SRVoiceDb voiceDb =  mDataSource.getVoiceByVoiceId(voiceId);
+        if (voiceDb == null) {
+            SRDebugUtil.SRLogError("play() : voiceId is not valid");
+            return;
+        }
+        
+        filePath = voiceDb.getVoice_path();
  
         SRDebugUtil.SRLog("play(): filePath = " + filePath + " pos = " + Integer.toString(position));
         
+        player = new MediaPlayer(); 
         try {
             player.setDataSource(filePath);
             player.prepare();

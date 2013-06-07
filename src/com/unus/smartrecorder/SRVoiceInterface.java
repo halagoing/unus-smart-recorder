@@ -38,4 +38,6 @@ public interface SRVoiceInterface {
     public int getPrevMode();
     
     public void setMode(int mode);
+
+    public void play(long voiceId, int position);
 }

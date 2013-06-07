@@ -315,7 +315,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         long voiceId = tagDb.getVoice_id();
         String tagTime = tagDb.getTag_time();
         
-        
+        mModel.play(voiceId, Integer.parseInt(tagTime));
     }
 
     public void setActionBarSearchItem(MenuItem searchItem) {
