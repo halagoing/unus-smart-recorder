@@ -28,6 +28,9 @@
 	<string name="cancel">Cancel</string>
 	<string name="okay">Okay</string>
 	<string name="choose_value">Choose value</string>			
-	<string name="not_supported">Not supported</string>    
+	<string name="not_supported">Not supported</string>			
+	<string name="play">Play</string>			
+	<string name="fast_forward">Fast forward</string>			
+	<string name="rewind">Rewind</string>    
     
 </resources>

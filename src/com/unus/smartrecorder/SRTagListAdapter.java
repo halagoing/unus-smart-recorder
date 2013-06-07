@@ -193,6 +193,7 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		
 	}
 	
+
 	@Override
 	public Filter getFilter() {
 		// TODO Auto-generated method stub
@@ -238,5 +239,10 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
         };
 
         return filter;
+	}
+
+	public SRTagDb getTagDb(int position) {
+	    return mTags.get(position);
+
 	}
 }
