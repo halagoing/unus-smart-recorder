@@ -65,12 +65,12 @@
         android:id="@+id/tagListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/buttonsLayout"
+        android:layout_above="@+id/recorderBtnsLayout"
         android:layout_below="@+id/statusFrame" >
     </ListView>
 
     <LinearLayout
-        android:id="@+id/buttonsLayout"
+        android:id="@+id/recorderBtnsLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -101,7 +101,48 @@
             android:src="@drawable/record_icon" />
 
         <ImageButton
-            android:id="@+id/stopBtn"
+            android:id="@+id/stopRecordBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/stop"
+            android:src="@drawable/av_stop" />
+
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/playerBtnsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/rewindBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/rewind"
+            android:src="@drawable/av_rewind" />
+
+        <ImageButton
+            android:id="@+id/ffBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/fast_forward"
+            android:src="@drawable/av_fast_forward" />
+
+        <ImageButton
+            android:id="@+id/playToggleBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/play"
+            android:src="@drawable/av_play" />
+
+        <ImageButton
+            android:id="@+id/stopPlayBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"

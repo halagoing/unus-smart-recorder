@@ -311,6 +311,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     public void playBySearchList(SRTagDb tagDb) {
         if (mActionBarSearchItem != null)
             mActionBarSearchItem.collapseActionView();
+        setViewMode(SRVoice.PLAYER_MODE);
         
         long voiceId = tagDb.getVoice_id();
         String tagTime = tagDb.getTag_time();

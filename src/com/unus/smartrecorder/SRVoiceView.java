@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -37,13 +38,15 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     private ListView mTagListView;
     private ArrayAdapter<String> mTagListViewAdapter;
     private SRTagListAdapter tagListAdapter;
-    private ImageButton mTextTagBtn, mPhotoTagBtn, mRecordBtn, mStopBtn;
+    private ImageButton mTextTagBtn, mPhotoTagBtn, mRecordBtn, mStopRecordBtn;
     private TextView mTimeView;
     
     private ImageView mDummyView;
     private FrameLayout mDocFrame;
     private ProgressBar mVolumeView;
     private SeekBar mSeekBarView;
+    private LinearLayout mRecorderBtnsLayout, mPlayerBtnsLayout;
+    private ImageButton mFFBtn, mRewindBtn, mPlayToggleBtn, mStopPlayBtn; 
     private MuPDFReaderView mDocView;
     private MuPDFCore mCore;
 
@@ -101,6 +104,8 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
 //        mContext, android.R.layout.simple_list_item_1, Cheeses.sCheeseStrings));
         // }}TESTCODE
 
+        mRecorderBtnsLayout = (LinearLayout) findViewById(R.id.recorderBtnsLayout);
+        
         mTextTagBtn = (ImageButton) findViewById(R.id.textTagBtn);
         mTextTagBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -130,22 +135,56 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 if (mController != null)
                     mController.record();
                 mRecordBtn.setEnabled(false);
-                mStopBtn.setEnabled(true);
+                mStopRecordBtn.setEnabled(true);
             }
         });
 
-        mStopBtn = (ImageButton) findViewById(R.id.stopBtn);
-        mStopBtn.setOnClickListener(new OnClickListener() {
+        mStopRecordBtn = (ImageButton) findViewById(R.id.stopRecordBtn);
+        mStopRecordBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 SRDebugUtil.SRLog("Stop Click");
                 if (mController != null)
                     mController.recordStop();
                 mRecordBtn.setEnabled(true);
-                mStopBtn.setEnabled(false);
+                mStopRecordBtn.setEnabled(false);
             }
         });
-        mStopBtn.setEnabled(false);
+        mStopRecordBtn.setEnabled(false);
+        
+        mPlayerBtnsLayout = (LinearLayout) findViewById(R.id.playerBtnsLayout);
+        mFFBtn = (ImageButton) findViewById(R.id.ffBtn);
+        mFFBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SRDebugUtil.SRLog("FF Click");
+
+            }
+        });
+        mRewindBtn = (ImageButton) findViewById(R.id.rewindBtn);
+        mRewindBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SRDebugUtil.SRLog("Rewind Click");
+
+            }
+        });
+        mPlayToggleBtn = (ImageButton) findViewById(R.id.playToggleBtn);
+        mPlayToggleBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SRDebugUtil.SRLog("PlayToggle Click");
+
+            }
+        });
+        mStopPlayBtn = (ImageButton) findViewById(R.id.stopPlayBtn);
+        mStopPlayBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SRDebugUtil.SRLog("StopPlay Click");
+
+            }
+        });
         
         mVolumeView = (ProgressBar)findViewById(R.id.volumeView);
         mSeekBarView = (SeekBar)findViewById(R.id.seekBarView);
@@ -229,10 +268,16 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
             mTimeView.setText(R.string.zero_time);
             mVolumeView.setVisibility(View.VISIBLE);
             mSeekBarView.setVisibility(View.INVISIBLE);
+            
+            mRecorderBtnsLayout.setVisibility(View.VISIBLE);
+            mPlayerBtnsLayout.setVisibility(View.INVISIBLE);
         } else if (SRVoice.PLAYER_MODE == mode) {
             mTimeView.setText(R.string.zero_time);
             mVolumeView.setVisibility(View.INVISIBLE);
             mSeekBarView.setVisibility(View.VISIBLE);
+            
+            mRecorderBtnsLayout.setVisibility(View.INVISIBLE);
+            mPlayerBtnsLayout.setVisibility(View.VISIBLE);
         }
     }
 }
