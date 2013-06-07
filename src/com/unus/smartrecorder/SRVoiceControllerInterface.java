@@ -23,4 +23,6 @@ public interface SRVoiceControllerInterface {
     public void setViewMode(int mode);
 
     public void playStop();
+
+    public void playByPlayBtn();
 }

@@ -171,6 +171,10 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
             @Override
             public void onClick(View v) {
                 SRDebugUtil.SRLog("PlayToggle Click");
+                
+                if (mController != null) {
+                    mController.playByPlayBtn();
+                }
 
             }
         });
@@ -291,12 +295,14 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 if (mIsPlaying == true) {
                     mFFBtn.setEnabled(true);
                     mRewindBtn.setEnabled(true);
-                    mPlayToggleBtn.setEnabled(false);
+                    //mPlayToggleBtn.setEnabled(false);
+                    mPlayToggleBtn.setImageResource(R.drawable.av_pause);
                     mStopPlayBtn.setEnabled(true);
                 } else {
                     mFFBtn.setEnabled(false);
                     mRewindBtn.setEnabled(false);
-                    mPlayToggleBtn.setEnabled(true);
+                    //mPlayToggleBtn.setEnabled(true);
+                    mPlayToggleBtn.setImageResource(R.drawable.av_play);
                     mStopPlayBtn.setEnabled(false);
                 }
             }

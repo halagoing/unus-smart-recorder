@@ -363,6 +363,11 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     }
     
     @Override
+    public void playByPlayBtn() {
+        mModel.playCurrent();
+    }
+    
+    @Override
     public void playStop() {
         mModel.playStop();
     }

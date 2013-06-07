@@ -236,6 +236,21 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         } 
     }
     
+    @Override
+    public void playCurrent() {
+        SRDebugUtil.SRLog("SRVoice.playCurrent()");
+        
+        if (mPlayer != null) {
+            if (mPlayer.isPlaying()) {
+                mPlayer.pause();
+                notifyPlayerBtnStateObservers(false);
+            } else {
+                mPlayer.start();
+                notifyPlayerBtnStateObservers(true);
+            }
+        }       
+    }
+    
 
     public void seekTo(int position) {
 
@@ -243,7 +258,12 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
 
     @Override
     public void playPause() {
-
+        SRDebugUtil.SRLog("SRVoice.playStop()");
+        
+        if (mPlayer != null && mPlayer.isPlaying()) {
+            mPlayer.pause();
+            notifyPlayerBtnStateObservers(false);
+        }
     }
 
     @Override
