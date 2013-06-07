@@ -17,6 +17,7 @@ import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 /*
@@ -93,16 +94,15 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		SRTagDb tag = mTags.get(position);
 		
 		TextView text = (TextView)convertView.findViewById(R.id.tagListTitle);
+		LinearLayout dividingLine = (LinearLayout)convertView.findViewById(R.id.dividingLine);
+		dividingLine.setBackgroundColor(Color.WHITE);
 		switch (getLayoutType(tag.getTag_time())) {
 			case TITLE_TYPE:
 				
 				//RelativeLayout rl = (RelativeLayout)fin
-				RelativeLayout tagListMainLayout = (RelativeLayout)convertView.findViewById(R.id.tagListMainLayout);
+				//RelativeLayout tagListMainLayout = (RelativeLayout)convertView.findViewById(R.id.tagListMainLayout);
 				
-				
-//				tagListMainLayout.setBackgroundColor(Color.BLACK);
-//				tagListMainLayout.setH
-//				text.setTextColor(Color.WHITE);
+				dividingLine.setBackgroundColor(Color.BLACK);
 				tagTitle = "Voice_"+tag.getVoice_id()+" "+tag.getContent();
 				text.setText(tagTitle);
 				break;
