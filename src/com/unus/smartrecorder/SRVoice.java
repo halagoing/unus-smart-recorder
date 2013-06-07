@@ -131,7 +131,7 @@ public class SRVoice implements SRVoiceInterface {
     	
     	// Add Voice ddd
     	mVoiceDb = mDataSource.createVoice(mVoiceFilePath, mDocFilePath);
-    	addTag(SRDbHelper.TEXT_TAG_TYPE, "START TAG", "0");
+    	addTag(SRDbHelper.TEXT_TAG_TYPE, mTitle, "0");
     	//mView.setTagList();
     }
     /*
