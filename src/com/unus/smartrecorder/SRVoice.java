@@ -77,6 +77,12 @@ public class SRVoice implements SRVoiceInterface {
         if (mDataSource != null) {
             mDataSource.close();
         }
+        
+        // Timer
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+        }
     }
 
     @Override
