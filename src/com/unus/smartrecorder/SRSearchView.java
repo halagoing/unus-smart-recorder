@@ -59,7 +59,7 @@ public class SRSearchView extends FrameLayout {
         datasource.open();
         
         ArrayList<SRTagDb> tags = datasource.getAllTag();
-
+        
         datasource.close();
         SRDebugUtil.SRLog("tags = "+tags);
         
@@ -71,7 +71,6 @@ public class SRSearchView extends FrameLayout {
         mListView.setTextFilterEnabled(true);
         
         mListView.setOnItemClickListener(new OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
