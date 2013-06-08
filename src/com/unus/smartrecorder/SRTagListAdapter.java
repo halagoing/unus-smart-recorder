@@ -103,9 +103,12 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		TextView text = (TextView)convertView.findViewById(R.id.tagListTitle);
 		LinearLayout dividingLine = (LinearLayout)convertView.findViewById(R.id.dividingLine);
 		RelativeLayout tagListMainLayout = (RelativeLayout)convertView.findViewById(R.id.tagListMainLayout);
+		ImageView imageView = (ImageView)convertView.findViewById(R.id.tagListImage);
+		
 		dividingLine.setBackgroundColor(Color.parseColor("#e8e8e8"));
 		tagListMainLayout.setBackgroundColor(Color.parseColor("#e8e8e8"));
 		tagListMainLayout.setPadding(20, 0, 0, 0);
+		imageView.setImageResource(android.R.color.transparent);
 		switch (getLayoutType(tag.getTag_time())) {
 			case TITLE_TYPE:
 				tagListMainLayout.setBackgroundColor(Color.parseColor("#dedcdc"));
@@ -125,7 +128,7 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 				else if(tag.getType() == SRDbHelper.PHOTO_TAG_TYPE){
 					
 					File imgFile = new  File(tag.getContent());
-					ImageView imageView = (ImageView)convertView.findViewById(R.id.tagListImage);
+					
 					
 					if(imgFile.exists()){
 						
@@ -153,6 +156,8 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 					        o2.inSampleSize=scale;
 					        Bitmap myBitmap = BitmapFactory.decodeStream(new FileInputStream(imgFile), null, o2);
 					        imageView.setImageBitmap(myBitmap);
+					        
+					        
 						}
 						catch (FileNotFoundException e){
 							

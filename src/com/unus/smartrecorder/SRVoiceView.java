@@ -304,7 +304,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     }
     
     @Override
-    public void updateTagList(ArrayList<SRTagDb> tags) {
+    public void updatePlayerTagList(ArrayList<SRTagDb> tags) {
     	// TODO Auto-generated method stub
     	//mTagListView.set
     	

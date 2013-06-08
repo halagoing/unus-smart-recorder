@@ -263,7 +263,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
             mPlayer.seekTo(position);
             mPlayer.start();
             mPlayerState = PLAYER_PLAY_STATE; 
-            notifyTagListUpObservers(tagsDb);
+            notifyPlayerTagListUpObservers(tagsDb);
             notifyPlayerBtnStateObservers(true);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -433,7 +433,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         public void updateTime(long time);
         public void updateRecorderBtnState(boolean isRecording);
         public void updatePlayerBtnState(boolean isPlaying);
-        public void updateTagList(ArrayList<SRTagDb> tags);
+        public void updatePlayerTagList(ArrayList<SRTagDb> tags);
     }
     
     ArrayList<SRVoiceObserver> mSRVoiceObserver = new ArrayList<SRVoiceObserver>();
@@ -468,10 +468,10 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
             observer.updatePlayerBtnState(isPlaying);
         }
     } 
-    public void notifyTagListUpObservers(ArrayList<SRTagDb> tagsDb){
+    public void notifyPlayerTagListUpObservers(ArrayList<SRTagDb> tagsDb){
     	for (int i = 0; i < mSRVoiceObserver.size(); i++) {
             SRVoiceObserver observer = mSRVoiceObserver.get(i);
-            observer.updateTagList(tagsDb);
+            observer.updatePlayerTagList(tagsDb);
         }
     }
     
