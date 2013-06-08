@@ -105,12 +105,14 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		LinearLayout dividingLine = (LinearLayout)convertView.findViewById(R.id.dividingLine);
 		RelativeLayout tagListMainLayout = (RelativeLayout)convertView.findViewById(R.id.tagListMainLayout);
 		ImageView imageView = (ImageView)convertView.findViewById(R.id.tagListImage);
+		ImageView tagIconView = (ImageView)convertView.findViewById(R.id.tagIcon);
+		Resources res = mContext.getResources(); /** from an Activity */
 		
 		dividingLine.setBackgroundColor(Color.parseColor("#e8e8e8"));
 		tagListMainLayout.setBackgroundColor(Color.parseColor("#e8e8e8"));
 		tagListMainLayout.setPadding(20, 0, 0, 0);
 		imageView.setImageResource(android.R.color.transparent);
-		
+		tagIconView.setImageResource(android.R.color.transparent);
 		
 		switch (getLayoutType(tag.getTag_numbering())) {
 			case TITLE_TYPE:
@@ -119,15 +121,20 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 				dividingLine.setBackgroundColor(Color.parseColor("#e8e8e8"));
 				tagTitle = tag.getContent();
 				text.setText(tagTitle);
+				tagIconView.setImageDrawable(res.getDrawable(R.drawable.voice_labels));
 //				tagNumber = 1;
 				break;
 			case TAG_TYPE:
+
+				tagIconView.setImageDrawable(res.getDrawable(R.drawable.test));
 				if(tag.getType() == SRDbHelper.TEXT_TAG_TYPE){
-					tagTitle = "Tag#"+tag.getTag_numbering()+" "+tag.getContent();
+					tagTitle = " "+tag.getTag_numbering()+" "+tag.getContent();
 					//tagTitle = "Text is "+tag.getContent();
+					tagIconView.setImageDrawable(res.getDrawable(R.drawable.text_labels));
 				}
 				else if(tag.getType() == SRDbHelper.PAGE_TAG_TYPE){
-					tagTitle = "Tag#"+tag.getTag_numbering()+" Page is "+tag.getContent();
+					tagTitle = " "+tag.getTag_numbering()+" Page is "+tag.getContent();
+					tagIconView.setImageDrawable(res.getDrawable(R.drawable.doc_labels));
 //					tagTitle = "Page is "+tag.getContent();
 				}
 				else if(tag.getType() == SRDbHelper.PHOTO_TAG_TYPE){
@@ -169,10 +176,11 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 						}
 					}
 					else{
-						Resources res = mContext.getResources(); /** from an Activity */
+						
 						imageView.setImageDrawable(res.getDrawable(R.drawable.test));
 					}
-					tagTitle = "Tag#"+tag.getTag_numbering() +" "+getImageFileName(tag.getContent());
+					tagIconView.setImageDrawable(res.getDrawable(R.drawable.pic_labels));
+					tagTitle = " "+tag.getTag_numbering() +" "+getImageFileName(tag.getContent());
 				}
 				text.setText(tagTitle);
 				tagNumber++;
