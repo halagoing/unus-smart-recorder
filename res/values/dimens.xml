@@ -7,4 +7,5 @@
     <dimen name="sound_volume_right_margin">60dp</dimen>
     <dimen name="dialog_margin">10dip</dimen>
     <dimen name="doc_frame_height">250dp</dimen>
+    <dimen name="button_min_height">10dip</dimen>
 </resources>

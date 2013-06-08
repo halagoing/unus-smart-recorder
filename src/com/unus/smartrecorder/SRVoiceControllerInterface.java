@@ -29,4 +29,8 @@ public interface SRVoiceControllerInterface {
     public void jumpToggleBtn(Boolean rewind);
     
     public void playBySeekBar(int seekTime);
+
+    public void docPageChanged(int page);
+
+    public void changeAutoTag(boolean isChecked);
 }

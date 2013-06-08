@@ -55,7 +55,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     private TextView mDocPathView;  // Basic Info Dialog
     private EditText mTextTagView;  // Text Tag Dialog
     
-    private long mTagTime;
+    private int mTagTime;
     
 	private static final String DOC_PATTERN = "([^*]+(\\.(?i)(pdf))$)";
 	private static final Boolean Boolean = null;
@@ -257,7 +257,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                                         int whichButton) {
                                 	
                                     // add Text Tag
-                                    mModel.addTag(SRDbHelper.TEXT_TAG_TYPE, mTextTagView.getText().toString(), Long.toString(mTagTime));
+                                    mModel.addTag(SRDbHelper.TEXT_TAG_TYPE, mTextTagView.getText().toString(), Integer.toString(mTagTime));
                                 }
                             })
                     .setNegativeButton(android.R.string.cancel,
@@ -368,7 +368,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                 
                 SRDebugUtil.SRLog("onActivityResult() PhotoPath:" + filePath);
                 
-                mModel.addTag(SRDbHelper.PHOTO_TAG_TYPE, filePath, Long.toString(mTagTime));
+                mModel.addTag(SRDbHelper.PHOTO_TAG_TYPE, filePath, Integer.toString(mTagTime));
             } else {
                 mTagTime = 0;
             }
@@ -547,6 +547,23 @@ public class SRVoiceController implements SRVoiceControllerInterface {
 		// TODO Auto-generated method stub
 		mModel.playBySeek(seekTime);
 	}
-    
-    
+
+    @Override
+    public void docPageChanged(int page) {
+        SRDebugUtil.SRLog("docPageChanged(): " + page);
+        
+        if (mModel.getMode() == SRVoice.RECORDER_MODE) {
+            if (mModel.isRecordering()
+                    && mModel.isAutoTag()) {
+                mModel.addTag(SRDbHelper.PAGE_TAG_TYPE, Integer.toString(page), Integer.toString(mModel.getCurrentRecordTime()));                
+            }
+        } else if (mModel.getMode() == SRVoice.PLAYER_MODE) {
+            // Do nothing
+        }
+    }
+
+    @Override
+    public void changeAutoTag(boolean isChecked) {
+        mModel.setAutoTag(isChecked);
+    }
 }

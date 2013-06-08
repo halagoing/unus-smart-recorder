@@ -68,6 +68,13 @@ public class SRRecorderService extends Service{
 		SRDebugUtil.SRLog("call SRRecorderService onStartCommand");
 		String voicePath = intent.getStringExtra(SRConfig.VOICE_PATH_KEY);
 		SRDebugUtil.SRLog("voicePath = "+ voicePath);
+		
+        String filepath = Environment.getExternalStorageDirectory().getPath();
+        File file = new File(filepath, AUDIO_RECORDER_FOLDER);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+		
 		if(mRecorder==null){
 			mRecorder = new MediaRecorder();
 			mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
