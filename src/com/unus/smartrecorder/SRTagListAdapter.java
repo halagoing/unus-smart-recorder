@@ -177,7 +177,7 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 					}
 					else{
 						
-						imageView.setImageDrawable(res.getDrawable(R.drawable.test));
+						imageView.setImageDrawable(res.getDrawable(R.drawable.no_pic));
 					}
 					tagIconView.setImageDrawable(res.getDrawable(R.drawable.pic_labels));
 					tagTitle = " "+tag.getTag_numbering() +" "+getImageFileName(tag.getContent());

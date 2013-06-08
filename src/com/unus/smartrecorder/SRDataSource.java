@@ -136,6 +136,15 @@ public class SRDataSource {
 		database.delete(SRDbHelper.TABLE_TAG, SRDbHelper.TAG_COLUMN_TAG_ID
 		    + " = " + tag_id, null);
     }
+	public void deleteTagsByVoiceId(long voice_id){
+		
+		database.delete(SRDbHelper.TABLE_TAG, SRDbHelper.TAG_COLUMN_VOICE_ID
+		    + " = " + voice_id, null);
+	}
+	public void deleteDocTagByVoiceId(long voice_id) {
+		database.delete(SRDbHelper.TABLE_TAG, SRDbHelper.TAG_COLUMN_VOICE_ID
+			    + " = " + voice_id+ " and "+SRDbHelper.TAG_COLUMN_TYPE+ " = " + SRDbHelper.PAGE_TAG_TYPE, null);
+	}
 	
 	public ArrayList<SRTagDb> getAllTag() {
 		ArrayList<SRTagDb> tags = new ArrayList<SRTagDb>();

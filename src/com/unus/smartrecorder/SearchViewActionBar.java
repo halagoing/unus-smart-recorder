@@ -46,9 +46,14 @@ public class SearchViewActionBar extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-
+        
         // setContentView(R.layout.searchview_actionbar);
-
+        
+        
+        
+        
+        
+        
         mActionBar = getActionBar();
         mActionBar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_HOME); // remove
                                                                       // title
@@ -60,6 +65,9 @@ public class SearchViewActionBar extends Activity {
         
         mSRVoice = new SRVoice();
         mSRVoiceController = new SRVoiceController(mSRVoice, this);
+        
+        mSRVoiceController.checkFileExists();
+        
         mSRVoiceController.setViewMode(SRVoice.RECORDER_MODE);
         
         // Logo
