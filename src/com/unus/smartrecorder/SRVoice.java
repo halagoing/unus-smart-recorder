@@ -71,6 +71,8 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
 	
 	private int mPlayerState;
 	
+	private boolean mIsAutoTag = true;
+	
 	private long mRecordStartTime;
 //	private Handler mHandler = new Handler() {
 //
@@ -594,5 +596,18 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         if (i >= 0) {
             mSRVoiceObserver.remove(i);
         }
+    }
+
+    /**
+     * Auto tag 상태인지 확인 (PDF페이지 넘길때 자동으로 태그 추가)
+     */
+    @Override
+    public boolean isAutoTag() {
+        return mIsAutoTag;
+    }
+    
+    @Override
+    public void setAutoTag(boolean isAutoTag) {
+        mIsAutoTag = isAutoTag;
     }
 }

@@ -50,4 +50,8 @@ public interface SRVoiceInterface {
     public int getPlayerState();
     
     public boolean isRecordering();
+
+    public boolean isAutoTag();
+
+    public void setAutoTag(boolean isAutoTag);
 }

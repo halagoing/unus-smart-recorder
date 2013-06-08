@@ -25,4 +25,8 @@ public interface SRVoiceControllerInterface {
     public void playStop();
 
     public void playByPlayToggleBtn();
+
+    public void docPageChanged(int page);
+
+    public void changeAutoTag(boolean isChecked);
 }
