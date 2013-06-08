@@ -1,5 +1,6 @@
 package com.unus.smartrecorder;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -14,6 +15,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
+import android.net.NetworkInfo.DetailedState;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -29,6 +31,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SearchView.OnCloseListener;
 import android.widget.SearchView.OnQueryTextListener;
@@ -77,6 +80,60 @@ public class SRVoiceController implements SRVoiceControllerInterface {
             }
         }
     };    
+    
+    public void checkFileExists(){
+    	
+    			
+    			
+    	SRDataSource datasource = new SRDataSource(mContext);
+        datasource.open();
+        // {{TESTCODE
+        
+        //mContext.bindService(service, conn, flags)
+        
+        
+        List<SRVoiceDb> voiceList = datasource.getAllVoice();
+
+        for (int index =0 ; index < voiceList.size();  index++){
+        	SRVoiceDb voiceDb = voiceList.get(index);
+        	SRDebugUtil.SRLog("voiceDb getVoice_path" + voiceDb.getVoice_path());
+        	File voiceFile = new  File(voiceDb.getVoice_path());
+        	if(!voiceFile.exists()){
+        		datasource.deleteTagsByVoiceId(voiceDb.getVoice_id());
+        		datasource.deleteVoice(voiceDb);
+        		SRDebugUtil.SRLog("no voiceFile!!!!");
+        		continue;
+        	}
+        	SRDebugUtil.SRLog("voiceDb.getDocument_path() = " +voiceDb.getDocument_path());
+        	if(!voiceDb.getDocument_path().equals("")){
+//        		SRDebugUtil.SRLog("doc check!!!!");
+        		File docFile = new  File(voiceDb.getDocument_path());
+            	if(!docFile.exists()){
+            		datasource.deleteDocTagByVoiceId(voiceDb.getVoice_id());
+            		SRDebugUtil.SRLog("no docFile!!!!");
+            		
+            	}
+        	}
+        	
+        	SRDebugUtil.SRLog("con??");
+        }
+        
+        ArrayList<SRTagDb> tagList = datasource.getAllTag();
+        
+        for (int index =0 ; index < tagList.size();  index++){
+        	SRTagDb tagDb = tagList.get(index);
+        	if(tagDb.getType()==SRDbHelper.PHOTO_TAG_TYPE){
+        		File picFile = new  File(tagDb.getContent());
+        		if(!picFile.exists()){
+            		datasource.deleteTag(tagDb);
+            	}
+        	}
+        }
+        
+        
+        
+        datasource.close();
+    }
     
     public SRVoiceController(SRVoiceInterface model, Activity activity) {
         super();

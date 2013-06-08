@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 public class SRDataSource {
 	private SQLiteDatabase database;
 	private SRDbHelper dbHelper;
+	private int mNubering = 0; 
 	
 	private String[] allVoiceColumns = {SRDbHelper.VOICE_COLUMN_VOICE_ID,SRDbHelper.VOICE_COLUMN_CREATED_DATETIME,
 			SRDbHelper.VOICE_COLUMN_VOICE_PATH,SRDbHelper.VOICE_COLUMN_DOCUMENT_PATH};
@@ -113,15 +114,20 @@ public class SRDataSource {
 		tag.setType(cursor.getInt(3));
 		tag.setContent(cursor.getString(4));
 		tag.setTag_time(cursor.getString(5));
-		
+		isFirstTag(tag.getTag_time());
+
+		tag.setTag_numbering(mNubering);
+
 		return tag;
 	}
 	
 	private Boolean isFirstTag(String tagTime) {
 		int intTagTime = Integer.parseInt(tagTime);
 		if(intTagTime==0){
+			mNubering = 0;
 			return true;
 		}
+		mNubering ++;
 		return false;
 	}
 	
@@ -130,6 +136,15 @@ public class SRDataSource {
 		database.delete(SRDbHelper.TABLE_TAG, SRDbHelper.TAG_COLUMN_TAG_ID
 		    + " = " + tag_id, null);
     }
+	public void deleteTagsByVoiceId(long voice_id){
+		
+		database.delete(SRDbHelper.TABLE_TAG, SRDbHelper.TAG_COLUMN_VOICE_ID
+		    + " = " + voice_id, null);
+	}
+	public void deleteDocTagByVoiceId(long voice_id) {
+		database.delete(SRDbHelper.TABLE_TAG, SRDbHelper.TAG_COLUMN_VOICE_ID
+			    + " = " + voice_id+ " and "+SRDbHelper.TAG_COLUMN_TYPE+ " = " + SRDbHelper.PAGE_TAG_TYPE, null);
+	}
 	
 	public ArrayList<SRTagDb> getAllTag() {
 		ArrayList<SRTagDb> tags = new ArrayList<SRTagDb>();
