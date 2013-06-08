@@ -57,8 +57,9 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
 
     private static final int UPDATE_TAGS = 1;
     private static final int UPDATE_TIME = 2;
-    private static final int UPDATE_RECORDER_BTN = 3;
-    private static final int UPDATE_PLAYER_BTN = 4;
+    private static final int UPDATE_DURATION = 3;
+    private static final int UPDATE_RECORDER_BTN = 4;
+    private static final int UPDATE_PLAYER_BTN = 5;
     
     private Handler mHandler = new Handler() {
 
@@ -71,6 +72,9 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
             case UPDATE_TIME:
                 setTime((Integer)msg.obj);
                 break;
+            case UPDATE_DURATION:
+                setDuration((Integer)msg.obj);
+                break;                
             case UPDATE_RECORDER_BTN:
                 setRecorderBtnState((Boolean)msg.obj);
                 break;
@@ -289,6 +293,15 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         
         mHandler.sendMessage(m);       
     }
+    
+    @Override
+    public void updateDuration(int duration) {
+        Message m = new Message();
+        m.what = UPDATE_DURATION;
+        m.obj = duration;
+        
+        mHandler.sendMessage(m); 
+    }
 
     @Override
     public void updatePlayerBtnState(int playerState) {
@@ -320,6 +333,20 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         }
         if (mTimeView != null)
             mTimeView.setText(String.format("%d:%02d:%02d", h, m, s));
+        if (mSeekBarView != null && mSeekBarView.getVisibility() == View.VISIBLE) {
+            mSeekBarView.setProgress(t);
+        }
+    }
+    
+    /**
+     * set Recording or Playing time text
+     * 
+     * @param t
+     */
+    private void setDuration(int t) {
+        if (mSeekBarView != null) {
+            mSeekBarView.setMax(t);
+        }
     }
     
     /**
@@ -391,6 +418,4 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
             mPlayerBtnsLayout.setVisibility(View.VISIBLE);
         }
     }
-    
-
 }

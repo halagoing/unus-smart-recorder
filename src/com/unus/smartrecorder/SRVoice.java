@@ -294,8 +294,10 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
             mPlayer.seekTo(position);
             mPlayer.start();
             
+            // Duration
+            notifyDurationObservers(getDuration());
             // Play Timer Start
-            setTimeTimer(1000);
+            setTimeTimer(1000);            
             
             // Change state
             mPlayerState = PLAYER_PLAY_STATE; 
@@ -374,6 +376,9 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         // Play Time End
         stopTimer();
         
+        // SeekBar Time Text to Zero
+        notifyTimeObservers(0);
+        
         mPlayerState = PLAYER_COMPLETE_STATE;
         notifyPlayerBtnStateObservers(mPlayerState);
     }    
@@ -417,6 +422,9 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
             
             // Play Time End
             stopTimer();
+            
+            // SeekBar Time Text to Zero
+            notifyTimeObservers(0);
             
             mPlayerState = PLAYER_STOP_STATE;
             notifyPlayerBtnStateObservers(mPlayerState);
@@ -503,6 +511,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     public interface SRVoiceObserver {
         public void updateTags(SRTagDb tag);
         public void updateTime(int time);
+        public void updateDuration(int duration);
         public void updateRecorderBtnState(boolean isRecording);
         public void updatePlayerBtnState(int playerState);
     }
@@ -523,6 +532,13 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         for (int i = 0; i < mSRVoiceObserver.size(); i++) {
             SRVoiceObserver observer = mSRVoiceObserver.get(i);
             observer.updateTime(time);
+        }
+    }
+    
+    public void notifyDurationObservers(int duration) {
+        for (int i = 0; i < mSRVoiceObserver.size(); i++) {
+            SRVoiceObserver observer = mSRVoiceObserver.get(i);
+            observer.updateDuration(duration);
         }
     }
     
