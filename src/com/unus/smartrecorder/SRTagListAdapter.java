@@ -82,10 +82,9 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		return position;
 	}
 	
-	private int getLayoutType(String tagTime) {
-		int intTagTime = Integer.parseInt(tagTime);
+	private int getLayoutType(int tagNumberting) {
 		int layoutType = TAG_TYPE;
-		if(intTagTime==0){
+		if(tagNumberting==0){
 			layoutType = TITLE_TYPE;
 		}
 		return layoutType;
@@ -113,7 +112,7 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		imageView.setImageResource(android.R.color.transparent);
 		
 		
-		switch (getLayoutType(tag.getTag_time())) {
+		switch (getLayoutType(tag.getTag_numbering())) {
 			case TITLE_TYPE:
 				tagListMainLayout.setBackgroundColor(Color.parseColor("#dedcdc"));
 				tagListMainLayout.setPadding(10, 0, 0, 0);
@@ -124,12 +123,12 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 				break;
 			case TAG_TYPE:
 				if(tag.getType() == SRDbHelper.TEXT_TAG_TYPE){
-					//tagTitle = "Tag#"+tagNumber+" "+tag.getContent();
-					tagTitle = "Text is "+tag.getContent();
+					tagTitle = "Tag#"+tag.getTag_numbering()+" "+tag.getContent();
+					//tagTitle = "Text is "+tag.getContent();
 				}
 				else if(tag.getType() == SRDbHelper.PAGE_TAG_TYPE){
-					//tagTitle = "Tag#"+tagNumber+" Page is "+tag.getContent();
-					tagTitle = "Page is "+tag.getContent();
+					tagTitle = "Tag#"+tag.getTag_numbering()+" Page is "+tag.getContent();
+//					tagTitle = "Page is "+tag.getContent();
 				}
 				else if(tag.getType() == SRDbHelper.PHOTO_TAG_TYPE){
 					
@@ -173,7 +172,7 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 						Resources res = mContext.getResources(); /** from an Activity */
 						imageView.setImageDrawable(res.getDrawable(R.drawable.test));
 					}
-					tagTitle = " "+getImageFileName(tag.getContent());
+					tagTitle = "Tag#"+tag.getTag_numbering() +" "+getImageFileName(tag.getContent());
 				}
 				text.setText(tagTitle);
 				tagNumber++;

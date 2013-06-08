@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 public class SRDataSource {
 	private SQLiteDatabase database;
 	private SRDbHelper dbHelper;
+	private int mNubering = 0; 
 	
 	private String[] allVoiceColumns = {SRDbHelper.VOICE_COLUMN_VOICE_ID,SRDbHelper.VOICE_COLUMN_CREATED_DATETIME,
 			SRDbHelper.VOICE_COLUMN_VOICE_PATH,SRDbHelper.VOICE_COLUMN_DOCUMENT_PATH};
@@ -113,15 +114,20 @@ public class SRDataSource {
 		tag.setType(cursor.getInt(3));
 		tag.setContent(cursor.getString(4));
 		tag.setTag_time(cursor.getString(5));
-		
+		isFirstTag(tag.getTag_time());
+
+		tag.setTag_numbering(mNubering);
+
 		return tag;
 	}
 	
 	private Boolean isFirstTag(String tagTime) {
 		int intTagTime = Integer.parseInt(tagTime);
 		if(intTagTime==0){
+			mNubering = 0;
 			return true;
 		}
+		mNubering ++;
 		return false;
 	}
 	
