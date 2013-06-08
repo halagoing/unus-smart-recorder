@@ -29,6 +29,7 @@ import android.media.MediaRecorder;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.util.DebugUtils;
 
 public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     public static final int RECORDER_MODE = 1;
@@ -53,6 +54,9 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     private String mTitle;
     private String mVoiceFilePath;
     private String mDocFilePath;
+    
+    
+    private static int JUMP_TIME = 5000; // 녹음중에 사용자가 음성을 점프할때의 시간 (ms)
     
     boolean isRecordering = false;
     //private MediaRecorder mRecorder = null;
@@ -469,7 +473,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     }
 
     public void share() {
-
+    	
     }
     
     /**
@@ -530,6 +534,45 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         mTagList.add(tag);
         notifyTagsObservers(tag);
     }
+    
+    @Override
+    public void playJump(Boolean rewind) {
+    	// TODO Auto-generated method stub
+    	SRDebugUtil.SRLog("call playJump");
+    	if (mPlayer != null) {
+    		if (mPlayer.isPlaying()) {
+    			//mPlayer.pause();
+    			try {
+                    if (mPlayerState == PLAYER_STOP_STATE) {
+                        mPlayer.prepare();
+                        
+                    }
+                    
+                    int seekToTime = mPlayer.getCurrentPosition();
+                    
+                    if (rewind)seekToTime = seekToTime - JUMP_TIME;
+                    else seekToTime = seekToTime + JUMP_TIME;
+                    
+                    mPlayer.seekTo(seekToTime);
+                    mPlayer.start();
+
+                    setTimeTimer(1000);
+                    
+                    mPlayerState = PLAYER_PLAY_STATE; 
+                    notifyPlayerBtnStateObservers(mPlayerState);
+                } catch (IllegalStateException e) {
+                    mPlayer.reset();
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    mPlayer.reset();
+                    e.printStackTrace();
+                }
+            } 
+    	}
+    	
+    }
+    
+    
 
     public interface SRVoiceObserver {
         public void updateTags(SRTagDb tag);

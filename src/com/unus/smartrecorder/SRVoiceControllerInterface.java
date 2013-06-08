@@ -25,4 +25,6 @@ public interface SRVoiceControllerInterface {
     public void playStop();
 
     public void playByPlayToggleBtn();
+    
+    public void jumpToggleBtn(Boolean rewind);
 }

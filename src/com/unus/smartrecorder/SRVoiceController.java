@@ -58,6 +58,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     private long mTagTime;
     
 	private static final String DOC_PATTERN = "([^*]+(\\.(?i)(pdf))$)";
+	private static final Boolean Boolean = null;
 	private Pattern pattern;
 	private Matcher matcher;
     
@@ -531,7 +532,12 @@ public class SRVoiceController implements SRVoiceControllerInterface {
 		//SRDebugUtil.SRLog("gppd!");
 		if(mModel.isRecordering()) mModel.recordStop();
 		else mActivity.finish();
-		
+	}
+    
+	@Override
+	public void jumpToggleBtn(Boolean rewind) {
+		// TODO Auto-generated method stub
+		mModel.playJump(rewind);
 	}
     
     

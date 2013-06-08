@@ -25,6 +25,7 @@ public interface SRVoiceInterface {
     
     public void registerObserver(SRVoiceObserver observer);
     
+    
     public void notifyTagsObservers(SRTagDb tag);
     
     public void notifyTimeObservers(int timer);   
@@ -50,4 +51,6 @@ public interface SRVoiceInterface {
     public int getPlayerState();
     
     public boolean isRecordering();
+    
+    public void playJump(Boolean rewind);
 }

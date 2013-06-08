@@ -193,7 +193,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
             @Override
             public void onClick(View v) {
                 SRDebugUtil.SRLog("FF Click");
-
+                mController.jumpToggleBtn(false);
             }
         });
         mRewindBtn = (ImageButton) findViewById(R.id.rewindBtn);
@@ -201,6 +201,9 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
             @Override
             public void onClick(View v) {
                 SRDebugUtil.SRLog("Rewind Click");
+                if (mController != null){
+                	mController.jumpToggleBtn(true);
+                }
 
             }
         });
