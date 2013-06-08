@@ -236,6 +236,13 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         }
         
         SRVoiceDb voiceDb =  mDataSource.getVoiceByVoiceId(voiceId);
+        
+        ArrayList<SRTagDb> tagsDb = mDataSource.getTagByVoiceId(voiceId);
+        
+        mTagList = tagsDb;
+        
+        SRDebugUtil.SRLog("SRVoice.play(): mTagList = " + mTagList);
+        
         if (voiceDb == null) {
             SRDebugUtil.SRLogError("SRVoice.play() : voiceId is not valid");
             return;
@@ -256,6 +263,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
             mPlayer.seekTo(position);
             mPlayer.start();
             mPlayerState = PLAYER_PLAY_STATE; 
+            notifyTagListUpObservers(tagsDb);
             notifyPlayerBtnStateObservers(true);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -425,6 +433,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         public void updateTime(long time);
         public void updateRecorderBtnState(boolean isRecording);
         public void updatePlayerBtnState(boolean isPlaying);
+        public void updateTagList(ArrayList<SRTagDb> tags);
     }
     
     ArrayList<SRVoiceObserver> mSRVoiceObserver = new ArrayList<SRVoiceObserver>();
@@ -459,6 +468,12 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
             observer.updatePlayerBtnState(isPlaying);
         }
     } 
+    public void notifyTagListUpObservers(ArrayList<SRTagDb> tagsDb){
+    	for (int i = 0; i < mSRVoiceObserver.size(); i++) {
+            SRVoiceObserver observer = mSRVoiceObserver.get(i);
+            observer.updateTagList(tagsDb);
+        }
+    }
     
     public void removeObserver(SRVoiceObserver o) {
         int i = mSRVoiceObserver.indexOf(o);

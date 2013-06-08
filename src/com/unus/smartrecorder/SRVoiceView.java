@@ -239,6 +239,10 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
 
     }
     
+    public void setTagList(){
+    	
+    }
+    
     public void setDocPath(String docPath) {
         if (docPath == null || docPath.length() ==0) {
             if (mDocView != null)
@@ -297,6 +301,22 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         m.obj = isPlaying;
         
         mHandler.sendMessage(m);
+    }
+    
+    @Override
+    public void updateTagList(ArrayList<SRTagDb> tags) {
+    	// TODO Auto-generated method stub
+    	//mTagListView.set
+    	
+    	SRDebugUtil.SRLog("updateTagList");
+    	
+    	mTagListView = (ListView)findViewById(R.id.tagListView);
+        
+        //ArrayList<SRTagDb> tags = datasource.getAllTag();
+        
+        tagListAdapter = new SRTagListAdapter(mContext, R.layout.sr_tag_list, tags);
+        
+        mTagListView.setAdapter(tagListAdapter);
     }
     
     /**
