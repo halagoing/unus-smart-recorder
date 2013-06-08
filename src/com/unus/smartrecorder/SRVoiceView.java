@@ -309,14 +309,21 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         //mDocFrame.removeView(mDocView);
         mDocFrame.addView(mDocView);    	
     }
+    public void focusToLastItem() {
 
+    	mTagListView.setSelection(mTagListView.getCount()-1);
+    	mTagListView.requestFocus(mTagListView.getCount()-1);
+	}
     @Override
     public void updateTags(SRTagDb tag) {
     	//tagListAdapter.add(tag);
         Message m = new Message();
         m.what = UPDATE_TAGS;
         m.obj = tag;
-        
+        focusToLastItem();
+//        mTagListView.get
+//        mTagListView.setSelection();
+//        mTagListView.requestFocus();
         mHandler.sendMessage(m);
     }
     

@@ -80,7 +80,7 @@ public class SRSearchView extends FrameLayout {
         SRDebugUtil.SRLog("tags = "+tags);
         
         mListView = (ListView)findViewById(R.id.SRSearchListView);
-
+        
         tagListAdapter = new SRTagListAdapter(mContext, R.layout.sr_tag_list, tags);
         mListView.setAdapter(tagListAdapter);
         
@@ -96,6 +96,9 @@ public class SRSearchView extends FrameLayout {
             }
             
         });
+        
+        
+
     }
     
     
