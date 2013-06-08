@@ -303,8 +303,15 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
      */
     public void setDocPath(String docPath) {
         if (docPath == null || docPath.length() ==0) {
-            if (mDocView != null)
+            if (mDocView != null) {
                 mDocFrame.removeView(mDocView);
+                mDocView = null;
+            }
+            if (mCore != null) {
+                mCore.onDestroy();
+                mCore = null;
+            }
+            mDummyView.setVisibility(View.VISIBLE);
             return;
         }
  
@@ -339,7 +346,8 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         		return;
         }
         //mDocFrame.removeView(mDocView);
-        mDocFrame.addView(mDocView);    	
+        mDocFrame.addView(mDocView);
+        mDummyView.setVisibility(View.INVISIBLE);
     }
     public void focusToLastItem() {
 

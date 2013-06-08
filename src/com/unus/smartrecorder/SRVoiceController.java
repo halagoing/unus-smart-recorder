@@ -3,6 +3,8 @@ package com.unus.smartrecorder;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +20,8 @@ import android.database.Cursor;
 import android.net.NetworkInfo.DetailedState;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
@@ -435,6 +439,21 @@ public class SRVoiceController implements SRVoiceControllerInterface {
             break;    
         }
     }
+    
+    private int getNearDocPage(int position) {
+        ArrayList<SRTagDb> tags = mModel.getPageTagList();
+        if (tags.size() > 0) {
+            int i;
+            for (i = tags.size() - 1; i >= 0; i--) {
+                SRTagDb pageTag = tags.get(i);
+                int pageTagTime = Integer.parseInt(pageTag.getTag_time());
+                if (pageTagTime <= position) {
+                    return Integer.parseInt(pageTag.getContent());
+                }
+            }
+        } 
+        return 0;
+    }
    
     /**
      * Search View에서 Tag를 선택했을때 재생 
@@ -464,35 +483,29 @@ public class SRVoiceController implements SRVoiceControllerInterface {
             SRDebugUtil.SRLogError("playBySearchList() : voiceId is not valid");
             return;
         }
+        mModel.setVoiceId(voiceId);
+        
         String voicePath = voiceDb.getVoice_path();
         String docPath = voiceDb.getDocument_path();       
         
         // Tag List update
         mModel.setTagList(tagsDb);
         
+        // Page Tag List update
+        mModel.setPageTagList(mModel.getDataSource().getDocTagByVoiceId(voiceId));
+        
         // Document Display
         if (docPath != null && docPath.length() > 0) {
             SRDebugUtil.SRLog("playBySearchList(): Doc = " + docPath);
             mSRVoiceView.setDocPath(docPath);
-            //mSRVoiceView.setDocPage(10);
             
             if (tagDb.getType() == SRDbHelper.PAGE_TAG_TYPE) {
                 mSRVoiceView.setDocPage(Integer.parseInt(tagDb.getContent()));
             } else {
-                ArrayList<SRTagDb> tags = mModel.getDataSource().getDocTagByVoiceId(voiceId);
-                if (tags.size() > 0) {
-                    int time = Integer.parseInt(tagDb.getTag_time());
-                    int i;
-                    for (i = tags.size() - 1; i >= 0; i--) {
-                        SRTagDb pageTag = tags.get(i);
-                        int pageTagTime = Integer.parseInt(pageTag.getTag_time());
-                        if (pageTagTime < time) {
-                            mSRVoiceView.setDocPage(Integer.parseInt(tagDb.getContent()));
-                            break;
-                        }
-                    }
-                }
+                mSRVoiceView.setDocPage(getNearDocPage(Integer.parseInt(tagTime)));
             }
+        } else {
+            mSRVoiceView.setDocPath(null);
         }
         
         // Play
@@ -500,6 +513,9 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         
         // Action Bar Title
         mActivity.getActionBar().setTitle(mModel.makeVoicePathToTitle(voicePath));
+        
+        
+
     }
     
     /**
@@ -648,6 +664,9 @@ public class SRVoiceController implements SRVoiceControllerInterface {
 	public void playBySeekTime(int seekTime) {
 		// TODO Auto-generated method stub
 		mModel.seekTo(seekTime);
+		
+		// Doc Page 
+		mSRVoiceView.setDocPage(getNearDocPage(seekTime));
 	}
 
     @Override

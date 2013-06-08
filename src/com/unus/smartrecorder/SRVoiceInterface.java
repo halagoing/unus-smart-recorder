@@ -44,7 +44,7 @@ public interface SRVoiceInterface {
     
     public void setMode(int mode);
 
-    public void play(long voiceId, int position);
+//    public void play(long voiceId, int position);
     
     public void play(String voicePath, int seekTime);
 
@@ -73,4 +73,12 @@ public interface SRVoiceInterface {
     public ArrayList<SRTagDb> getTagList();
 
     public void setTagList(ArrayList<SRTagDb> tagList);
+
+    public long getVoiceId();
+
+    public void setVoiceId(long voiceId);
+
+    public void setPageTagList(ArrayList<SRTagDb> docTagByVoiceId);
+
+    public ArrayList<SRTagDb> getPageTagList();
 }

@@ -77,6 +77,10 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
 	
 	private boolean mIsAutoTag = true;
 	
+	private long mVoiceId;
+	
+	ArrayList<SRTagDb> mPageTagList;
+	
 	private long mRecordStartTime;
 //	private Handler mHandler = new Handler() {
 //
@@ -94,7 +98,6 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
 //	    
 //	};
 	private Timer mTimer;
-	
 	
 	@Override
 	public boolean isRecordering() {
@@ -182,7 +185,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         mMode = mode;
         
         if (mMode == PLAYER_MODE) {
-            mPlayerState = PLAYER_STOP_STATE;
+            //mPlayerState = PLAYER_STOP_STATE;
             notifyPlayerBtnStateObservers(mPlayerState);
         } else if (mMode == RECORDER_MODE) {
             notifyRecorderBtnStateObservers(isRecordering());
@@ -291,8 +294,10 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
 
             // Duration
             notifyDurationObservers(getDuration());
+            
             // Play Timer Start
-            setTimeTimer(1000);
+            //setTimeTimer(1000);
+            setTimeTimer(100);
 
             // Change state
             mPlayerState = PLAYER_PLAY_STATE;
@@ -313,35 +318,35 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     /**
      * 재생 동작을 한다. (Search List에서 선택된 경우)
      */
-    @Override
-    public void play(long voiceId, int position) {
-        if (mDataSource == null) {
-            SRDebugUtil.SRLogError("SRVoice.play() : mDataSource is null");
-            return;
-        }
-        
-        SRVoiceDb voiceDb =  mDataSource.getVoiceByVoiceId(voiceId);
-        
-        ArrayList<SRTagDb> tagsDb = mDataSource.getTagByVoiceId(voiceId);
-        
-        setTagList(tagsDb);
-        
-        SRDebugUtil.SRLog("SRVoice.play(): mTagList = " + getTagList());
-        
-        if (voiceDb == null) {
-            SRDebugUtil.SRLogError("SRVoice.play() : voiceId is not valid");
-            return;
-        }
-        
-        if (getPrevMode() == RECORDER_MODE) {
-            recordStop();
-        }
-        
-        mVoiceFilePath = voiceDb.getVoice_path();
-        mTitle = makeVoicePathToTitle(mVoiceFilePath);
- 
-        play(mVoiceFilePath, position);
-    }
+//    @Override
+//    public void play(long voiceId, int position) {
+//        if (mDataSource == null) {
+//            SRDebugUtil.SRLogError("SRVoice.play() : mDataSource is null");
+//            return;
+//        }
+//        
+//        SRVoiceDb voiceDb =  mDataSource.getVoiceByVoiceId(voiceId);
+//        
+//        ArrayList<SRTagDb> tagsDb = mDataSource.getTagByVoiceId(voiceId);
+//        
+//        setTagList(tagsDb);
+//        
+//        SRDebugUtil.SRLog("SRVoice.play(): mTagList = " + getTagList());
+//        
+//        if (voiceDb == null) {
+//            SRDebugUtil.SRLogError("SRVoice.play() : voiceId is not valid");
+//            return;
+//        }
+//        
+//        if (getPrevMode() == RECORDER_MODE) {
+//            recordStop();
+//        }
+//        
+//        mVoiceFilePath = voiceDb.getVoice_path();
+//        mTitle = makeVoicePathToTitle(mVoiceFilePath);
+// 
+//        play(mVoiceFilePath, position);
+//    }
 
     @Override
     public ArrayList<SRTagDb> getTagList() {
@@ -643,5 +648,29 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     @Override
     public SRDataSource getDataSource() {
         return mDataSource;
+    }
+    
+    @Override
+    public long getVoiceId() {
+        return mVoiceId;
+    }
+    
+    @Override
+    public void setVoiceId(long voiceId) {
+        mVoiceId = voiceId;
+    }
+
+    @Override
+    public void setPageTagList(ArrayList<SRTagDb> docTagByVoiceId) {
+        mPageTagList = docTagByVoiceId;
+        
+        if (mPageTagList != null && mPageTagList.size() > 0) {
+            
+        }
+    }
+    
+    @Override
+    public ArrayList<SRTagDb> getPageTagList() {
+        return mPageTagList;
     }
 }
