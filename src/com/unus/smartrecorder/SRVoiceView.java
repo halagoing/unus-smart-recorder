@@ -20,6 +20,7 @@ import android.os.Message;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -29,6 +30,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
@@ -337,6 +339,8 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     	
     	SRDebugUtil.SRLog("updateTagList");
     	
+
+    	
     	mTagListView = (ListView)findViewById(R.id.tagListView);
         
         //ArrayList<SRTagDb> tags = datasource.getAllTag();
@@ -344,6 +348,22 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         tagListAdapter = new SRTagListAdapter(mContext, R.layout.sr_tag_list, tags);
         
         mTagListView.setAdapter(tagListAdapter);
+        
+        mTagListView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id) {
+                SRDebugUtil.SRLog("mTagListView : onItemClick() pos = " + position);
+                SRDebugUtil.SRLog("tagListAdapter.getTagDb(position) = " + tagListAdapter.getTagDb(position));
+                SRDebugUtil.SRLog("tagListAdapter.getTagDb(position) = " + tagListAdapter.getTagDb(position));
+                //mController.playBySearchList(tagListAdapter.getTagDb(position));
+                SRTagDb tag = tagListAdapter.getTagDb(position);
+                SRDebugUtil.SRLog("tag.getTag_time()" + tag.getTag_time());
+                mController.playBySeekBar(Integer.parseInt(tag.getTag_time()) );
+            }
+            
+        });
+        
     }
     
     /**

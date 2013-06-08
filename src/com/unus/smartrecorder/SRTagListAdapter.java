@@ -224,9 +224,12 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
             	
             	for (int index = 0; index < mTags.size(); index++) {
                     SRTagDb tag = mTags.get(index);
-                    if (tag.getContent().toLowerCase().startsWith(constraint.toString()))   {
+                    SRDebugUtil.SRLog("constraint.toString() = " + constraint.toString());
+                    //System.out.println("text.indexOf('23'); = " + text.indexOf("TA"));
+                    if (tag.getContent().indexOf(constraint.toString()) != -1){
                     	filteredArrList.add(tag);
                     }
+
                 }
             	
             	//mTags.remove(1);
