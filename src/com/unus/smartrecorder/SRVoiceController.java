@@ -350,12 +350,19 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         // TODO: if need
     }
     
+    /**
+     * Search View에서 Tag를 선택했을때 재생 
+     */
     @Override
     public void playBySearchList(SRTagDb tagDb) {
+        // ActionBar 이전 상태로 이동 
         if (mActionBarSearchItem != null)
             mActionBarSearchItem.collapseActionView();
+        
+        // Player 모드 
         setViewMode(SRVoice.PLAYER_MODE);
         
+        // voice id와 tag time으로 재생 
         long voiceId = tagDb.getVoice_id();
         String tagTime = tagDb.getTag_time();
         
