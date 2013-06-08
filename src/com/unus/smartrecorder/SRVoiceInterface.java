@@ -33,6 +33,8 @@ public interface SRVoiceInterface {
     public void removeObserver(SRVoiceObserver o);
 
     public int getCurrentRecordTime();
+    
+    public int getCurrentPlayTime();
 
     public int getMode();
     
@@ -54,7 +56,7 @@ public interface SRVoiceInterface {
     
     public void playJump(Boolean rewind);
     
-    public void playBySeek(int seekTime);
+    public void seekTo(int seekTime);
 
     public boolean isAutoTag();
 

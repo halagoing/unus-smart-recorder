@@ -232,7 +232,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				// TODO Auto-generated method stub
 				SRDebugUtil.SRLog("setOnSeekBarChangeListener onStopTrackingTouch");
-				mController.playBySeekBar(seekBar.getProgress());
+				mController.playBySeekTime(seekBar.getProgress());
 				
 			}
 			
@@ -408,7 +408,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 //mController.playBySearchList(tagListAdapter.getTagDb(position));
                 SRTagDb tag = tagListAdapter.getTagDb(position);
 //                SRDebugUtil.SRLog("tag.getTag_time()" + tag.getTag_time());
-                mController.playBySeekBar(Integer.parseInt(tag.getTag_time()) );
+                mController.playBySeekTime(Integer.parseInt(tag.getTag_time()) );
             }
             
         });

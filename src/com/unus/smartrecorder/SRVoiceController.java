@@ -539,13 +539,20 @@ public class SRVoiceController implements SRVoiceControllerInterface {
 	@Override
 	public void jumpToggleBtn(Boolean rewind) {
 		// TODO Auto-generated method stub
-		mModel.playJump(rewind);
+		//mModel.playJump(rewind);
+
+		int curTime = mModel.getCurrentPlayTime();
+		if (rewind) {
+		    mModel.seekTo(curTime - SRVoice.JUMP_TIME);
+		} else {
+		    mModel.seekTo(curTime + SRVoice.JUMP_TIME);
+		}
 	}
 	
 	@Override
-	public void playBySeekBar(int seekTime) {
+	public void playBySeekTime(int seekTime) {
 		// TODO Auto-generated method stub
-		mModel.playBySeek(seekTime);
+		mModel.seekTo(seekTime);
 	}
 
     @Override

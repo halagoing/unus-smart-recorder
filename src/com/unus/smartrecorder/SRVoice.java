@@ -56,7 +56,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     private String mDocFilePath;
     
     
-    private static int JUMP_TIME = 5000; // 녹음중에 사용자가 음성을 점프할때의 시간 (ms)
+    public static int JUMP_TIME = 5000; // 녹음중에 사용자가 음성을 점프할때의 시간 (ms)
     
     boolean isRecordering = false;
     //private MediaRecorder mRecorder = null;
@@ -199,6 +199,11 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     @Override
     public int getCurrentRecordTime() {
         return (int)(System.currentTimeMillis() - mRecordStartTime);
+    }
+    
+    @Override
+    public int getCurrentPlayTime() {
+        return mPlayer.getCurrentPosition();
     }
  
     public ArrayList<SRTagDb> getmTagList() {
@@ -413,19 +418,6 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     }    
 
     /**
-     * SeekBar를 움직였을 때 해당 position으로 이동
-     * 
-     * @param position
-     */
-    public void seekTo(int position) {
-        SRDebugUtil.SRLog("SRVoice.getDuration()");
-        
-        if (mPlayer != null) {
-            mPlayer.seekTo(position);
-        }
-    }
-
-    /**
      * 재생 일시 정지 
      */
     @Override
@@ -546,17 +538,17 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     			int seekToTime = mPlayer.getCurrentPosition();
                 if (rewind)seekToTime = seekToTime - JUMP_TIME;
                 else seekToTime = seekToTime + JUMP_TIME;
-    			seekTo(seekToTime);
+    			mPlayer.seekTo(seekToTime);
             } 
     	}
     	
     }
     @Override
-    public void playBySeek(int seekTime) {
+    public void seekTo(int seekTime) {
     	// TODO Auto-generated method stub
     	if (mPlayer != null) {
     		if (mPlayer.isPlaying()) {
-    			seekTo(seekTime);
+    			mPlayer.seekTo(seekTime);
             } 
     	}
     }
