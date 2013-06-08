@@ -16,6 +16,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +45,7 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 	ArrayList<SRTagDb> mTags;
 	ArrayList<SRTagDb> mOriginalTags;
 	
-	
+	private int tagNumber = 1;
 	private static final int TITLE_TYPE = 1;
 	private static final int TAG_TYPE = 2;
 	int layout;
@@ -101,23 +102,25 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		
 		TextView text = (TextView)convertView.findViewById(R.id.tagListTitle);
 		LinearLayout dividingLine = (LinearLayout)convertView.findViewById(R.id.dividingLine);
-		dividingLine.setBackgroundColor(Color.WHITE);
+		RelativeLayout tagListMainLayout = (RelativeLayout)convertView.findViewById(R.id.tagListMainLayout);
+		dividingLine.setBackgroundColor(Color.parseColor("#e8e8e8"));
+		tagListMainLayout.setBackgroundColor(Color.parseColor("#e8e8e8"));
+		tagListMainLayout.setPadding(20, 0, 0, 0);
 		switch (getLayoutType(tag.getTag_time())) {
 			case TITLE_TYPE:
-				
-				//RelativeLayout rl = (RelativeLayout)fin
-				//RelativeLayout tagListMainLayout = (RelativeLayout)convertView.findViewById(R.id.tagListMainLayout);
-				
-				dividingLine.setBackgroundColor(Color.BLACK);
-				tagTitle = "Voice_"+tag.getVoice_id()+" "+tag.getContent();
+				tagListMainLayout.setBackgroundColor(Color.parseColor("#dedcdc"));
+				tagListMainLayout.setPadding(10, 0, 0, 0);
+				dividingLine.setBackgroundColor(Color.parseColor("#e8e8e8"));
+				tagTitle = tag.getContent();
 				text.setText(tagTitle);
+				tagNumber = 1;
 				break;
 			case TAG_TYPE:
 				if(tag.getType() == SRDbHelper.TEXT_TAG_TYPE){
-					tagTitle = "Tag#"+position+" "+tag.getContent();
+					tagTitle = "Tag#"+tagNumber+" "+tag.getContent();
 				}
 				else if(tag.getType() == SRDbHelper.PAGE_TAG_TYPE){
-					tagTitle = "Tag#"+position+" Page is "+tag.getContent();
+					tagTitle = "Tag#"+tagNumber+" Page is "+tag.getContent();
 				}
 				else if(tag.getType() == SRDbHelper.PHOTO_TAG_TYPE){
 					
@@ -154,27 +157,15 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 						catch (FileNotFoundException e){
 							
 						}
-						
-						
-						
-//						Bitmap myBitmap = BitmapFactory.decodeFile("/mnt/sdcard/DCIM/100LGDSC/CAM00016.jpg");
-//						imageView.setImageBitmap(myBitmap);
 					}
 					else{
 						Resources res = mContext.getResources(); /** from an Activity */
 						imageView.setImageDrawable(res.getDrawable(R.drawable.test));
 					}
-					
-					
-					
-					
-//					
-//					
-					
-					
-					tagTitle = "Tag#"+position+" Image path "+tag.getContent();
+					tagTitle = "Tag#"+tagNumber+" "+getImageFileName(tag.getContent());
 				}
 				text.setText(tagTitle);
+				tagNumber++;
 				break;
 			default:
 				break;
@@ -184,6 +175,11 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		
 		return convertView;
 
+	}
+	
+	private String getImageFileName(String content) {
+		String contents[] = content.split("/");
+		return contents[contents.length-1];
 	}
 	
 	@Override
