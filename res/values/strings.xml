@@ -31,6 +31,9 @@
 	<string name="not_supported">Not supported</string>			
 	<string name="play">Play</string>			
 	<string name="fast_forward">Fast forward</string>			
-	<string name="rewind">Rewind</string>    
+	<string name="rewind">Rewind</string>
+	<string name="add">Add</string>
+	<string name="share">Share</string>
+	<string name="pause">Pause</string>    
     
 </resources>

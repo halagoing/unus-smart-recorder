@@ -16,12 +16,16 @@
 
 package com.unus.smartrecorder;
 
+import java.lang.reflect.Field;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.ViewConfiguration;
 import android.view.Window;
 
 import com.android.debug.hv.ViewServer;
@@ -49,20 +53,35 @@ public class SearchViewActionBar extends Activity {
         mActionBar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_HOME); // remove
                                                                       // title
                                                                       // icon
-
+        getOverflowMenu();
+        
         // initial state
         mActionBar.setTitle(R.string.no_title); // no title
         
         mSRVoice = new SRVoice();
         mSRVoiceController = new SRVoiceController(mSRVoice, this);
         mSRVoiceController.setViewMode(SRVoice.RECORDER_MODE);
-
+        
         // Logo
         startActivity(new Intent(this, SRLogoActivity.class));
         
         // DEBUG : For Hierarchy Viewer
         ViewServer.get(this).addWindow(this);
     }
+    
+    private void getOverflowMenu() {
+
+        try {
+           ViewConfiguration config = ViewConfiguration.get(this);
+           Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+           if(menuKeyField != null) {
+               menuKeyField.setAccessible(true);
+               menuKeyField.setBoolean(config, false);
+           }
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
+   }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -73,7 +92,16 @@ public class SearchViewActionBar extends Activity {
         
         return true;
     }
-    
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mSRVoiceController != null)
+            mSRVoiceController.optionsItemSelected(item);
+        
+        return true;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();

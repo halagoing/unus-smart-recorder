@@ -23,11 +23,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaRecorder;
 import android.os.Environment;
 import android.os.Handler;
 
-public class SRVoice implements SRVoiceInterface {
+public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     public static final int RECORDER_MODE = 1;
     public static final int PLAYER_MODE = 2;
     public static final int SEARCH_MODE = 3;
@@ -78,6 +79,7 @@ public class SRVoice implements SRVoiceInterface {
 	    mDataSource.open();
 	    
 	    mPlayer = new MediaPlayer();
+	    mPlayer.setOnCompletionListener(this);
     }
 	
     @Override
@@ -107,6 +109,14 @@ public class SRVoice implements SRVoiceInterface {
     public void setMode(int mode) {
         mPrevMode = mMode;
         mMode = mode;
+        
+        if (mMode == PLAYER_MODE) {
+            notifyPlayerBtnStateObservers(false);
+        } else if (mMode == RECORDER_MODE) {
+            notifyRecorderBtnStateObservers(false);
+        } else if (mMode == SEARCH_MODE) {
+            
+        }
     }
     
     @Override
@@ -128,7 +138,12 @@ public class SRVoice implements SRVoiceInterface {
 	}
 
     public void recordStart() {
-    	SRDebugUtil.SRLog("recordStart -> isRecorder = " + isRecorder);
+        if (mPlayer != null && mPlayer.isPlaying()) {
+            playStop();
+        }
+        
+    	SRDebugUtil.SRLog("SRVoice.recordStart() : voice = " + mVoiceFilePath + " doc = " + mDocFilePath);
+    	
     	Intent recorderIntent = new Intent("com.unus.smartrecorder.Recorder");
     	recorderIntent.putExtra(SRConfig.VOICE_PATH_KEY, mVoiceFilePath);
     	mContext.startService(recorderIntent);
@@ -145,6 +160,9 @@ public class SRVoice implements SRVoiceInterface {
 //        SRDebugUtil.SRLog("woo = "+woo);
     	
     	//mView.setTagList();
+    	
+    	// SRVoiceView Button State
+    	notifyRecorderBtnStateObservers(true);
     }
     /*
      *  recorder error handling
@@ -164,6 +182,8 @@ public class SRVoice implements SRVoiceInterface {
 
 
     public void recordStop() {
+        SRDebugUtil.SRLog("SRVoice.recordStop()");
+        
     	mContext.stopService(new Intent("com.unus.smartrecorder.Recorder"));
 //    	SRVoiceView.mBtnRecorder.setText("recorder");
 //		isRecorder = false;
@@ -171,9 +191,14 @@ public class SRVoice implements SRVoiceInterface {
 //		mRecorder.release();
 //		mRecorder = null;
     	
-    	mTimer.cancel();
-    	mTimer = null;
+    	if (mTimer != null) {
+        	mTimer.cancel();
+        	mTimer = null;
+    	}
     	mVoiceDb = null;
+    	
+        // SRVoiceView Button State
+        notifyRecorderBtnStateObservers(false);
     }
 
     @Override
@@ -181,19 +206,23 @@ public class SRVoice implements SRVoiceInterface {
         String filePath;
         
         if (mDataSource == null) {
-            SRDebugUtil.SRLogError("play() : mDataSource is null");
+            SRDebugUtil.SRLogError("SRVoice.play() : mDataSource is null");
             return;
         }
         
         SRVoiceDb voiceDb =  mDataSource.getVoiceByVoiceId(voiceId);
         if (voiceDb == null) {
-            SRDebugUtil.SRLogError("play() : voiceId is not valid");
+            SRDebugUtil.SRLogError("SRVoice.play() : voiceId is not valid");
             return;
+        }
+        
+        if (getPrevMode() == RECORDER_MODE) {
+            recordStop();
         }
         
         filePath = voiceDb.getVoice_path();
  
-        SRDebugUtil.SRLog("play(): filePath = " + filePath + " pos = " + Integer.toString(position));
+        SRDebugUtil.SRLog("SRVoice.play(): filePath = " + filePath + " pos = " + Integer.toString(position));
         
         mPlayer.reset();
         try {
@@ -201,6 +230,7 @@ public class SRVoice implements SRVoiceInterface {
             mPlayer.prepare();
             mPlayer.seekTo(position);
             mPlayer.start();
+            notifyPlayerBtnStateObservers(true);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         } catch (SecurityException e) {
@@ -209,46 +239,31 @@ public class SRVoice implements SRVoiceInterface {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }        
+        } 
+    }
+
+    @Override
+    public void playCurrent() {
+        SRDebugUtil.SRLog("SRVoice.playCurrent()");
+        
+        if (mPlayer != null) {
+            if (mPlayer.isPlaying()) {
+                mPlayer.pause();
+                notifyPlayerBtnStateObservers(false);
+            } else {
+                mPlayer.start();
+                notifyPlayerBtnStateObservers(true);
+            }
+        }       
     }
     
-    public void play() {
-    	SRDebugUtil.SRLog("play -> play = ");
-    	MediaPlayer player;
-    	player = new MediaPlayer();
-//    	player = MediaPlayer.create(this, R.raw.man);
-    	
-
-		String filepath = Environment.getExternalStorageDirectory().getPath();
-		
-    	File file = new File(filepath, "BondRecorder");
-	    if (!file.exists()) {
-	        file.mkdirs();
-	    }
-	    //String filename = file.getAbsolutePath() + "/" + System.currentTimeMillis() + file_exts[currentFormat];
-	    String filename = file.getAbsolutePath() + "/" + "test" + file_exts[currentFormat];
-	    SRDebugUtil.SRLog("filename = " +filename);
-    	
-	    try {
-			player.setDataSource(filename);
-			player.prepare();
-			//player.seekTo(1);
-			player.start();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
-    }
+    /**
+     * 재생 종료되었을 때 콜백, 버튼의 상태를 바꿔준다. 
+     */
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        notifyPlayerBtnStateObservers(false);
+    }    
 
     public void seekTo(int position) {
 
@@ -256,13 +271,21 @@ public class SRVoice implements SRVoiceInterface {
 
     @Override
     public void playPause() {
-
+        SRDebugUtil.SRLog("SRVoice.playStop()");
+        
+        if (mPlayer != null && mPlayer.isPlaying()) {
+            mPlayer.pause();
+            notifyPlayerBtnStateObservers(false);
+        }
     }
 
     @Override
     public void playStop() {
+        SRDebugUtil.SRLog("SRVoice.playStop()");
+        
         if (mPlayer != null && mPlayer.isPlaying()) {
             mPlayer.stop();
+            notifyPlayerBtnStateObservers(false);
         }
     }
 
@@ -320,13 +343,15 @@ public class SRVoice implements SRVoiceInterface {
     public interface SRVoiceObserver {
         public void updateTags(SRTagDb tag);
         public void updateTime(long time);
+        public void updateRecorderBtnState(boolean isRecording);
+        public void updatePlayerBtnState(boolean isPlaying);
     }
     
     ArrayList<SRVoiceObserver> mSRVoiceObserver = new ArrayList<SRVoiceObserver>();
     public void registerObserver(SRVoiceObserver observer) {
         mSRVoiceObserver.add(observer);
     }
-        
+    
     public void notifyTagsObservers(SRTagDb tag) {
         for (int i = 0; i < mSRVoiceObserver.size(); i++) {
             SRVoiceObserver observer = mSRVoiceObserver.get(i);
@@ -339,7 +364,21 @@ public class SRVoice implements SRVoiceInterface {
             SRVoiceObserver observer = mSRVoiceObserver.get(i);
             observer.updateTime(time);
         }
-    }    
+    }
+    
+    public void notifyRecorderBtnStateObservers(boolean isRecording) {
+        for (int i = 0; i < mSRVoiceObserver.size(); i++) {
+            SRVoiceObserver observer = mSRVoiceObserver.get(i);
+            observer.updateRecorderBtnState(isRecording);
+        }
+    }
+    
+    public void notifyPlayerBtnStateObservers(boolean isPlaying) {
+        for (int i = 0; i < mSRVoiceObserver.size(); i++) {
+            SRVoiceObserver observer = mSRVoiceObserver.get(i);
+            observer.updatePlayerBtnState(isPlaying);
+        }
+    } 
     
     public void removeObserver(SRVoiceObserver o) {
         int i = mSRVoiceObserver.indexOf(o);
