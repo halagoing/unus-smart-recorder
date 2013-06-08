@@ -353,12 +353,12 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
-                SRDebugUtil.SRLog("mTagListView : onItemClick() pos = " + position);
-                SRDebugUtil.SRLog("tagListAdapter.getTagDb(position) = " + tagListAdapter.getTagDb(position));
-                SRDebugUtil.SRLog("tagListAdapter.getTagDb(position) = " + tagListAdapter.getTagDb(position));
+//                SRDebugUtil.SRLog("mTagListView : onItemClick() pos = " + position);
+//                SRDebugUtil.SRLog("tagListAdapter.getTagDb(position) = " + tagListAdapter.getTagDb(position));
+//                SRDebugUtil.SRLog("tagListAdapter.getTagDb(position) = " + tagListAdapter.getTagDb(position));
                 //mController.playBySearchList(tagListAdapter.getTagDb(position));
                 SRTagDb tag = tagListAdapter.getTagDb(position);
-                SRDebugUtil.SRLog("tag.getTag_time()" + tag.getTag_time());
+//                SRDebugUtil.SRLog("tag.getTag_time()" + tag.getTag_time());
                 mController.playBySeekBar(Integer.parseInt(tag.getTag_time()) );
             }
             
