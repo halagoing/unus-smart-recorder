@@ -59,6 +59,8 @@ public class SRVoiceController implements SRVoiceControllerInterface {
 	private Pattern pattern;
 	private Matcher matcher;
     
+	
+	
     // for show Keyboard 
     private EditText mActiveEditText;
     private Runnable mShowImeRunnable = new Runnable() {

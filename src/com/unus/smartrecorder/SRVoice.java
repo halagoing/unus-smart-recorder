@@ -21,6 +21,7 @@ import java.util.TimerTask;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
@@ -138,6 +139,11 @@ public class SRVoice implements SRVoiceInterface {
     	// Add Voice ddd
     	mVoiceDb = mDataSource.createVoice(mVoiceFilePath, mDocFilePath);
     	addTag(SRDbHelper.TEXT_TAG_TYPE, mTitle, "0");
+    	
+//    	ServiceConnection mConnection = null;
+//        Boolean woo = mContext.bindService(recorderIntent, mConnection, 0);
+//        SRDebugUtil.SRLog("woo = "+woo);
+    	
     	//mView.setTagList();
     }
     /*

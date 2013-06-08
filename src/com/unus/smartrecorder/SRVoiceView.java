@@ -11,7 +11,10 @@ package com.unus.smartrecorder;
 
 import java.util.ArrayList;
 
+import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +35,8 @@ import com.artifex.mupdfdemo.MuPDFReaderView;
 
 public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserver {
 
-    private Context mContext;
+
+	private Context mContext;
     private SRVoiceControllerInterface mController;
 
     private ListView mTagListView;
@@ -87,6 +91,8 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         datasource.open();
         // {{TESTCODE
         
+        //mContext.bindService(service, conn, flags)
+        
         mTagListView = (ListView)findViewById(R.id.tagListView);
         
         //ArrayList<SRTagDb> tags = datasource.getAllTag();
@@ -97,7 +103,10 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         
         datasource.close();
         
-        
+//        ServiceConnection mConnection = null;
+//        Intent recorderIntent = new Intent("com.unus.smartrecorder.Recorder");
+//        Boolean woo = mContext.bindService(recorderIntent, mConnection, 0);
+//        SRDebugUtil.SRLog("woo = "+woo);
         
 //        mTagListView.setAdapter(mTagListViewAdapter = new ArrayAdapter<String>(
 //
@@ -282,4 +291,6 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
             mPlayerBtnsLayout.setVisibility(View.VISIBLE);
         }
     }
+    
+
 }

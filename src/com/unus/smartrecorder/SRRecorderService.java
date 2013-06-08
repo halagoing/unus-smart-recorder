@@ -13,6 +13,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Environment;
@@ -31,8 +32,8 @@ public class SRRecorderService extends Service{
 	private int output_formats[] = { MediaRecorder.OutputFormat.MPEG_4, MediaRecorder.OutputFormat.THREE_GPP };
 	private String file_exts[] = { AUDIO_RECORDER_FILE_EXT_MP4, AUDIO_RECORDER_FILE_EXT_3GP };
 	public final static int NOTIFICATION_ID = 1357234;
-	
 	private NotificationManager mNotifiManager;
+	private Boolean isRecording = false;
 	
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -45,8 +46,21 @@ public class SRRecorderService extends Service{
 		// TODO Auto-generated method stub
 		super.onCreate();
 		mRecorder = null;
+		isRecording = false;
 		mNotifiManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 	}
+	
+	@Override
+	public boolean bindService(Intent service, ServiceConnection conn, int flags) {
+		// TODO Auto-generated method stub
+		//return super.bindService(service, conn, flags);
+		SRDebugUtil.SRLog("bindService");
+		return false;
+	}
+	
+	
+	
+	
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -120,13 +134,15 @@ public class SRRecorderService extends Service{
     
     private void showRecordingNotification() {
     	showNotification(NOTI_RECORDING);
-    	
+    	isRecording = true;
   
     }
     
     private void showStoppedNotification() {
     	showNotification(NOTI_RECORDING_STOP);
     	mNotifiManager.cancelAll();
+
+
     }
     
     private void showNotification(String notiMsg) {
