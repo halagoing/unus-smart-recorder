@@ -16,8 +16,6 @@ public interface SRVoiceControllerInterface {
 
     public void tagPhoto();
     
-    public void playBySearchListPos(int position);
-    
     public void playBySearchList(SRTagDb tagDb);
 
     public void setViewMode(int mode);

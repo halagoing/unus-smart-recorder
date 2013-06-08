@@ -435,15 +435,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
             break;    
         }
     }
-
-    @Override
-    public void playBySearchListPos(int position) {
-        if (mActionBarSearchItem != null)
-            mActionBarSearchItem.collapseActionView();
-        
-        // TODO: if need
-    }
-    
+   
     /**
      * Search View에서 Tag를 선택했을때 재생 
      */
@@ -483,6 +475,24 @@ public class SRVoiceController implements SRVoiceControllerInterface {
             SRDebugUtil.SRLog("playBySearchList(): Doc = " + docPath);
             mSRVoiceView.setDocPath(docPath);
             //mSRVoiceView.setDocPage(10);
+            
+            if (tagDb.getType() == SRDbHelper.PAGE_TAG_TYPE) {
+                mSRVoiceView.setDocPage(Integer.parseInt(tagDb.getContent()));
+            } else {
+                ArrayList<SRTagDb> tags = mModel.getDataSource().getDocTagByVoiceId(voiceId);
+                if (tags.size() > 0) {
+                    int time = Integer.parseInt(tagDb.getTag_time());
+                    int i;
+                    for (i = tags.size() - 1; i >= 0; i--) {
+                        SRTagDb pageTag = tags.get(i);
+                        int pageTagTime = Integer.parseInt(pageTag.getTag_time());
+                        if (pageTagTime < time) {
+                            mSRVoiceView.setDocPage(Integer.parseInt(tagDb.getContent()));
+                            break;
+                        }
+                    }
+                }
+            }
         }
         
         // Play
