@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Pattern;
 
 import android.content.Context;
 import android.content.Intent;
@@ -234,6 +235,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         }
         
         mVoiceFilePath = voiceDb.getVoice_path();
+        mTitle = makeVoicePathToTitle(mVoiceFilePath);
  
         SRDebugUtil.SRLog("SRVoice.play(): filePath = " + mVoiceFilePath + " pos = " + Integer.toString(position));
         
@@ -365,11 +367,27 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
 
     }
     
+    /**
+     * 기본 Title을 시간정보를 이용해 자동 생성해준다.
+     */
     @Override
     public String makeDefaultTitle() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
         
         return new String("Audio" + "-" + sdf.format(new Date()));
+    }
+    
+    /**
+     * Voice File 경로에서 Title에 해당하는 String을 리
+     * @param voicePath
+     * @return
+     */
+    public String makeVoicePathToTitle(String voicePath) {
+        int i = voicePath.lastIndexOf("/");
+        if (i == -1)
+            return null;
+        else 
+            return voicePath.substring(i + 1);
     }
 
     @Override
