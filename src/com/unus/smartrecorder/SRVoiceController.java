@@ -3,6 +3,8 @@ package com.unus.smartrecorder;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +20,8 @@ import android.database.Cursor;
 import android.net.NetworkInfo.DetailedState;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
@@ -435,15 +439,22 @@ public class SRVoiceController implements SRVoiceControllerInterface {
             break;    
         }
     }
-
-    @Override
-    public void playBySearchListPos(int position) {
-        if (mActionBarSearchItem != null)
-            mActionBarSearchItem.collapseActionView();
-        
-        // TODO: if need
-    }
     
+    private int getNearDocPage(int position) {
+        ArrayList<SRTagDb> tags = mModel.getPageTagList();
+        if (tags.size() > 0) {
+            int i;
+            for (i = tags.size() - 1; i >= 0; i--) {
+                SRTagDb pageTag = tags.get(i);
+                int pageTagTime = Integer.parseInt(pageTag.getTag_time());
+                if (pageTagTime <= position) {
+                    return Integer.parseInt(pageTag.getContent());
+                }
+            }
+        } 
+        return 0;
+    }
+   
     /**
      * Search View에서 Tag를 선택했을때 재생 
      */
@@ -452,17 +463,59 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         // ActionBar 이전 상태로 이동 
         if (mActionBarSearchItem != null)
             mActionBarSearchItem.collapseActionView();
+            
+        // 녹음중일 경우 녹음 정지 
+        if (mModel.getPrevMode() == SRVoice.RECORDER_MODE
+                && mModel.isRecordering()) {
+            mModel.recordStop();
+        }
         
-        // Player 모드 
+        // Player 모드 전환 
         setViewMode(SRVoice.PLAYER_MODE);
         
         // voice id와 tag time으로 재생 
         long voiceId = tagDb.getVoice_id();
-        String tagTime = tagDb.getTag_time();
+        String tagTime = tagDb.getTag_time();        
+        SRVoiceDb voiceDb =  mModel.getDataSource().getVoiceByVoiceId(voiceId);        
+        ArrayList<SRTagDb> tagsDb = mModel.getDataSource().getTagByVoiceId(voiceId);
         
-        mModel.play(voiceId, Integer.parseInt(tagTime));
+        if (voiceDb == null) {
+            SRDebugUtil.SRLogError("playBySearchList() : voiceId is not valid");
+            return;
+        }
+        mModel.setVoiceId(voiceId);
         
-        mActivity.getActionBar().setTitle(mModel.getTitle());
+        String voicePath = voiceDb.getVoice_path();
+        String docPath = voiceDb.getDocument_path();       
+        
+        // Tag List update
+        mModel.setTagList(tagsDb);
+        
+        // Page Tag List update
+        mModel.setPageTagList(mModel.getDataSource().getDocTagByVoiceId(voiceId));
+        
+        // Document Display
+        if (docPath != null && docPath.length() > 0) {
+            SRDebugUtil.SRLog("playBySearchList(): Doc = " + docPath);
+            mSRVoiceView.setDocPath(docPath);
+            
+            if (tagDb.getType() == SRDbHelper.PAGE_TAG_TYPE) {
+                mSRVoiceView.setDocPage(Integer.parseInt(tagDb.getContent()));
+            } else {
+                mSRVoiceView.setDocPage(getNearDocPage(Integer.parseInt(tagTime)));
+            }
+        } else {
+            mSRVoiceView.setDocPath(null);
+        }
+        
+        // Play
+        mModel.play(voicePath, Integer.parseInt(tagTime));
+        
+        // Action Bar Title
+        mActivity.getActionBar().setTitle(mModel.makeVoicePathToTitle(voicePath));
+        
+        
+
     }
     
     /**
@@ -597,13 +650,23 @@ public class SRVoiceController implements SRVoiceControllerInterface {
 	@Override
 	public void jumpToggleBtn(Boolean rewind) {
 		// TODO Auto-generated method stub
-		mModel.playJump(rewind);
+		//mModel.playJump(rewind);
+
+		int curTime = mModel.getCurrentPlayTime();
+		if (rewind) {
+		    mModel.seekTo(curTime - SRVoice.JUMP_TIME);
+		} else {
+		    mModel.seekTo(curTime + SRVoice.JUMP_TIME);
+		}
 	}
 	
 	@Override
-	public void playBySeekBar(int seekTime) {
+	public void playBySeekTime(int seekTime) {
 		// TODO Auto-generated method stub
-		mModel.playBySeek(seekTime);
+		mModel.seekTo(seekTime);
+		
+		// Doc Page 
+		mSRVoiceView.setDocPage(getNearDocPage(seekTime));
 	}
 
     @Override

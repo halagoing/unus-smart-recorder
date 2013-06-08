@@ -91,10 +91,12 @@ public class SRSearchView extends FrameLayout {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
+
 //            	view.setSelected(true);
            	SRDebugUtil.SRLog("SRSearchView : onItemClick() pos = " + position);
 ////                
                mController.playBySearchList(tagListAdapter.getTagDb(position));
+
             }
             
             

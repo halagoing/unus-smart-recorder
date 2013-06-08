@@ -16,8 +16,6 @@ public interface SRVoiceControllerInterface {
 
     public void tagPhoto();
     
-    public void playBySearchListPos(int position);
-    
     public void playBySearchList(SRTagDb tagDb);
 
     public void setViewMode(int mode);
@@ -28,7 +26,7 @@ public interface SRVoiceControllerInterface {
     
     public void jumpToggleBtn(Boolean rewind);
     
-    public void playBySeekBar(int seekTime);
+    public void playBySeekTime(int seekTime);
 
     public void docPageChanged(int page);
 

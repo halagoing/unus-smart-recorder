@@ -232,7 +232,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				// TODO Auto-generated method stub
 				SRDebugUtil.SRLog("setOnSeekBarChangeListener onStopTrackingTouch");
-				mController.playBySeekBar(seekBar.getProgress());
+				mController.playBySeekTime(seekBar.getProgress());
 				
 			}
 			
@@ -287,10 +287,31 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     	
     }
     
+    /**
+     * Doc의 해당 Page로 이동 
+     * @param page
+     */
+    public void setDocPage(int page) {
+        if (mDocView != null) {
+            mDocView.setDisplayedViewIndex(page);
+        }
+    }
+    
+    /**
+     * Doc 설정 
+     * @param docPath
+     */
     public void setDocPath(String docPath) {
         if (docPath == null || docPath.length() ==0) {
-            if (mDocView != null)
+            if (mDocView != null) {
                 mDocFrame.removeView(mDocView);
+                mDocView = null;
+            }
+            if (mCore != null) {
+                mCore.onDestroy();
+                mCore = null;
+            }
+            mDummyView.setVisibility(View.VISIBLE);
             return;
         }
  
@@ -325,7 +346,8 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         		return;
         }
         //mDocFrame.removeView(mDocView);
-        mDocFrame.addView(mDocView);    	
+        mDocFrame.addView(mDocView);
+        mDummyView.setVisibility(View.INVISIBLE);
     }
     public void focusToLastItem() {
 
@@ -408,7 +430,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 //mController.playBySearchList(tagListAdapter.getTagDb(position));
                 SRTagDb tag = tagListAdapter.getTagDb(position);
 //                SRDebugUtil.SRLog("tag.getTag_time()" + tag.getTag_time());
-                mController.playBySeekBar(Integer.parseInt(tag.getTag_time()) );
+                mController.playBySeekTime(Integer.parseInt(tag.getTag_time()) );
             }
             
         });
