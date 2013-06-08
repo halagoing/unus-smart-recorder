@@ -96,7 +96,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
 	private Timer mTimer;
 	
 	
-	
+	@Override
 	public boolean isRecordering() {
 		return isRecordering;
 	}
@@ -185,7 +185,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
             mPlayerState = PLAYER_STOP_STATE;
             notifyPlayerBtnStateObservers(mPlayerState);
         } else if (mMode == RECORDER_MODE) {
-            notifyRecorderBtnStateObservers(false);
+            notifyRecorderBtnStateObservers(isRecordering());
         } else if (mMode == SEARCH_MODE) {
             
         }
@@ -205,14 +205,6 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     public int getCurrentPlayTime() {
         return mPlayer.getCurrentPosition();
     }
- 
-    public ArrayList<SRTagDb> getmTagList() {
-		return mTagList;
-	}
-
-	public void setmTagList(ArrayList<SRTagDb> mTagList) {
-		this.mTagList = mTagList;
-	}
 
     public void recordStart() {
         if (mPlayer != null && mPlayer.isPlaying()) {
@@ -285,6 +277,39 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         return mPlayerState;
     }
     
+    @Override
+    public void play(String voicePath, int seekTime) {
+        SRDebugUtil.SRLog("SRVoice.play(): filePath = " + voicePath
+                + " seekTime = " + Integer.toString(seekTime));
+
+        try {
+            mPlayer.reset();
+            mPlayer.setDataSource(voicePath);
+            mPlayer.prepare();
+            mPlayer.seekTo(seekTime);
+            mPlayer.start();
+
+            // Duration
+            notifyDurationObservers(getDuration());
+            // Play Timer Start
+            setTimeTimer(1000);
+
+            // Change state
+            mPlayerState = PLAYER_PLAY_STATE;
+
+            notifyPlayerBtnStateObservers(mPlayerState);
+
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
     /**
      * 재생 동작을 한다. (Search List에서 선택된 경우)
      */
@@ -299,9 +324,9 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         
         ArrayList<SRTagDb> tagsDb = mDataSource.getTagByVoiceId(voiceId);
         
-        mTagList = tagsDb;
+        setTagList(tagsDb);
         
-        SRDebugUtil.SRLog("SRVoice.play(): mTagList = " + mTagList);
+        SRDebugUtil.SRLog("SRVoice.play(): mTagList = " + getTagList());
         
         if (voiceDb == null) {
             SRDebugUtil.SRLogError("SRVoice.play() : voiceId is not valid");
@@ -315,36 +340,18 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         mVoiceFilePath = voiceDb.getVoice_path();
         mTitle = makeVoicePathToTitle(mVoiceFilePath);
  
-        SRDebugUtil.SRLog("SRVoice.play(): filePath = " + mVoiceFilePath + " pos = " + Integer.toString(position));
-        
-        try {
-            mPlayer.reset();
-            mPlayer.setDataSource(mVoiceFilePath);
-            mPlayer.prepare();
-            mPlayer.seekTo(position);
-            mPlayer.start();
-            
-            // Duration
-            notifyDurationObservers(getDuration());
-            // Play Timer Start
-            setTimeTimer(1000);            
-            
-            // Change state
-            mPlayerState = PLAYER_PLAY_STATE; 
+        play(mVoiceFilePath, position);
+    }
 
-            notifyPlayerTagListUpObservers(tagsDb);
+    @Override
+    public ArrayList<SRTagDb> getTagList() {
+        return mTagList;
+    }
 
-            notifyPlayerBtnStateObservers(mPlayerState);
-
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } 
+    @Override
+    public void setTagList(ArrayList<SRTagDb> tagList) {
+        this.mTagList = tagList;
+        notifyPlayerTagListUpObservers(mTagList);
     }
 
     /**
@@ -389,10 +396,8 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
                         mPlayerState = PLAYER_PLAY_STATE; 
                         notifyPlayerBtnStateObservers(mPlayerState);
                     } catch (IllegalStateException e) {
-                        mPlayer.reset();
                         e.printStackTrace();
                     } catch (IOException e) {
-                        mPlayer.reset();
                         e.printStackTrace();
                     }
                 }
@@ -485,12 +490,15 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
      * @param voicePath
      * @return
      */
+    @Override
     public String makeVoicePathToTitle(String voicePath) {
         int i = voicePath.lastIndexOf("/");
-        if (i == -1)
+        if (i == -1) {
             return null;
-        else 
-            return voicePath.substring(i + 1);
+        } else {
+            mTitle = voicePath.substring(i + 1);
+            return mTitle;
+        }
     }
 
     @Override
@@ -630,5 +638,10 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     @Override
     public void setAutoTag(boolean isAutoTag) {
         mIsAutoTag = isAutoTag;
+    }
+    
+    @Override
+    public SRDataSource getDataSource() {
+        return mDataSource;
     }
 }

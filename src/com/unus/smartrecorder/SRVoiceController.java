@@ -1,5 +1,6 @@
 package com.unus.smartrecorder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -394,17 +395,44 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         // ActionBar 이전 상태로 이동 
         if (mActionBarSearchItem != null)
             mActionBarSearchItem.collapseActionView();
+            
+        // 녹음중일 경우 녹음 정지 
+        if (mModel.getPrevMode() == SRVoice.RECORDER_MODE
+                && mModel.isRecordering()) {
+            mModel.recordStop();
+        }
         
-        // Player 모드 
+        // Player 모드 전환 
         setViewMode(SRVoice.PLAYER_MODE);
         
         // voice id와 tag time으로 재생 
         long voiceId = tagDb.getVoice_id();
-        String tagTime = tagDb.getTag_time();
+        String tagTime = tagDb.getTag_time();        
+        SRVoiceDb voiceDb =  mModel.getDataSource().getVoiceByVoiceId(voiceId);        
+        ArrayList<SRTagDb> tagsDb = mModel.getDataSource().getTagByVoiceId(voiceId);
         
-        mModel.play(voiceId, Integer.parseInt(tagTime));
+        if (voiceDb == null) {
+            SRDebugUtil.SRLogError("playBySearchList() : voiceId is not valid");
+            return;
+        }
+        String voicePath = voiceDb.getVoice_path();
+        String docPath = voiceDb.getDocument_path();       
         
-        mActivity.getActionBar().setTitle(mModel.getTitle());
+        // Tag List update
+        mModel.setTagList(tagsDb);
+        
+        // Document Display
+        if (docPath != null && docPath.length() > 0) {
+            SRDebugUtil.SRLog("playBySearchList(): Doc = " + docPath);
+            mSRVoiceView.setDocPath(docPath);
+            //mSRVoiceView.setDocPage(10);
+        }
+        
+        // Play
+        mModel.play(voicePath, Integer.parseInt(tagTime));
+        
+        // Action Bar Title
+        mActivity.getActionBar().setTitle(mModel.makeVoicePathToTitle(voicePath));
     }
     
     /**

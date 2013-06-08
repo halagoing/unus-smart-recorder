@@ -287,6 +287,20 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     	
     }
     
+    /**
+     * Doc의 해당 Page로 이동 
+     * @param page
+     */
+    public void setDocPage(int page) {
+        if (mDocView != null) {
+            mDocView.setDisplayedViewIndex(page);
+        }
+    }
+    
+    /**
+     * Doc 설정 
+     * @param docPath
+     */
     public void setDocPath(String docPath) {
         if (docPath == null || docPath.length() ==0) {
             if (mDocView != null)

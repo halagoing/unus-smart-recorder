@@ -1,5 +1,7 @@
 package com.unus.smartrecorder;
 
+import java.util.ArrayList;
+
 import com.unus.smartrecorder.SRVoice.SRVoiceObserver;
 
 import android.content.Context;
@@ -43,6 +45,8 @@ public interface SRVoiceInterface {
     public void setMode(int mode);
 
     public void play(long voiceId, int position);
+    
+    public void play(String voicePath, int seekTime);
 
     public void playStop();
 
@@ -61,4 +65,12 @@ public interface SRVoiceInterface {
     public boolean isAutoTag();
 
     public void setAutoTag(boolean isAutoTag);
+
+    public SRDataSource getDataSource();
+
+    public String makeVoicePathToTitle(String voicePath);
+
+    public ArrayList<SRTagDb> getTagList();
+
+    public void setTagList(ArrayList<SRTagDb> tagList);
 }
