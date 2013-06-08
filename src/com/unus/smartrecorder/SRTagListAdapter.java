@@ -56,6 +56,7 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.mTags = tags;
 		this.mOriginalTags = tags;
+		this.tagNumber = 1;
 		layout = alayout;
 	}
 	
