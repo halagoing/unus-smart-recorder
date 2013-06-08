@@ -56,7 +56,7 @@ public class SearchViewActionBar extends Activity {
         getOverflowMenu();
         
         // initial state
-        mActionBar.setTitle(R.string.no_title); // no title
+        //mActionBar.setTitle(R.string.no_title); // no title
         
         mSRVoice = new SRVoice();
         mSRVoiceController = new SRVoiceController(mSRVoice, this);
