@@ -34,6 +34,7 @@
 	<string name="rewind">Rewind</string>
 	<string name="add">Add</string>
 	<string name="share">Share</string>
-	<string name="pause">Pause</string>    
+	<string name="pause">Pause</string>
+	<string name="auto_tag">Auto Tag</string>    
     
 </resources>

@@ -21,6 +21,8 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -31,6 +33,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.artifex.mupdfdemo.MuPDFCore;
 import com.artifex.mupdfdemo.MuPDFPageAdapter;
@@ -53,6 +56,8 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     private SeekBar mSeekBarView;
     private LinearLayout mRecorderBtnsLayout, mPlayerBtnsLayout;
     private ImageButton mFFBtn, mRewindBtn, mPlayToggleBtn, mStopPlayBtn; 
+    private ToggleButton mAutoTagToggleBtn;
+    
     private MuPDFReaderView mDocView;
     private MuPDFCore mCore;
 
@@ -254,7 +259,26 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         
         mDocView = new MuPDFReaderView(getContext());
         mDocView.setMode(MuPDFReaderView.Mode.Viewing);
-
+        mDocView.setOnPageChangedListener(new MuPDFReaderView.onPageChagedListener() {
+            
+            @Override
+            public void onPageChanged(int page) {
+                if (mController != null) {
+                    mController.docPageChanged(page);
+                }
+            }
+        });
+        
+        mAutoTagToggleBtn = (ToggleButton) findViewById(R.id.autoTagToggleBtn);
+        mAutoTagToggleBtn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (mController != null) {
+                    mController.changeAutoTag(isChecked);
+                }
+            }
+        });
     }
     
     public void setTagList(){

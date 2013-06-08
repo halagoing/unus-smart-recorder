@@ -55,4 +55,8 @@ public interface SRVoiceInterface {
     public void playJump(Boolean rewind);
     
     public void playBySeek(int seekTime);
+
+    public boolean isAutoTag();
+
+    public void setAutoTag(boolean isAutoTag);
 }
