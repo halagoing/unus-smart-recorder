@@ -257,17 +257,17 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         mDummyView = (ImageView)findViewById(R.id.dummyView);
 
         
-        mDocView = new MuPDFReaderView(getContext());
-        mDocView.setMode(MuPDFReaderView.Mode.Viewing);
-        mDocView.setOnPageChangedListener(new MuPDFReaderView.onPageChagedListener() {
-            
-            @Override
-            public void onPageChanged(int page) {
-                if (mController != null) {
-                    mController.docPageChanged(page);
-                }
-            }
-        });
+//        mDocView = new MuPDFReaderView(getContext());
+//        mDocView.setMode(MuPDFReaderView.Mode.Viewing);
+//        mDocView.setOnPageChangedListener(new MuPDFReaderView.onPageChagedListener() {
+//            
+//            @Override
+//            public void onPageChanged(int page) {
+//                if (mController != null) {
+//                    mController.docPageChanged(page);
+//                }
+//            }
+//        });
         
         mAutoTagToggleBtn = (ToggleButton) findViewById(R.id.autoTagToggleBtn);
         mAutoTagToggleBtn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -291,6 +291,21 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 mDocFrame.removeView(mDocView);
             return;
         }
+ 
+        // 삭제하고 재생성해야 제대로 출력된다. 
+        mDocFrame.removeView(mDocView);
+        
+        mDocView = new MuPDFReaderView(getContext());
+        mDocView.setMode(MuPDFReaderView.Mode.Viewing);
+        mDocView.setOnPageChangedListener(new MuPDFReaderView.onPageChagedListener() {
+            
+            @Override
+            public void onPageChanged(int page) {
+                if (mController != null) {
+                    mController.docPageChanged(page);
+                }
+            }
+        });
         
         try {
     		mCore = new MuPDFCore(getContext(), docPath);

@@ -167,7 +167,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     @Override
     public void recordStop() {
         mModel.recordStop();
-        Toast.makeText(mContext, R.string.stop, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(mContext, R.string.stop, Toast.LENGTH_SHORT).show();
     }
     
     @Override
