@@ -120,12 +120,12 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 				dividingLine.setBackgroundColor(Color.parseColor("#e8e8e8"));
 				tagTitle = tag.getContent();
 				text.setText(tagTitle);
-				tagNumber = 1;
+//				tagNumber = 1;
 				break;
 			case TAG_TYPE:
 				if(tag.getType() == SRDbHelper.TEXT_TAG_TYPE){
 					//tagTitle = "Tag#"+tagNumber+" "+tag.getContent();
-					tagTitle = "Tag "+tag.getContent();
+					tagTitle = "Text is "+tag.getContent();
 				}
 				else if(tag.getType() == SRDbHelper.PAGE_TAG_TYPE){
 					//tagTitle = "Tag#"+tagNumber+" Page is "+tag.getContent();
