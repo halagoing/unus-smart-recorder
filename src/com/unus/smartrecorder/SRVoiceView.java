@@ -194,9 +194,8 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 SRDebugUtil.SRLog("PlayToggle Click");
                 
                 if (mController != null) {
-                    mController.playByPlayBtn();
+                    mController.playByPlayToggleBtn();
                 }
-
             }
         });
         mStopPlayBtn = (ImageButton) findViewById(R.id.stopPlayBtn);
@@ -338,12 +337,14 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         if (isPlaying == true) {
             mFFBtn.setEnabled(true);
             mRewindBtn.setEnabled(true);
-            mPlayToggleBtn.setEnabled(false);
+            //mPlayToggleBtn.setEnabled(false);
+            mPlayToggleBtn.setImageResource(R.drawable.av_pause);
             mStopPlayBtn.setEnabled(true);
         } else {
             mFFBtn.setEnabled(false);
             mRewindBtn.setEnabled(false);
-            mPlayToggleBtn.setEnabled(true);
+            //mPlayToggleBtn.setEnabled(true);
+            mPlayToggleBtn.setImageResource(R.drawable.av_play);
             mStopPlayBtn.setEnabled(false);
         }
     }

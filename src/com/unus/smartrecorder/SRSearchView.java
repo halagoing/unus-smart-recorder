@@ -27,10 +27,6 @@ public class SRSearchView extends FrameLayout {
     private SRVoiceControllerInterface mController;
     private ListView mListView;
     private SRTagListAdapter tagListAdapter;
-    
-    //{{TESTCODE
-    private String[] mStrings = Cheeses.sCheeseStrings;
-    //}}TESTCODE
 
     public SRSearchView(Context context) {
         super(context);

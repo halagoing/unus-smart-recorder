@@ -24,5 +24,5 @@ public interface SRVoiceControllerInterface {
 
     public void playStop();
 
-    public void playByPlayBtn();
+    public void playByPlayToggleBtn();
 }

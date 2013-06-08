@@ -31,10 +31,14 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     public static final int RECORDER_MODE = 1;
     public static final int PLAYER_MODE = 2;
     public static final int SEARCH_MODE = 3;
+    public static final int PLAYER_PLAY_STATE = 1;
+    public static final int PLAYER_STOP_STATE = 2;      // 재생중에 사용자가 버튼을 눌러 종료 
+    public static final int PLAYER_COMPLETE_STATE = 3;  // 재생이 끝까지 되서 종료 
+    public static final int PLAYER_PAUSE_STATE = 3;
+    
     private int mMode = RECORDER_MODE;
     private int mPrevMode = RECORDER_MODE;
     
-    private SRTag mTag;
     public SRShare mShare;
     
     private Context mContext;
@@ -57,6 +61,8 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
 	private ArrayList<SRTagDb> mTagList = new ArrayList<SRTagDb>();
 
 	private MediaPlayer mPlayer;
+	
+	private int mPlayerState;
 	
 	private long mRecordStartTime;
 	private Handler mHandler = new Handler();
@@ -96,6 +102,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         
         if (mPlayer != null) {
             mPlayer.release();
+            mPlayer = null;
         }
     }
     
@@ -196,9 +203,15 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     }
 
     @Override
+    public int getPlayerState() {
+        return mPlayerState;
+    }
+    
+    /**
+     * 재생 동작을 한다. (Search List에서 선택된 경우)
+     */
+    @Override
     public void play(long voiceId, int position) {
-        String filePath;
-        
         if (mDataSource == null) {
             SRDebugUtil.SRLogError("SRVoice.play() : mDataSource is null");
             return;
@@ -214,16 +227,17 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
             recordStop();
         }
         
-        filePath = voiceDb.getVoice_path();
+        mVoiceFilePath = voiceDb.getVoice_path();
  
-        SRDebugUtil.SRLog("SRVoice.play(): filePath = " + filePath + " pos = " + Integer.toString(position));
+        SRDebugUtil.SRLog("SRVoice.play(): filePath = " + mVoiceFilePath + " pos = " + Integer.toString(position));
         
-        mPlayer.reset();
         try {
-            mPlayer.setDataSource(filePath);
+            mPlayer.reset();
+            mPlayer.setDataSource(mVoiceFilePath);
             mPlayer.prepare();
             mPlayer.seekTo(position);
             mPlayer.start();
+            mPlayerState = PLAYER_PLAY_STATE; 
             notifyPlayerBtnStateObservers(true);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -236,17 +250,42 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         } 
     }
 
+    /**
+     * 재생중 상태에 따라서 재생, 일시정지 동작을 한다. (Play/Pause 버튼을 누른 경우)
+     */
     @Override
-    public void playCurrent() {
-        SRDebugUtil.SRLog("SRVoice.playCurrent()");
+    public void playToggle() {
+        SRDebugUtil.SRLog("SRVoice.playToggle()");
         
         if (mPlayer != null) {
             if (mPlayer.isPlaying()) {
+                // Pause
                 mPlayer.pause();
+                mPlayerState = PLAYER_PAUSE_STATE;
                 notifyPlayerBtnStateObservers(false);
             } else {
-                mPlayer.start();
-                notifyPlayerBtnStateObservers(true);
+                // Play
+                if (mPlayerState == PLAYER_PAUSE_STATE) {
+                    mPlayer.start();
+                    notifyPlayerBtnStateObservers(true);
+                }else if (mPlayerState == PLAYER_STOP_STATE
+                        || mPlayerState == PLAYER_COMPLETE_STATE ) {
+                    try {
+                        if (mPlayerState == PLAYER_STOP_STATE) {
+                            mPlayer.prepare();
+                            mPlayer.seekTo(0);
+                        }
+                        mPlayer.start();
+                        mPlayerState = PLAYER_PLAY_STATE; 
+                        notifyPlayerBtnStateObservers(true);
+                    } catch (IllegalStateException e) {
+                        mPlayer.reset();
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        mPlayer.reset();
+                        e.printStackTrace();
+                    }
+                }
             }
         }       
     }
@@ -256,16 +295,31 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
      */
     @Override
     public void onCompletion(MediaPlayer mp) {
+        SRDebugUtil.SRLog("SRVoice.onCompletion(): Playing completed");
+        
+        mPlayerState = PLAYER_COMPLETE_STATE;
         notifyPlayerBtnStateObservers(false);
     }    
 
+    /**
+     * SeekBar를 움직였을 때 해당 position으로 이동
+     * 
+     * @param position
+     */
     public void seekTo(int position) {
-
+        SRDebugUtil.SRLog("SRVoice.getDuration()");
+        
+        if (mPlayer != null) {
+            mPlayer.seekTo(position);
+        }
     }
 
+    /**
+     * 재생 일시 정지 
+     */
     @Override
     public void playPause() {
-        SRDebugUtil.SRLog("SRVoice.playStop()");
+        SRDebugUtil.SRLog("SRVoice.playPause()");
         
         if (mPlayer != null && mPlayer.isPlaying()) {
             mPlayer.pause();
@@ -273,18 +327,32 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         }
     }
 
+    /**
+     * 재생 정지 
+     */
     @Override
     public void playStop() {
         SRDebugUtil.SRLog("SRVoice.playStop()");
         
         if (mPlayer != null && mPlayer.isPlaying()) {
             mPlayer.stop();
+            mPlayerState = PLAYER_STOP_STATE;
             notifyPlayerBtnStateObservers(false);
         }
     }
 
-    public void getDuration() {
-
+    /**
+     * 재생 파일의 전체 재생시간을 리턴한다 
+     * 
+     * @return
+     */
+    public int getDuration() {
+        SRDebugUtil.SRLog("SRVoice.getDuration()");
+        
+        if (mPlayer != null) {
+            return mPlayer.getDuration();
+        }
+        return 0;
     }
 
     public void share() {

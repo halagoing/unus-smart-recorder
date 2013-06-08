@@ -369,11 +369,17 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         mModel.play(voiceId, Integer.parseInt(tagTime));
     }
     
+    /**
+     * Play toggle button
+     */
     @Override
-    public void playByPlayBtn() {
-        mModel.playCurrent();
+    public void playByPlayToggleBtn() {
+        mModel.playToggle();
     }
     
+    /**
+     * Play Stop button
+     */
     @Override
     public void playStop() {
         mModel.playStop();
