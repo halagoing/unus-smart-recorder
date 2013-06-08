@@ -17,6 +17,17 @@ public class MuPDFReaderView extends ReaderView {
 	private Mode mMode = Mode.Viewing;
 	private boolean tapDisabled = false;
 	private int tapPageMargin;
+	
+	//{{ 2013.6.8 Suhwan Hwang : 페이지 이동 추가 
+	private onPageChagedListener mPageChangedListener;
+	
+	public interface onPageChagedListener {
+	    void onPageChanged(int page);
+	}
+	public void setOnPageChangedListener(onPageChagedListener listener) {
+	    mPageChangedListener = listener;
+	}
+	//}}
 
 	protected void onTapMainDocArea() {}
 	protected void onDocMotion() {}
@@ -198,6 +209,11 @@ public class MuPDFReaderView extends ReaderView {
 //			SearchTaskResult.set(null);
 //			resetupChildren();
 //		}
+	    
+	    // 2013.6.8 Suhwan Hwang : 페이지 전환 콜백 추가 
+	    if (mPageChangedListener != null) {
+	        mPageChangedListener.onPageChanged(i);
+	    }
 	}
 
 	@Override
