@@ -28,15 +28,20 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaRecorder;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 
 public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     public static final int RECORDER_MODE = 1;
     public static final int PLAYER_MODE = 2;
     public static final int SEARCH_MODE = 3;
+    
     public static final int PLAYER_PLAY_STATE = 1;
     public static final int PLAYER_STOP_STATE = 2;      // 재생중에 사용자가 버튼을 눌러 종료 
     public static final int PLAYER_COMPLETE_STATE = 3;  // 재생이 끝까지 되서 종료 
-    public static final int PLAYER_PAUSE_STATE = 3;
+    public static final int PLAYER_PAUSE_STATE = 4;
+    
+    public static final int UPDATE_PLAYER_TIMER = 1;
+    public static final int UPDATE_RECORDER_TIMER = 2;
     
     private int mMode = RECORDER_MODE;
     private int mPrevMode = RECORDER_MODE;
@@ -67,15 +72,59 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
 	private int mPlayerState;
 	
 	private long mRecordStartTime;
-	private Handler mHandler = new Handler();
+//	private Handler mHandler = new Handler() {
+//
+//        @Override
+//        public void handleMessage(Message msg) {
+//            switch(msg.what) {
+//            case UPDATE_PLAYER_TIMER:
+//                notifyTimeObservers(mPlayer.getCurrentPosition());
+//                break;
+//            case UPDATE_RECORDER_TIMER:
+//                notifyTimeObservers(getCurrentRecordTime());
+//                break;
+//            }
+//        }
+//	    
+//	};
 	private Timer mTimer;
 	private class TimeTimerTask extends TimerTask {
         
         @Override
         public void run() {
-            notifyTimeObservers(getCurrentRecordTime());
+//            if (mHandler != null) {
+//                Message msg = new Message();
+//                msg.what = UPDATE_RECORDER_TIMER;
+//                mHandler.sendMessage(msg);
+//            }
+            notifyTimeObservers(getCurrentTime());
         }
     };
+
+    
+    private int getCurrentTime() {
+        if (mMode == RECORDER_MODE) {
+            return getCurrentRecordTime();
+        } else if (mMode == PLAYER_MODE) {
+            return mPlayer.getCurrentPosition();
+        }
+        return 0;
+    }
+    
+    private void setTimeTimer(int msec) {
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
+        mTimer = new Timer();
+        mTimer.schedule(new TimeTimerTask(), 0, msec);
+    }
+    
+    private void stopTimer() {
+        if (mTimer != null) {
+            mTimer.cancel();
+        }       
+        mTimer = null;
+    }
 	
 	@Override
     public void initialize(Context context) {
@@ -97,10 +146,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         }
         
         // Timer
-        if (mTimer != null) {
-            mTimer.cancel();
-            mTimer = null;
-        }
+        stopTimer();
         
         if (mPlayer != null) {
             mPlayer.release();
@@ -119,7 +165,8 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         mMode = mode;
         
         if (mMode == PLAYER_MODE) {
-            notifyPlayerBtnStateObservers(false);
+            mPlayerState = PLAYER_STOP_STATE;
+            notifyPlayerBtnStateObservers(mPlayerState);
         } else if (mMode == RECORDER_MODE) {
             notifyRecorderBtnStateObservers(false);
         } else if (mMode == SEARCH_MODE) {
@@ -133,8 +180,8 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     }
 
     @Override
-    public long getCurrentRecordTime() {
-        return System.currentTimeMillis() - mRecordStartTime;
+    public int getCurrentRecordTime() {
+        return (int)(System.currentTimeMillis() - mRecordStartTime);
     }
  
     public ArrayList<SRTagDb> getmTagList() {
@@ -156,8 +203,9 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     	recorderIntent.putExtra(SRConfig.VOICE_PATH_KEY, mVoiceFilePath);
     	mContext.startService(recorderIntent);
     	mRecordStartTime = System.currentTimeMillis();
-    	mTimer = new Timer();
-    	mTimer.schedule(new TimeTimerTask(), 1000, 1000);
+    	
+    	// Time Timer
+    	setTimeTimer(1000);
     	
     	// Add Voice ddd
     	mVoiceDb = mDataSource.createVoice(mVoiceFilePath, mDocFilePath);
@@ -199,10 +247,10 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
 //		mRecorder.release();
 //		mRecorder = null;
     	
-    	if (mTimer != null) {
-        	mTimer.cancel();
-        	mTimer = null;
-    	}
+    	// Time Timer
+    	stopTimer();
+    	
+    	mRecordStartTime = 0;
     	mVoiceDb = null;
     	
         // SRVoiceView Button State
@@ -245,8 +293,13 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
             mPlayer.prepare();
             mPlayer.seekTo(position);
             mPlayer.start();
+            
+            // Play Timer Start
+            setTimeTimer(1000);
+            
+            // Change state
             mPlayerState = PLAYER_PLAY_STATE; 
-            notifyPlayerBtnStateObservers(true);
+            notifyPlayerBtnStateObservers(mPlayerState);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         } catch (SecurityException e) {
@@ -269,13 +322,22 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
             if (mPlayer.isPlaying()) {
                 // Pause
                 mPlayer.pause();
+                
+                // Play Timer Stop
+                stopTimer();
+                
                 mPlayerState = PLAYER_PAUSE_STATE;
-                notifyPlayerBtnStateObservers(false);
+                notifyPlayerBtnStateObservers(mPlayerState);
             } else {
                 // Play
                 if (mPlayerState == PLAYER_PAUSE_STATE) {
                     mPlayer.start();
-                    notifyPlayerBtnStateObservers(true);
+                    
+                    // Play Timer Start
+                    setTimeTimer(1000);
+                    
+                    mPlayerState = PLAYER_PLAY_STATE;
+                    notifyPlayerBtnStateObservers(mPlayerState);
                 }else if (mPlayerState == PLAYER_STOP_STATE
                         || mPlayerState == PLAYER_COMPLETE_STATE ) {
                     try {
@@ -284,8 +346,12 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
                             mPlayer.seekTo(0);
                         }
                         mPlayer.start();
+                        
+                        // Play Timer Start
+                        setTimeTimer(1000);
+                        
                         mPlayerState = PLAYER_PLAY_STATE; 
-                        notifyPlayerBtnStateObservers(true);
+                        notifyPlayerBtnStateObservers(mPlayerState);
                     } catch (IllegalStateException e) {
                         mPlayer.reset();
                         e.printStackTrace();
@@ -305,8 +371,11 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     public void onCompletion(MediaPlayer mp) {
         SRDebugUtil.SRLog("SRVoice.onCompletion(): Playing completed");
         
+        // Play Time End
+        stopTimer();
+        
         mPlayerState = PLAYER_COMPLETE_STATE;
-        notifyPlayerBtnStateObservers(false);
+        notifyPlayerBtnStateObservers(mPlayerState);
     }    
 
     /**
@@ -331,7 +400,8 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         
         if (mPlayer != null && mPlayer.isPlaying()) {
             mPlayer.pause();
-            notifyPlayerBtnStateObservers(false);
+            mPlayerState = PLAYER_PAUSE_STATE;
+            notifyPlayerBtnStateObservers(mPlayerState);
         }
     }
 
@@ -342,10 +412,14 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     public void playStop() {
         SRDebugUtil.SRLog("SRVoice.playStop()");
         
-        if (mPlayer != null && mPlayer.isPlaying()) {
+        if (mPlayer != null) {
             mPlayer.stop();
+            
+            // Play Time End
+            stopTimer();
+            
             mPlayerState = PLAYER_STOP_STATE;
-            notifyPlayerBtnStateObservers(false);
+            notifyPlayerBtnStateObservers(mPlayerState);
         }
     }
 
@@ -428,9 +502,9 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
 
     public interface SRVoiceObserver {
         public void updateTags(SRTagDb tag);
-        public void updateTime(long time);
+        public void updateTime(int time);
         public void updateRecorderBtnState(boolean isRecording);
-        public void updatePlayerBtnState(boolean isPlaying);
+        public void updatePlayerBtnState(int playerState);
     }
     
     ArrayList<SRVoiceObserver> mSRVoiceObserver = new ArrayList<SRVoiceObserver>();
@@ -445,7 +519,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         }
     }
     
-    public void notifyTimeObservers(long time) {
+    public void notifyTimeObservers(int time) {
         for (int i = 0; i < mSRVoiceObserver.size(); i++) {
             SRVoiceObserver observer = mSRVoiceObserver.get(i);
             observer.updateTime(time);
@@ -459,10 +533,10 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         }
     }
     
-    public void notifyPlayerBtnStateObservers(boolean isPlaying) {
+    public void notifyPlayerBtnStateObservers(int playerState) {
         for (int i = 0; i < mSRVoiceObserver.size(); i++) {
             SRVoiceObserver observer = mSRVoiceObserver.get(i);
-            observer.updatePlayerBtnState(isPlaying);
+            observer.updatePlayerBtnState(playerState);
         }
     } 
     

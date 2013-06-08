@@ -27,11 +27,11 @@ public interface SRVoiceInterface {
     
     public void notifyTagsObservers(SRTagDb tag);
     
-    public void notifyTimeObservers(long timer);   
+    public void notifyTimeObservers(int timer);   
     
     public void removeObserver(SRVoiceObserver o);
 
-    public long getCurrentRecordTime();
+    public int getCurrentRecordTime();
 
     public int getMode();
     
