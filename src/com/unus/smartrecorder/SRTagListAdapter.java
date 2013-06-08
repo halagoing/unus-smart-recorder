@@ -82,11 +82,15 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		return position;
 	}
 	
-	private int getLayoutType(String tagNumberting) {
+	private int getLayoutType(String tagTime) {
 		int layoutType = TAG_TYPE;
-		if(tagNumberting=="000"){
+		
+		int intTagTime = Integer.parseInt(tagTime);
+		if(intTagTime==0){
 			layoutType = TITLE_TYPE;
+
 		}
+
 		return layoutType;
 	}
 	
@@ -119,7 +123,7 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		
 		
 		SRDebugUtil.SRLog("tag.getTag_numbering() = " + tag.getTag_numbering());
-		switch (getLayoutType(tag.getTag_numbering())) {
+		switch (getLayoutType(tag.getTag_time())) {
 			case TITLE_TYPE:
 //				tagListMainLayout.setBackgroundColor(R.drawable.tag_list_item_selector);
 				tagListMainLayout.setBackgroundColor(Color.parseColor("#dbdbdb"));
