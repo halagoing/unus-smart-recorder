@@ -58,7 +58,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     
     private static int JUMP_TIME = 5000; // 녹음중에 사용자가 음성을 점프할때의 시간 (ms)
     
-    boolean isRecordering = false;
+    static boolean isRecordering = false;
     //private MediaRecorder mRecorder = null;
 	private int currentFormat = 0;
 	private static final String AUDIO_RECORDER_FILE_EXT_3GP = ".3gp";

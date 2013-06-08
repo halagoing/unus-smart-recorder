@@ -488,12 +488,15 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
      */
     public void setVoiceViewMode(int mode) {
         if (SRVoice.RECORDER_MODE == mode) {
-        	initRecorderTagListView();
-            mTimeView.setText(R.string.zero_time);
-            mVolumeView.setVisibility(View.VISIBLE);
-            mSeekBarView.setVisibility(View.INVISIBLE);
-            mRecorderBtnsLayout.setVisibility(View.VISIBLE);
-            mPlayerBtnsLayout.setVisibility(View.INVISIBLE);
+        	if(!SRVoice.isRecordering){
+        		initRecorderTagListView();
+        		mTimeView.setText(R.string.zero_time);
+                mVolumeView.setVisibility(View.VISIBLE);
+                mSeekBarView.setVisibility(View.INVISIBLE);
+                mRecorderBtnsLayout.setVisibility(View.VISIBLE);
+                mPlayerBtnsLayout.setVisibility(View.INVISIBLE);
+        	}
+            
         } else if (SRVoice.PLAYER_MODE == mode) {
             mTimeView.setText(R.string.zero_time);
             mVolumeView.setVisibility(View.INVISIBLE);
