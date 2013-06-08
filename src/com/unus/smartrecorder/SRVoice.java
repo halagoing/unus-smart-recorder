@@ -235,7 +235,14 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
             e.printStackTrace();
         } 
     }
-    
+
+    /**
+     * 재생 종료되었을 때 콜백, 버튼의 상태를 바꿔준다. 
+     */
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        notifyPlayerBtnStateObservers(false);
+    }    
 
     public void seekTo(int position) {
 
@@ -318,7 +325,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     public void registerObserver(SRVoiceObserver observer) {
         mSRVoiceObserver.add(observer);
     }
-        
+    
     public void notifyTagsObservers(SRTagDb tag) {
         for (int i = 0; i < mSRVoiceObserver.size(); i++) {
             SRVoiceObserver observer = mSRVoiceObserver.get(i);
@@ -352,10 +359,5 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         if (i >= 0) {
             mSRVoiceObserver.remove(i);
         }
-    }
-
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        notifyPlayerBtnStateObservers(false);
     }
 }

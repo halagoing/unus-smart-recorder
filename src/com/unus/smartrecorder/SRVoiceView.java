@@ -12,6 +12,8 @@ package com.unus.smartrecorder;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +38,6 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     private SRVoiceControllerInterface mController;
 
     private ListView mTagListView;
-    private ArrayAdapter<String> mTagListViewAdapter;
     private SRTagListAdapter tagListAdapter;
     private ImageButton mTextTagBtn, mPhotoTagBtn, mRecordBtn, mStopRecordBtn;
     private TextView mTimeView;
@@ -49,13 +50,33 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     private ImageButton mFFBtn, mRewindBtn, mPlayToggleBtn, mStopPlayBtn; 
     private MuPDFReaderView mDocView;
     private MuPDFCore mCore;
+
+    private static final int UPDATE_TAGS = 1;
+    private static final int UPDATE_TIME = 2;
+    private static final int UPDATE_RECORDER_BTN = 3;
+    private static final int UPDATE_PLAYER_BTN = 4;
     
-    private boolean mIsPlaying, mIsRecording;
+    private Handler mHandler = new Handler() {
 
-    // {{TESTCODE
-    private String[] mStrings = Cheeses.sCheeseStrings;
-
-    // }}TESTCODE
+        @Override
+        public void handleMessage(Message msg) {
+            switch(msg.what) {
+            case UPDATE_TAGS:
+                tagListAdapter.add((SRTagDb)msg.obj);
+                break;
+            case UPDATE_TIME:
+                setTime((Long)msg.obj);
+                break;
+            case UPDATE_RECORDER_BTN:
+                setRecorderBtnState((Boolean)msg.obj);
+                break;
+            case UPDATE_PLAYER_BTN:
+                setPlayerBtnState((Boolean)msg.obj);
+                break;                
+            }
+        }
+        
+    };
 
     public SRVoiceView(Context context) {
         super(context);
@@ -227,81 +248,101 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
 
     @Override
     public void updateTags(SRTagDb tag) {
-    	
-    	tagListAdapter.add(tag);
+    	//tagListAdapter.add(tag);
+        Message m = new Message();
+        m.what = UPDATE_TAGS;
+        m.obj = tag;
+        
+        mHandler.sendMessage(m);
     }
-
+    
     @Override
     public void updateTime(long time) {
-        final long t = time;
-        post(new Runnable() {
-            
-            @Override
-            public void run() {
-                long sec = t / 1000;
-                long h, m, s, tmp;
-
-                if (sec < 3600) {
-                    h = 0;
-                    m = sec / 60;
-                    s = sec % 60;
-                } else {
-                    h = sec / 3600;
-                    tmp = sec % 3600;
-                    m = tmp / 60;
-                    s = tmp % 60;
-                }
-                if (mTimeView != null)
-                    mTimeView.setText(String.format("%d:%02d:%02d", h, m, s));
-            }
-        });
+        Message m = new Message();
+        m.what = UPDATE_TIME;
+        m.obj = Long.valueOf(time);
+        
+        mHandler.sendMessage(m);        
     }
 
     @Override
     public void updateRecorderBtnState(boolean isRecording) {
-        mIsRecording = isRecording;
+        Message m = new Message();
+        m.what = UPDATE_RECORDER_BTN;
+        m.obj = isRecording;
         
-        post(new Runnable() {
-
-            @Override
-            public void run() {
-                if (mIsRecording == true) {
-                    mTextTagBtn.setEnabled(true);
-                    mPhotoTagBtn.setEnabled(true);
-                    mRecordBtn.setEnabled(false);
-                    mStopRecordBtn.setEnabled(true);
-                } else {
-                    mTextTagBtn.setEnabled(false);
-                    mPhotoTagBtn.setEnabled(false);
-                    mRecordBtn.setEnabled(true);
-                    mStopRecordBtn.setEnabled(false);
-                }
-            }
-        });
+        mHandler.sendMessage(m);       
     }
 
     @Override
     public void updatePlayerBtnState(boolean isPlaying) {
-        mIsPlaying = isPlaying;
+        Message m = new Message();
+        m.what = UPDATE_PLAYER_BTN;
+        m.obj = isPlaying;
         
-        post(new Runnable() {
+        mHandler.sendMessage(m);
+    }
+    
+    /**
+     * set Recording or Playing tiem text
+     * 
+     * @param t
+     */
+    private void setTime(long t) {
+        long sec = t / 1000;
+        long h, m, s, tmp;
 
-            @Override
-            public void run() {
-                if (mIsPlaying == true) {
-                    mFFBtn.setEnabled(true);
-                    mRewindBtn.setEnabled(true);
-                    mPlayToggleBtn.setEnabled(false);
-                    mStopPlayBtn.setEnabled(true);
-                } else {
-                    mFFBtn.setEnabled(false);
-                    mRewindBtn.setEnabled(false);
-                    mPlayToggleBtn.setEnabled(true);
-                    mStopPlayBtn.setEnabled(false);
-                }
-            }
-        });
-    }   
+        if (sec < 3600) {
+            h = 0L;
+            m = sec / 60;
+            s = sec % 60;
+        } else {
+            h = sec / 3600;
+            tmp = sec % 3600;
+            m = tmp / 60;
+            s = tmp % 60;
+        }
+        if (mTimeView != null)
+            mTimeView.setText(String.format("%d:%02d:%02d", h, m, s));
+    }
+    
+    /**
+     * set Recorder Buttons enable/disable
+     * 
+     * @param isRecording
+     */
+    private void setRecorderBtnState(Boolean isRecording) {
+        if (isRecording == true) {
+            mTextTagBtn.setEnabled(true);
+            mPhotoTagBtn.setEnabled(true);
+            mRecordBtn.setEnabled(false);
+            mStopRecordBtn.setEnabled(true);
+        } else {
+            mTextTagBtn.setEnabled(false);
+            mPhotoTagBtn.setEnabled(false);
+            mRecordBtn.setEnabled(true);
+            mStopRecordBtn.setEnabled(false);
+        }
+    }
+    
+    /**
+     * set Player buttons enable/disable
+     * 
+     * @param isPlaying
+     */
+    private void setPlayerBtnState(Boolean isPlaying) {
+        if (isPlaying == true) {
+            mFFBtn.setEnabled(true);
+            mRewindBtn.setEnabled(true);
+            mPlayToggleBtn.setEnabled(false);
+            mStopPlayBtn.setEnabled(true);
+        } else {
+            mFFBtn.setEnabled(false);
+            mRewindBtn.setEnabled(false);
+            mPlayToggleBtn.setEnabled(true);
+            mStopPlayBtn.setEnabled(false);
+        }
+    }
     
     /**
      * Recorder view or Player view
