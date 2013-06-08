@@ -53,4 +53,6 @@ public interface SRVoiceInterface {
     public boolean isRecordering();
     
     public void playJump(Boolean rewind);
+    
+    public void playBySeek(int seekTime);
 }

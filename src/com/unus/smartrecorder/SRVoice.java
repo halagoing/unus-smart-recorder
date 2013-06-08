@@ -541,37 +541,23 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     	SRDebugUtil.SRLog("call playJump");
     	if (mPlayer != null) {
     		if (mPlayer.isPlaying()) {
-    			//mPlayer.pause();
-    			try {
-                    if (mPlayerState == PLAYER_STOP_STATE) {
-                        mPlayer.prepare();
-                        
-                    }
-                    
-                    int seekToTime = mPlayer.getCurrentPosition();
-                    
-                    if (rewind)seekToTime = seekToTime - JUMP_TIME;
-                    else seekToTime = seekToTime + JUMP_TIME;
-                    
-                    mPlayer.seekTo(seekToTime);
-                    mPlayer.start();
-
-                    setTimeTimer(1000);
-                    
-                    mPlayerState = PLAYER_PLAY_STATE; 
-                    notifyPlayerBtnStateObservers(mPlayerState);
-                } catch (IllegalStateException e) {
-                    mPlayer.reset();
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    mPlayer.reset();
-                    e.printStackTrace();
-                }
+    			int seekToTime = mPlayer.getCurrentPosition();
+                if (rewind)seekToTime = seekToTime - JUMP_TIME;
+                else seekToTime = seekToTime + JUMP_TIME;
+    			seekTo(seekToTime);
             } 
     	}
     	
     }
-    
+    @Override
+    public void playBySeek(int seekTime) {
+    	// TODO Auto-generated method stub
+    	if (mPlayer != null) {
+    		if (mPlayer.isPlaying()) {
+    			seekTo(seekTime);
+            } 
+    	}
+    }
     
 
     public interface SRVoiceObserver {

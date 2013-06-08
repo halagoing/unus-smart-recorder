@@ -27,4 +27,6 @@ public interface SRVoiceControllerInterface {
     public void playByPlayToggleBtn();
     
     public void jumpToggleBtn(Boolean rewind);
+    
+    public void playBySeekBar(int seekTime);
 }

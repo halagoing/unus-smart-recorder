@@ -540,6 +540,12 @@ public class SRVoiceController implements SRVoiceControllerInterface {
 		// TODO Auto-generated method stub
 		mModel.playJump(rewind);
 	}
+	
+	@Override
+	public void playBySeekBar(int seekTime) {
+		// TODO Auto-generated method stub
+		mModel.playBySeek(seekTime);
+	}
     
     
 }

@@ -29,6 +29,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.artifex.mupdfdemo.MuPDFCore;
@@ -217,6 +218,30 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         
         mVolumeView = (ProgressBar)findViewById(R.id.volumeView);
         mSeekBarView = (SeekBar)findViewById(R.id.seekBarView);
+        
+        mSeekBarView.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				SRDebugUtil.SRLog("setOnSeekBarChangeListener onStopTrackingTouch");
+				mController.playBySeekBar(seekBar.getProgress());
+				
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				//SRDebugUtil.SRLog("setOnSeekBarChangeListener onStartTrackingTouch");
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+				// TODO Auto-generated method stub
+				//SRDebugUtil.SRLog("setOnSeekBarChangeListener onProgressChanged");
+			}
+		});
         
         mTimeView = (TextView)findViewById(R.id.timeView);
         
