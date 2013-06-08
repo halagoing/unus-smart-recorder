@@ -13,6 +13,7 @@ package com.unus.smartrecorder;
 import java.util.ArrayList;
 import java.util.List;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,10 +91,13 @@ public class SRSearchView extends FrameLayout {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
-                SRDebugUtil.SRLog("SRSearchView : onItemClick() pos = " + position);
-
-                mController.playBySearchList(tagListAdapter.getTagDb(position));
+            	view.setSelected(true);
+//            	SRDebugUtil.SRLog("SRSearchView : onItemClick() pos = " + position);
+//                
+//                mController.playBySearchList(tagListAdapter.getTagDb(position));
             }
+            
+            
             
         });
         

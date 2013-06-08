@@ -108,8 +108,9 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		ImageView tagIconView = (ImageView)convertView.findViewById(R.id.tagIcon);
 		Resources res = mContext.getResources(); /** from an Activity */
 		
+		
 		dividingLine.setBackgroundColor(Color.parseColor("#e8e8e8"));
-		tagListMainLayout.setBackgroundColor(Color.parseColor("#e8e8e8"));
+//		tagListMainLayout.setBackgroundColor(Color.parseColor("#e8e8e8"));
 		tagListMainLayout.setPadding(20, 0, 0, 0);
 		imageView.setImageResource(android.R.color.transparent);
 		tagIconView.setImageResource(android.R.color.transparent);
@@ -118,7 +119,7 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 			case TITLE_TYPE:
 				tagListMainLayout.setBackgroundColor(Color.parseColor("#dedcdc"));
 				tagListMainLayout.setPadding(10, 0, 0, 0);
-				dividingLine.setBackgroundColor(Color.parseColor("#e8e8e8"));
+//				dividingLine.setBackgroundColor(Color.parseColor("#e8e8e8"));
 				tagTitle = tag.getContent();
 				text.setText(tagTitle);
 				tagIconView.setImageDrawable(res.getDrawable(R.drawable.voice_labels));
