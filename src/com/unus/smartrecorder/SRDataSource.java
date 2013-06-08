@@ -113,7 +113,16 @@ public class SRDataSource {
 		tag.setType(cursor.getInt(3));
 		tag.setContent(cursor.getString(4));
 		tag.setTag_time(cursor.getString(5));
+		
 		return tag;
+	}
+	
+	private Boolean isFirstTag(String tagTime) {
+		int intTagTime = Integer.parseInt(tagTime);
+		if(intTagTime==0){
+			return true;
+		}
+		return false;
 	}
 	
 	public void deleteTag(SRTagDb tag) {
@@ -144,6 +153,23 @@ public class SRDataSource {
 
 	    Cursor cursor = database.query(SRDbHelper.TABLE_TAG,
 	    		allTagColumns, SRDbHelper.TAG_COLUMN_VOICE_ID+" = "+voice_id, null, null, null, null);
+
+	    cursor.moveToFirst();
+	    while (!cursor.isAfterLast()) {
+	    	SRTagDb tag = cursorToTag(cursor);
+	    	tags.add(tag);
+	    	cursor.moveToNext();
+	    }
+	    // Make sure to close the cursor
+	    cursor.close();
+	    return tags;
+	}
+	
+	public ArrayList<SRTagDb> getDocTagByVoiceId(long voice_id) {
+		ArrayList<SRTagDb> tags = new ArrayList<SRTagDb>();
+
+	    Cursor cursor = database.query(SRDbHelper.TABLE_TAG,
+	    		allTagColumns, SRDbHelper.TAG_COLUMN_VOICE_ID+" = "+voice_id + " and "+SRDbHelper.TAG_COLUMN_TYPE+ " = "+SRDbHelper.PHOTO_TAG_TYPE , null, null, null, null);
 
 	    cursor.moveToFirst();
 	    while (!cursor.isAfterLast()) {
