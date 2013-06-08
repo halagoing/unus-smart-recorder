@@ -82,9 +82,9 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		return position;
 	}
 	
-	private int getLayoutType(int tagNumberting) {
+	private int getLayoutType(String tagNumberting) {
 		int layoutType = TAG_TYPE;
-		if(tagNumberting==0){
+		if(tagNumberting=="000"){
 			layoutType = TITLE_TYPE;
 		}
 		return layoutType;
@@ -117,6 +117,8 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		imageView.setImageResource(android.R.color.transparent);
 		tagIconView.setImageResource(android.R.color.transparent);
 		
+		
+		SRDebugUtil.SRLog("tag.getTag_numbering() = " + tag.getTag_numbering());
 		switch (getLayoutType(tag.getTag_numbering())) {
 			case TITLE_TYPE:
 //				tagListMainLayout.setBackgroundColor(R.drawable.tag_list_item_selector);
@@ -139,7 +141,7 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 					tagIconView.setImageDrawable(res.getDrawable(R.drawable.text_labels));
 				}
 				else if(tag.getType() == SRDbHelper.PAGE_TAG_TYPE){
-					tagTitle = " "+tag.getTag_numbering()+" Page is "+tag.getContent();
+					tagTitle = " "+tag.getTag_numbering()+" Page# "+tag.getContent();
 					tagIconView.setImageDrawable(res.getDrawable(R.drawable.doc_labels));
 //					tagTitle = "Page is "+tag.getContent();
 				}

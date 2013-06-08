@@ -116,7 +116,7 @@ public class SRDataSource {
 		tag.setTag_time(cursor.getString(5));
 		isFirstTag(tag.getTag_time());
 
-		tag.setTag_numbering(mNubering);
+		tag.setTag_numbering(getNumbering());
 
 		return tag;
 	}
@@ -129,6 +129,15 @@ public class SRDataSource {
 		}
 		mNubering ++;
 		return false;
+	}
+	
+	private String getNumbering(){
+//		String imageName = "%3d";
+//		String num = String.format( imageName, mNubering);   
+//		SRDebugUtil.SRLog("getNumbering num = " + num);
+		
+		return String.format("%03d",mNubering);
+//		return num;
 	}
 	
 	public void deleteTag(SRTagDb tag) {

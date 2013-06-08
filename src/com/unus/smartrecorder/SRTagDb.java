@@ -7,13 +7,13 @@ public class SRTagDb {
 	private int type;
 	private String content;
 	private String tag_time;
-	private int Tag_numbering;
+	private String Tag_numbering;
 	
 	
-	public int getTag_numbering() {
+	public String getTag_numbering() {
 		return Tag_numbering;
 	}
-	public void setTag_numbering(int tag_numbering) {
+	public void setTag_numbering(String tag_numbering) {
 		Tag_numbering = tag_numbering;
 	}
 	public long getTag_id() {
