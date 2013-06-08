@@ -400,6 +400,8 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         String tagTime = tagDb.getTag_time();
         
         mModel.play(voiceId, Integer.parseInt(tagTime));
+        
+        mActivity.getActionBar().setTitle(mModel.getTitle());
     }
     
     /**

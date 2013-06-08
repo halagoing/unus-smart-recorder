@@ -57,8 +57,9 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
 
     private static final int UPDATE_TAGS = 1;
     private static final int UPDATE_TIME = 2;
-    private static final int UPDATE_RECORDER_BTN = 3;
-    private static final int UPDATE_PLAYER_BTN = 4;
+    private static final int UPDATE_DURATION = 3;
+    private static final int UPDATE_RECORDER_BTN = 4;
+    private static final int UPDATE_PLAYER_BTN = 5;
     
     private Handler mHandler = new Handler() {
 
@@ -69,13 +70,16 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 tagListAdapter.add((SRTagDb)msg.obj);
                 break;
             case UPDATE_TIME:
-                setTime((Long)msg.obj);
+                setTime((Integer)msg.obj);
                 break;
+            case UPDATE_DURATION:
+                setDuration((Integer)msg.obj);
+                break;                
             case UPDATE_RECORDER_BTN:
                 setRecorderBtnState((Boolean)msg.obj);
                 break;
             case UPDATE_PLAYER_BTN:
-                setPlayerBtnState((Boolean)msg.obj);
+                setPlayerBtnState((Integer)msg.obj);
                 break;                
             }
         }
@@ -277,10 +281,10 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     }
     
     @Override
-    public void updateTime(long time) {
+    public void updateTime(int time) {
         Message m = new Message();
         m.what = UPDATE_TIME;
-        m.obj = Long.valueOf(time);
+        m.obj = Integer.valueOf(time);
         
         mHandler.sendMessage(m);        
     }
@@ -293,12 +297,21 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         
         mHandler.sendMessage(m);       
     }
+    
+    @Override
+    public void updateDuration(int duration) {
+        Message m = new Message();
+        m.what = UPDATE_DURATION;
+        m.obj = duration;
+        
+        mHandler.sendMessage(m); 
+    }
 
     @Override
-    public void updatePlayerBtnState(boolean isPlaying) {
+    public void updatePlayerBtnState(int playerState) {
         Message m = new Message();
         m.what = UPDATE_PLAYER_BTN;
-        m.obj = isPlaying;
+        m.obj = playerState;
         
         mHandler.sendMessage(m);
     }
@@ -324,12 +337,12 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
      * 
      * @param t
      */
-    private void setTime(long t) {
-        long sec = t / 1000;
-        long h, m, s, tmp;
+    private void setTime(int t) {
+        int sec = t / 1000;
+        int h, m, s, tmp;
 
         if (sec < 3600) {
-            h = 0L;
+            h = 0;
             m = sec / 60;
             s = sec % 60;
         } else {
@@ -340,6 +353,20 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         }
         if (mTimeView != null)
             mTimeView.setText(String.format("%d:%02d:%02d", h, m, s));
+        if (mSeekBarView != null && mSeekBarView.getVisibility() == View.VISIBLE) {
+            mSeekBarView.setProgress(t);
+        }
+    }
+    
+    /**
+     * set Recording or Playing time text
+     * 
+     * @param t
+     */
+    private void setDuration(int t) {
+        if (mSeekBarView != null) {
+            mSeekBarView.setMax(t);
+        }
     }
     
     /**
@@ -366,19 +393,26 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
      * 
      * @param isPlaying
      */
-    private void setPlayerBtnState(Boolean isPlaying) {
-        if (isPlaying == true) {
+    private void setPlayerBtnState(int playerState) {
+        if (playerState == SRVoice.PLAYER_PLAY_STATE) {
             mFFBtn.setEnabled(true);
             mRewindBtn.setEnabled(true);
             //mPlayToggleBtn.setEnabled(false);
             mPlayToggleBtn.setImageResource(R.drawable.av_pause);
             mStopPlayBtn.setEnabled(true);
-        } else {
+        } else if (playerState == SRVoice.PLAYER_STOP_STATE
+                || playerState == SRVoice.PLAYER_COMPLETE_STATE) {
             mFFBtn.setEnabled(false);
             mRewindBtn.setEnabled(false);
             //mPlayToggleBtn.setEnabled(true);
             mPlayToggleBtn.setImageResource(R.drawable.av_play);
             mStopPlayBtn.setEnabled(false);
+        } else if (playerState == SRVoice.PLAYER_PAUSE_STATE) {
+            mFFBtn.setEnabled(false);
+            mRewindBtn.setEnabled(false);
+            //mPlayToggleBtn.setEnabled(true);
+            mPlayToggleBtn.setImageResource(R.drawable.av_play);
+            mStopPlayBtn.setEnabled(true);
         }
     }
     
@@ -404,8 +438,5 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
             mPlayerBtnsLayout.setVisibility(View.VISIBLE);
         }
     }
-    
-    
-    
 
 }
