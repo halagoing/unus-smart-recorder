@@ -136,6 +136,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                 mActionBarShareItem.setVisible(true);
             
         } else if (SRVoice.SEARCH_MODE == mode) {
+        	mSRSearchView.setSearchViewMode();
             mActivity.setContentView(mSRSearchView);
             
             //ActionBar : only Search

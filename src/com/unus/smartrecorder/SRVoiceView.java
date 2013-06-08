@@ -114,21 +114,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
 
         inflater.inflate(R.layout.sr_voiceview_layout, this, true);
 
-        SRDataSource datasource = new SRDataSource(mContext);
-        datasource.open();
-        // {{TESTCODE
         
-        //mContext.bindService(service, conn, flags)
-        
-        mTagListView = (ListView)findViewById(R.id.tagListView);
-        
-        //ArrayList<SRTagDb> tags = datasource.getAllTag();
-        
-        tagListAdapter = new SRTagListAdapter(mContext, R.layout.sr_tag_list, new ArrayList<SRTagDb>());
-        
-        mTagListView.setAdapter(tagListAdapter);
-        
-        datasource.close();
         
 //        ServiceConnection mConnection = null;
 //        Intent recorderIntent = new Intent("com.unus.smartrecorder.Recorder");
@@ -426,10 +412,10 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
      */
     public void setVoiceViewMode(int mode) {
         if (SRVoice.RECORDER_MODE == mode) {
+        	initRecorderTagListView();
             mTimeView.setText(R.string.zero_time);
             mVolumeView.setVisibility(View.VISIBLE);
             mSeekBarView.setVisibility(View.INVISIBLE);
-            
             mRecorderBtnsLayout.setVisibility(View.VISIBLE);
             mPlayerBtnsLayout.setVisibility(View.INVISIBLE);
         } else if (SRVoice.PLAYER_MODE == mode) {
@@ -440,6 +426,24 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
             mRecorderBtnsLayout.setVisibility(View.INVISIBLE);
             mPlayerBtnsLayout.setVisibility(View.VISIBLE);
         }
+    }
+    
+    public void initRecorderTagListView(){
+    	SRDataSource datasource = new SRDataSource(mContext);
+        datasource.open();
+        // {{TESTCODE
+        
+        //mContext.bindService(service, conn, flags)
+        
+        mTagListView = (ListView)findViewById(R.id.tagListView);
+        
+        //ArrayList<SRTagDb> tags = datasource.getAllTag();
+        
+        tagListAdapter = new SRTagListAdapter(mContext, R.layout.sr_tag_list, new ArrayList<SRTagDb>());
+        
+        mTagListView.setAdapter(tagListAdapter);
+        
+        datasource.close();
     }
 
 }

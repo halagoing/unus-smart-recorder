@@ -51,6 +51,26 @@ public class SRSearchView extends FrameLayout {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.sr_searchview_layout, this, true);
           
+        
+        
+
+    }
+    
+    public void clearTextFilter() {
+        if (mListView != null) {
+            mListView.clearTextFilter();
+        }
+    }
+    
+    public void setFilterText(String filterText) {
+        if (mListView != null) {
+            mListView.setFilterText(filterText);
+        }        
+    }
+    
+    public void setSearchViewMode() {
+        SRDebugUtil.SRLog("call setSearchViewMode");
+        
         SRDataSource datasource = new SRDataSource(mContext);
         datasource.open();
         
@@ -60,7 +80,7 @@ public class SRSearchView extends FrameLayout {
         SRDebugUtil.SRLog("tags = "+tags);
         
         mListView = (ListView)findViewById(R.id.SRSearchListView);
-        
+
         tagListAdapter = new SRTagListAdapter(mContext, R.layout.sr_tag_list, tags);
         mListView.setAdapter(tagListAdapter);
         
@@ -76,20 +96,6 @@ public class SRSearchView extends FrameLayout {
             }
             
         });
-        
-
-    }
-    
-    public void clearTextFilter() {
-        if (mListView != null) {
-            mListView.clearTextFilter();
-        }
-    }
-    
-    public void setFilterText(String filterText) {
-        if (mListView != null) {
-            mListView.setFilterText(filterText);
-        }        
     }
     
     
