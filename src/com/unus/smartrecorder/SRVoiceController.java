@@ -519,4 +519,18 @@ public class SRVoiceController implements SRVoiceControllerInterface {
             break;
         }
     }
+    
+    /*
+     * User Pressed back button
+     * 
+     */
+    
+    public void backPressed() {
+		//SRDebugUtil.SRLog("gppd!");
+		if(mModel.isRecordering()) mModel.recordStop();
+		else mActivity.finish();
+		
+	}
+    
+    
 }

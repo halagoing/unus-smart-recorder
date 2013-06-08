@@ -48,7 +48,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     private String mVoiceFilePath;
     private String mDocFilePath;
     
-    boolean isRecorder = false;
+    boolean isRecordering = false;
     //private MediaRecorder mRecorder = null;
 	private int currentFormat = 0;
 	private static final String AUDIO_RECORDER_FILE_EXT_3GP = ".3gp";
@@ -68,6 +68,17 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
 	private long mRecordStartTime;
 	private Handler mHandler = new Handler();
 	private Timer mTimer;
+	
+	
+	
+	public boolean isRecordering() {
+		return isRecordering;
+	}
+
+	public void setRecordering(boolean isRecordering) {
+		this.isRecordering = isRecordering;
+	}
+
 	private class TimeTimerTask extends TimerTask {
         
         @Override
@@ -169,6 +180,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     	//mView.setTagList();
     	
     	// SRVoiceView Button State
+    	isRecordering = true;
     	notifyRecorderBtnStateObservers(true);
     }
     /*
@@ -193,7 +205,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         
     	mContext.stopService(new Intent("com.unus.smartrecorder.Recorder"));
 //    	SRVoiceView.mBtnRecorder.setText("recorder");
-//		isRecorder = false;
+    	isRecordering = false;
 //		mRecorder.stop();
 //		mRecorder.release();
 //		mRecorder = null;

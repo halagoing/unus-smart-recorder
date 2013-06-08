@@ -146,4 +146,13 @@ public class SearchViewActionBar extends Activity {
             mSRVoiceController.activityResult(requestCode, resultCode, data);
         }
     }
+    
+    @Override
+    public void onBackPressed() {
+    	// TODO Auto-generated method stub
+    	//super.onBackPressed();
+    	if (mSRVoiceController != null){
+    		mSRVoiceController.backPressed();
+    	}
+    }
 }

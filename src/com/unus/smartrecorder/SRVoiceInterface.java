@@ -48,4 +48,6 @@ public interface SRVoiceInterface {
     public void playToggle();
 
     public int getPlayerState();
+    
+    public boolean isRecordering();
 }

@@ -385,5 +385,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         }
     }
     
+    
+    
 
 }
