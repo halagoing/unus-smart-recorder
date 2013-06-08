@@ -184,7 +184,7 @@ public class SRDataSource {
 		ArrayList<SRTagDb> tags = new ArrayList<SRTagDb>();
 
 	    Cursor cursor = database.query(SRDbHelper.TABLE_TAG,
-	    		allTagColumns, SRDbHelper.TAG_COLUMN_VOICE_ID+" = "+voice_id + " and "+SRDbHelper.TAG_COLUMN_TYPE+ " = "+SRDbHelper.PHOTO_TAG_TYPE , null, null, null, null);
+	    		allTagColumns, SRDbHelper.TAG_COLUMN_VOICE_ID+" = "+voice_id + " and "+SRDbHelper.TAG_COLUMN_TYPE+ " = "+SRDbHelper.PAGE_TAG_TYPE , null, null, null, null);
 
 	    cursor.moveToFirst();
 	    while (!cursor.isAfterLast()) {
