@@ -102,22 +102,25 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		SRTagDb tag = mTags.get(position);
 		
 		TextView text = (TextView)convertView.findViewById(R.id.tagListTitle);
-		LinearLayout dividingLine = (LinearLayout)convertView.findViewById(R.id.dividingLine);
+//		LinearLayout dividingLine = (LinearLayout)convertView.findViewById(R.id.dividingLine);
 		RelativeLayout tagListMainLayout = (RelativeLayout)convertView.findViewById(R.id.tagListMainLayout);
 		ImageView imageView = (ImageView)convertView.findViewById(R.id.tagListImage);
 		ImageView tagIconView = (ImageView)convertView.findViewById(R.id.tagIcon);
 		Resources res = mContext.getResources(); /** from an Activity */
 		
 		
-		dividingLine.setBackgroundColor(Color.parseColor("#e8e8e8"));
-//		tagListMainLayout.setBackgroundColor(Color.parseColor("#e8e8e8"));
+//		dividingLine.setBackgroundColor(Color.parseColor("#e8e8e8"));
+		tagListMainLayout.setBackgroundColor(Color.parseColor("#e8e8e8"));
+		tagListMainLayout.setBackgroundColor(Color.TRANSPARENT);
+		
 		tagListMainLayout.setPadding(20, 0, 0, 0);
 		imageView.setImageResource(android.R.color.transparent);
 		tagIconView.setImageResource(android.R.color.transparent);
 		
 		switch (getLayoutType(tag.getTag_numbering())) {
 			case TITLE_TYPE:
-				tagListMainLayout.setBackgroundColor(Color.parseColor("#dedcdc"));
+//				tagListMainLayout.setBackgroundColor(R.drawable.tag_list_item_selector);
+				tagListMainLayout.setBackgroundColor(Color.parseColor("#dbdbdb"));
 				tagListMainLayout.setPadding(10, 0, 0, 0);
 //				dividingLine.setBackgroundColor(Color.parseColor("#e8e8e8"));
 				tagTitle = tag.getContent();
@@ -126,8 +129,10 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 //				tagNumber = 1;
 				break;
 			case TAG_TYPE:
-
-				tagIconView.setImageDrawable(res.getDrawable(R.drawable.test));
+				
+				//tagListMainLayout.setBackgroundResource(R.id.t)
+				//tagIconView.setImageDrawable(res.getDrawable(R.drawable.test));
+				
 				if(tag.getType() == SRDbHelper.TEXT_TAG_TYPE){
 					tagTitle = " "+tag.getTag_numbering()+" "+tag.getContent();
 					//tagTitle = "Text is "+tag.getContent();
