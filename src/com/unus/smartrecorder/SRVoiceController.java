@@ -228,6 +228,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                                          mActivity.getActionBar().setTitle(mModel.getTitle());
                                          mModel.setDocFilePath(docFilePath);
                                          mSRVoiceView.setDocPath(docFilePath);
+                                         mSRVoiceView.initRecorderTagListView();
                                          mModel.recordStart();
                             		}
                             		Toast.makeText(mContext, resultMsg, Toast.LENGTH_SHORT).show();
