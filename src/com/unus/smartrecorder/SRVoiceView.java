@@ -293,7 +293,10 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         }
  
         // 삭제하고 재생성해야 제대로 출력된다. 
-        mDocFrame.removeView(mDocView);
+        if (mDocFrame != null)
+            mDocFrame.removeView(mDocView);
+        if (mCore != null)
+            mCore.onDestroy();
         
         mDocView = new MuPDFReaderView(getContext());
         mDocView.setMode(MuPDFReaderView.Mode.Viewing);
