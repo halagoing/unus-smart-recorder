@@ -84,4 +84,6 @@ public interface SRVoiceInterface {
 
     public ArrayList<SRTagDb> getPageTagList();
 
+    public boolean isPlaying();
+
 }

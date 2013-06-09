@@ -171,6 +171,9 @@ public class SRVoiceController implements SRVoiceControllerInterface {
      */
     @Override
     public void setViewMode(int mode) {
+        if (mModel.getMode() == mode)
+            return;
+        
         mModel.setMode(mode);
         
         if (SRVoice.RECORDER_MODE == mode) {
@@ -440,6 +443,11 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         }
     }
     
+    /**
+     * 현재 positon에서 근처의 Page tag의 page를 리턴해준다
+     * @param position
+     * @return
+     */
     private int getNearDocPage(int position) {
         ArrayList<SRTagDb> tags = mModel.getPageTagList();
         if (tags.size() > 0) {
@@ -464,10 +472,13 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         if (mActionBarSearchItem != null)
             mActionBarSearchItem.collapseActionView();
             
-        // 녹음중일 경우 녹음 정지 
-        if (mModel.getPrevMode() == SRVoice.RECORDER_MODE
+        // 녹음중/재생중 일 경우 녹음/재생 정지 
+        if (mModel.getMode() == SRVoice.RECORDER_MODE
                 && mModel.isRecordering()) {
             mModel.recordStop();
+        } else if (mModel.getMode() == SRVoice.PLAYER_MODE
+                && mModel.isPlaying()) {
+            mModel.playStop();
         }
         
         // Player 모드 전환 
@@ -475,7 +486,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         
         // voice id와 tag time으로 재생 
         long voiceId = tagDb.getVoice_id();
-        String tagTime = tagDb.getTag_time();        
+        String tagTimeText = tagDb.getTag_time();        
         SRVoiceDb voiceDb =  mModel.getDataSource().getVoiceByVoiceId(voiceId);        
         ArrayList<SRTagDb> tagsDb = mModel.getDataSource().getTagByVoiceId(voiceId);
         
@@ -486,7 +497,8 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         mModel.setVoiceId(voiceId);
         
         String voicePath = voiceDb.getVoice_path();
-        String docPath = voiceDb.getDocument_path();       
+        String docPath = voiceDb.getDocument_path();
+        int tagTime = Integer.parseInt(tagTimeText);
         
         // Tag List update
         mModel.setTagList(tagsDb);
@@ -495,27 +507,21 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         mModel.setPageTagList(mModel.getDataSource().getDocTagByVoiceId(voiceId));
         
         // Document Display
-        if (docPath != null && docPath.length() > 0) {
-            SRDebugUtil.SRLog("playBySearchList(): Doc = " + docPath);
-            mSRVoiceView.setDocPath(docPath);
-            
-            if (tagDb.getType() == SRDbHelper.PAGE_TAG_TYPE) {
-                mSRVoiceView.setDocPage(Integer.parseInt(tagDb.getContent()));
-            } else {
-                mSRVoiceView.setDocPage(getNearDocPage(Integer.parseInt(tagTime)));
-            }
-        } else {
-            mSRVoiceView.setDocPath(null);
-        }
+        mModel.setDocFilePath(docPath);
+        mSRVoiceView.setDocPath(docPath);
+//        if (tagTime > 0) {
+//            if (tagDb.getType() == SRDbHelper.PAGE_TAG_TYPE) {
+//                mSRVoiceView.setDocPage(Integer.parseInt(tagDb.getContent()));
+//            } else {
+//                mSRVoiceView.setDocPage(getNearDocPage(tagTime));
+//            }
+//        }
         
         // Play
-        mModel.play(voicePath, Integer.parseInt(tagTime));
+        mModel.play(voicePath, tagTime);
         
         // Action Bar Title
         mActivity.getActionBar().setTitle(mModel.makeVoicePathToTitle(voicePath));
-        
-        
-
     }
     
     /**

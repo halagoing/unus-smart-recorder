@@ -65,9 +65,10 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
 
     private static final int UPDATE_TAGS = 1;
     private static final int UPDATE_TIME = 2;
-    private static final int UPDATE_DURATION = 3;
-    private static final int UPDATE_RECORDER_BTN = 4;
-    private static final int UPDATE_PLAYER_BTN = 5;
+    private static final int UPDATE_PAGE = 3;
+    private static final int UPDATE_DURATION = 4;
+    private static final int UPDATE_RECORDER_BTN = 5;
+    private static final int UPDATE_PLAYER_BTN = 6;
     
     private Handler mHandler = new Handler() {
 
@@ -79,6 +80,9 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 break;
             case UPDATE_TIME:
                 setTime((Integer)msg.obj);
+                break;
+            case UPDATE_PAGE:
+                setDocPage((Integer)msg.obj);
                 break;
             case UPDATE_DURATION:
                 setDuration((Integer)msg.obj);
@@ -300,7 +304,8 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
      */
     public void setDocPage(int page) {
         if (mDocView != null) {
-            mDocView.setDisplayedViewIndex(page);
+            if (mDocView.getDisplayedViewIndex() != page)
+                mDocView.setDisplayedViewIndex(page);
         }
     }
     
@@ -379,6 +384,15 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         Message m = new Message();
         m.what = UPDATE_TIME;
         m.obj = Integer.valueOf(time);
+        
+        mHandler.sendMessage(m);        
+    }
+    
+    @Override
+    public void updatePage(int page) {
+        Message m = new Message();
+        m.what = UPDATE_PAGE;
+        m.obj = Integer.valueOf(page);
         
         mHandler.sendMessage(m);        
     }
