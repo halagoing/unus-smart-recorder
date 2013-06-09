@@ -323,12 +323,13 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         } else {
             if (mPageTagList != null && mPageTagList.size() > 0) {
                 int i;
+                Message m = new Message();
                 for (i = mPageTagList.size() - 1; i >= 0; i--) {
                     SRTagDb pageTag = mPageTagList.get(i);
                     int pageTagTime = Integer.parseInt(pageTag.getTag_time());
                     if (pageTagTime <= startSeekTime) {
 
-                        Message m = new Message();
+                        
                         m.what = UPDATE_DOC_PAGE;
                         m.obj = Integer.parseInt(pageTag.getContent());
                             
@@ -336,6 +337,13 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
                         mHandler.sendMessage(m);
                         break;
                     }
+                }
+                if (i < 0) {
+                    m.what = UPDATE_DOC_PAGE;
+                    m.obj = 0;
+                        
+                    mPageTimerIdx = 0;
+                    mHandler.sendMessage(m);
                 }
             }                
         }
@@ -628,26 +636,18 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         mTagList.add(tag);
         notifyTagsObservers(tag);
     }
-    
-    @Override
-    public void playJump(Boolean rewind) {
-    	// TODO Auto-generated method stub
-    	SRDebugUtil.SRLog("call playJump");
-    	if (mPlayer != null) {
-    		if (mPlayer.isPlaying()) {
-    			int seekToTime = mPlayer.getCurrentPosition();
-                if (rewind)seekToTime = seekToTime - JUMP_TIME;
-                else seekToTime = seekToTime + JUMP_TIME;
-    			mPlayer.seekTo(seekToTime);
-            } 
-    	}
-    	
-    }
+
     @Override
     public void seekTo(int seekTime) {
-    	// TODO Auto-generated method stub
+    	SRDebugUtil.SRLog("SRVoice.seekTo() : " + seekTime);
         if (mPlayer != null) {
             mPlayer.seekTo(seekTime);
+            
+            mPlayerPausePosition = seekTime;
+            if (mPlayer.isPlaying()) {
+                removeUpdateDocPageMsg();
+                sendUpdateDocPageMsg(seekTime);
+            }
         }
     }
     

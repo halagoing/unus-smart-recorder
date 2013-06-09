@@ -26,8 +26,7 @@ public interface SRVoiceInterface {
     public void addTag(int type, String data, String position);
     
     public void registerObserver(SRVoiceObserver observer);
-    
-    
+        
     public void notifyTagsObservers(SRTagDb tag);
     
     public void notifyTimeObservers(int timer);   
@@ -43,8 +42,6 @@ public interface SRVoiceInterface {
     public int getPrevMode();
     
     public void setMode(int mode);
-
-//    public void play(long voiceId, int position);
     
     public void play(String voicePath, int seekTime);
 
@@ -59,8 +56,6 @@ public interface SRVoiceInterface {
     public int getPlayerState();
     
     public boolean isRecordering();
-    
-    public void playJump(Boolean rewind);
     
     public void seekTo(int seekTime);
 

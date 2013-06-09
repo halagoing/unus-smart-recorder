@@ -524,6 +524,31 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         mActivity.getActionBar().setTitle(mModel.makeVoicePathToTitle(voicePath));
     }
     
+    @Override
+    public void playBySeekTime(int seekTime) {
+        mModel.playPause();
+        
+        mModel.seekTo(seekTime);
+        
+        mModel.playResume();
+        
+        // Doc Page 
+        //mSRVoiceView.setDocPage(getNearDocPage(seekTime));
+    }
+    
+    @Override
+    public void jumpToggleBtn(Boolean rewind) {
+        // TODO Auto-generated method stub
+        //mModel.playJump(rewind);
+
+        int curTime = mModel.getCurrentPlayTime();
+        if (rewind) {
+            mModel.seekTo(curTime - SRVoice.JUMP_TIME);
+        } else {
+            mModel.seekTo(curTime + SRVoice.JUMP_TIME);
+        }
+    }    
+    
     /**
      * Play toggle button
      */
@@ -651,29 +676,6 @@ public class SRVoiceController implements SRVoiceControllerInterface {
 		//SRDebugUtil.SRLog("gppd!");
 		if(mModel.isRecordering()) mModel.recordStop();
 		else mActivity.finish();
-	}
-    
-	@Override
-	public void jumpToggleBtn(Boolean rewind) {
-		// TODO Auto-generated method stub
-		//mModel.playJump(rewind);
-
-		int curTime = mModel.getCurrentPlayTime();
-		if (rewind) {
-		    mModel.seekTo(curTime - SRVoice.JUMP_TIME);
-		} else {
-		    mModel.seekTo(curTime + SRVoice.JUMP_TIME);
-		}
-	}
-	
-	@Override
-	public void playBySeekTime(int seekTime) {
-		mModel.seekTo(seekTime);
-		
-		mModel.playResume();
-		
-		// Doc Page 
-		mSRVoiceView.setDocPage(getNearDocPage(seekTime));
 	}
 
     @Override

@@ -353,11 +353,6 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     	}
         mDocView.setAdapter(new MuPDFPageAdapter(getContext(),mCore));
         
-        for (int i = 0; i < mDocFrame.getChildCount(); i++) {
-        	if (mDocFrame.getChildAt(i) == mDocView)
-        		return;
-        }
-        //mDocFrame.removeView(mDocView);
         mDocFrame.addView(mDocView);
         mDummyView.setVisibility(View.INVISIBLE);
     }
