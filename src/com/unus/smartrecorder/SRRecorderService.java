@@ -3,10 +3,6 @@ package com.unus.smartrecorder;
 import java.io.File;
 import java.io.IOException;
 
-
-
-
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -15,7 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.media.MediaRecorder;
-import android.net.Uri;
 import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;

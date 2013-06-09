@@ -12,17 +12,14 @@ package com.unus.smartrecorder;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-import android.app.ActivityManager;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.FrameLayout;
@@ -33,7 +30,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -581,14 +577,14 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
      */
     public void setVoiceViewMode(int mode) {
         if (SRVoice.RECORDER_MODE == mode) {
-        	if(!SRVoice.isRecordering){
+        	//if(!SRVoice.isRecordering){ // TODO: Why?
         		initRecorderTagListView();
         		mTimeView.setText(R.string.zero_time);
                 mVolumeView.setVisibility(View.VISIBLE);
                 mSeekBarView.setVisibility(View.INVISIBLE);
                 mRecorderBtnsLayout.setVisibility(View.VISIBLE);
                 mPlayerBtnsLayout.setVisibility(View.INVISIBLE);
-        	}
+        	//}
             
         } else if (SRVoice.PLAYER_MODE == mode) {
             mTimeView.setText(R.string.zero_time);

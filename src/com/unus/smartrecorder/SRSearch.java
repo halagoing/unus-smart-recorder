@@ -10,7 +10,6 @@
 //
 package com.unus.smartrecorder;
 
-import android.database.Cursor;
 
 public class SRSearch {
     public void getAllTagList() {

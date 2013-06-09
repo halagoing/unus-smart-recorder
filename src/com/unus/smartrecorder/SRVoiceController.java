@@ -3,8 +3,6 @@ package com.unus.smartrecorder;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,25 +15,20 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
-import android.net.NetworkInfo.DetailedState;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.MenuItem.OnActionExpandListener;
+import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SearchView.OnCloseListener;
 import android.widget.SearchView.OnQueryTextListener;
@@ -177,7 +170,8 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         mModel.setMode(mode);
         
         if (SRVoice.RECORDER_MODE == mode) {
-            mSRVoiceView.setVoiceViewMode(SRVoice.RECORDER_MODE);
+            if (!mModel.isRecordering())
+                mSRVoiceView.setVoiceViewMode(SRVoice.RECORDER_MODE);
             mActivity.setContentView(mSRVoiceView);
             
             //ActionBar : only Search
@@ -441,26 +435,6 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         default:
             break;    
         }
-    }
-    
-    /**
-     * 현재 positon에서 근처의 Page tag의 page를 리턴해준다
-     * @param position
-     * @return
-     */
-    private int getNearDocPage(int position) {
-        ArrayList<SRTagDb> tags = mModel.getPageTagList();
-        if (tags.size() > 0) {
-            int i;
-            for (i = tags.size() - 1; i >= 0; i--) {
-                SRTagDb pageTag = tags.get(i);
-                int pageTagTime = Integer.parseInt(pageTag.getTag_time());
-                if (pageTagTime <= position) {
-                    return Integer.parseInt(pageTag.getContent());
-                }
-            }
-        } 
-        return 0;
     }
    
     /**

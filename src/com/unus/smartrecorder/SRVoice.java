@@ -10,7 +10,6 @@
 //
 package com.unus.smartrecorder;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -19,18 +18,15 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.regex.Pattern;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaRecorder;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.util.DebugUtils;
 
 public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     public static final int RECORDER_MODE = 1;
@@ -62,14 +58,14 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     
     public static int JUMP_TIME = 5000; // 녹음중에 사용자가 음성을 점프할때의 시간 (ms)
     
-    static boolean isRecordering = false;
+    public boolean isRecordering = false;
     //private MediaRecorder mRecorder = null;
-	private int currentFormat = 0;
+	//private int currentFormat = 0;
 	private static final String AUDIO_RECORDER_FILE_EXT_3GP = ".3gp";
 	private static final String AUDIO_RECORDER_FILE_EXT_MP4 = ".mp4";
 	
-	private int output_formats[] = { MediaRecorder.OutputFormat.MPEG_4, MediaRecorder.OutputFormat.THREE_GPP };
-	private String file_exts[] = { AUDIO_RECORDER_FILE_EXT_MP4, AUDIO_RECORDER_FILE_EXT_3GP };
+	//private int output_formats[] = { MediaRecorder.OutputFormat.MPEG_4, MediaRecorder.OutputFormat.THREE_GPP };
+	//private String file_exts[] = { AUDIO_RECORDER_FILE_EXT_MP4, AUDIO_RECORDER_FILE_EXT_3GP };
     
 	private SRDataSource mDataSource;
 	private SRVoiceDb mVoiceDb;
