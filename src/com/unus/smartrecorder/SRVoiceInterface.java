@@ -50,6 +50,8 @@ public interface SRVoiceInterface {
 
     public void playStop();
 
+    public void playResume();
+
     public void playPause();
 
     public void playToggle();
@@ -81,4 +83,5 @@ public interface SRVoiceInterface {
     public void setPageTagList(ArrayList<SRTagDb> docTagByVoiceId);
 
     public ArrayList<SRTagDb> getPageTagList();
+
 }

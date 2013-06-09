@@ -240,13 +240,20 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
 			public void onStartTrackingTouch(SeekBar seekBar) {
 				// TODO Auto-generated method stub
 				//SRDebugUtil.SRLog("setOnSeekBarChangeListener onStartTrackingTouch");
+			    if (mController != null) {
+			        mController.startSeekBarTracking();
+			    }
 			}
 			
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
 				// TODO Auto-generated method stub
-				//SRDebugUtil.SRLog("setOnSeekBarChangeListener onProgressChanged");
+				//SRDebugUtil.SRLog("setOnSeekBarChangeListener onProgressChanged " + progress + " fromUser " + fromUser);
+			    // 시간을 변경해야한다. 
+			    if (fromUser == true) {
+			        setTime(seekBar.getProgress());
+			    }
 			}
 		});
         

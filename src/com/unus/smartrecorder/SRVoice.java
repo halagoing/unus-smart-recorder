@@ -368,24 +368,11 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         
         if (mPlayer != null) {
             if (mPlayer.isPlaying()) {
-                // Pause
-                mPlayer.pause();
-                
-                // Play Timer Stop
-                stopTimer();
-                
-                mPlayerState = PLAYER_PAUSE_STATE;
-                notifyPlayerBtnStateObservers(mPlayerState);
+                playPause();
             } else {
                 // Play
                 if (mPlayerState == PLAYER_PAUSE_STATE) {
-                    mPlayer.start();
-                    
-                    // Play Timer Start
-                    setTimeTimer(1000);
-                    
-                    mPlayerState = PLAYER_PLAY_STATE;
-                    notifyPlayerBtnStateObservers(mPlayerState);
+                    playResume();
                 }else if (mPlayerState == PLAYER_STOP_STATE
                         || mPlayerState == PLAYER_COMPLETE_STATE ) {
                     try {
@@ -393,13 +380,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
                             mPlayer.prepare();
                             mPlayer.seekTo(0);
                         }
-                        mPlayer.start();
-                        
-                        // Play Timer Start
-                        setTimeTimer(1000);
-                        
-                        mPlayerState = PLAYER_PLAY_STATE; 
-                        notifyPlayerBtnStateObservers(mPlayerState);
+                        playResume();
                     } catch (IllegalStateException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -425,7 +406,25 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         
         mPlayerState = PLAYER_COMPLETE_STATE;
         notifyPlayerBtnStateObservers(mPlayerState);
-    }    
+    } 
+    
+    /**
+     * 재생 재시작 
+     */
+    @Override
+    public void playResume() {
+        SRDebugUtil.SRLog("SRVoice.playResume()");
+        
+        if (mPlayer != null) {
+            mPlayer.start();
+            
+            // Play Timer Start
+            setTimeTimer(1000);
+            
+            mPlayerState = PLAYER_PLAY_STATE;
+            notifyPlayerBtnStateObservers(mPlayerState);
+        }
+    }
 
     /**
      * 재생 일시 정지 
@@ -435,6 +434,8 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         SRDebugUtil.SRLog("SRVoice.playPause()");
         
         if (mPlayer != null && mPlayer.isPlaying()) {
+            stopTimer();
+            
             mPlayer.pause();
             mPlayerState = PLAYER_PAUSE_STATE;
             notifyPlayerBtnStateObservers(mPlayerState);
@@ -559,11 +560,9 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     @Override
     public void seekTo(int seekTime) {
     	// TODO Auto-generated method stub
-    	if (mPlayer != null) {
-    		if (mPlayer.isPlaying()) {
-    			mPlayer.seekTo(seekTime);
-            } 
-    	}
+        if (mPlayer != null) {
+            mPlayer.seekTo(seekTime);
+        }
     }
     
 

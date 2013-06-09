@@ -31,4 +31,6 @@ public interface SRVoiceControllerInterface {
     public void docPageChanged(int page);
 
     public void changeAutoTag(boolean isChecked);
+
+    public void startSeekBarTracking();
 }

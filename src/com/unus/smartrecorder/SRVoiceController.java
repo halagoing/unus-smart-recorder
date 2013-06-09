@@ -662,8 +662,9 @@ public class SRVoiceController implements SRVoiceControllerInterface {
 	
 	@Override
 	public void playBySeekTime(int seekTime) {
-		// TODO Auto-generated method stub
 		mModel.seekTo(seekTime);
+		
+		mModel.playResume();
 		
 		// Doc Page 
 		mSRVoiceView.setDocPage(getNearDocPage(seekTime));
@@ -686,5 +687,10 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     @Override
     public void changeAutoTag(boolean isChecked) {
         mModel.setAutoTag(isChecked);
+    }
+
+    @Override
+    public void startSeekBarTracking() {
+        mModel.playPause();
     }
 }
