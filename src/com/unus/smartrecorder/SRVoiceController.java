@@ -1,6 +1,7 @@
 package com.unus.smartrecorder;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -30,6 +31,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SearchView;
+import android.widget.ShareActionProvider;
 import android.widget.SearchView.OnCloseListener;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.TextView;
@@ -380,8 +382,8 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     public void showFileExplorer() {
         final PackageManager packageManager = mContext.getPackageManager();
         final Intent intent = new Intent(Intent.ACTION_GET_CONTENT); 
-        //intent.setType("file/*");
-        intent.setType("application/pdf");
+        intent.setType("file/*");
+        //intent.setType("application/pdf");
         List<ResolveInfo> list = packageManager.queryIntentActivities(intent,
                                         PackageManager.GET_ACTIVITIES);
 
@@ -491,6 +493,9 @@ public class SRVoiceController implements SRVoiceControllerInterface {
 //            }
 //        }
         
+        // Share
+        setShare(voicePath);
+        
         // Play
         mModel.play(voicePath, tagTime);
         
@@ -573,6 +578,23 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         });
     }
     
+    private void setShare(String filePath) {
+        ShareActionProvider actionProvider = (ShareActionProvider)mActionBarShareItem.getActionProvider();
+        actionProvider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
+        
+        actionProvider.setShareIntent(createShareIntent(filePath));
+    }
+    
+    private Intent createShareIntent(String filePath) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("file/*");
+        
+        //Uri uri = Uri.fromFile(mActivity.getFileStreamPath(filePath));
+        Uri uri = Uri.fromFile(new File(filePath));
+        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+        return shareIntent;
+    }  
+    
     /**
      * ActionBar menu create (Search, Share etc)
      * 
@@ -585,6 +607,9 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         mActionBarSearchItem = menu.findItem(R.id.action_search);
         mActionBarAddItem = menu.findItem(R.id.action_add);
         mActionBarShareItem = menu.findItem(R.id.action_share);
+        
+        ShareActionProvider actionProvider = (ShareActionProvider)mActionBarShareItem.getActionProvider();
+        actionProvider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
         
         //Default : Recorder
         mActionBarAddItem.setVisible(false);
@@ -637,6 +662,13 @@ public class SRVoiceController implements SRVoiceControllerInterface {
             break;
         case R.id.action_share:
             SRDebugUtil.SRLog("ActionBar: share");
+            
+            if (mModel.getMode() == SRVoice.PLAYER_MODE) {
+//                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+//                shareIntent.setType("image/*");
+//                Uri uri = Uri.fromFile(getFileStreamPath("shared.png"));
+//                shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            }
             break;
         }
     }
@@ -675,4 +707,6 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     public void startSeekBarTracking() {
         mModel.playPause();
     }
+
+
 }

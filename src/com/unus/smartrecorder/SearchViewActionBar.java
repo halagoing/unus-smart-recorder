@@ -101,7 +101,6 @@ public class SearchViewActionBar extends Activity {
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mSRVoiceController != null)
