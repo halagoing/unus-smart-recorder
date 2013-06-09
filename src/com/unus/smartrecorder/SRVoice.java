@@ -12,6 +12,7 @@ package com.unus.smartrecorder;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -82,54 +83,134 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
 	
 	private long mVoiceId;
 	
-	ArrayList<SRTagDb> mPageTagList;
+	ArrayList<SRTagDb> mDocPageTagList;
 	
 	private long mRecordStartTime;
 	
 	private int mPlayerPausePosition;
 
-	private static final int UPDATE_DOC_PAGE = 1;
+	private static final int MSG_UPDATE_DOC_PAGE_START = 1; // SeekBar, FF, Rewind로 이동할 경우 페이지 이동 간격을 조정할 필요가 있어 추가
+	private static final int MSG_UPDATE_DOC_PAGE = 2;
 	private Timer mTimer;
-	private int mPageTimerIdx;
+	private int mDocPageTagListIdx, mDocPageAdjustTime;
+	
+    private static class UpdatePageHandler extends Handler {
+        WeakReference<SRVoice> mRef;
+
+        UpdatePageHandler(SRVoice voice) {
+            mRef = new WeakReference<SRVoice>(voice);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            SRVoice voice = mRef.get();
+            switch (msg.what) {
+            case MSG_UPDATE_DOC_PAGE_START: // for adjust time
+                voice.notifyPageObservers(msg.obj != null ? (Integer)msg.obj : 0);    
+                
+                voice.sendUpdateDocPageMsg(voice.mDocPageAdjustTime);
+                break;
+            case MSG_UPDATE_DOC_PAGE:
+                voice.notifyPageObservers((Integer)msg.obj);  
+                
+                voice.sendUpdateDocPageMsg(0);            
+                break;
+            }
+        }
+    }
+    private UpdatePageHandler mHandler = new UpdatePageHandler(this);
+
+	/*
 	private Handler mHandler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-            case UPDATE_DOC_PAGE:
-                if (msg.obj != null)
-                    notifyPageObservers((Integer)msg.obj);  
-                else 
-                    notifyPageObservers(0);  
+            case MSG_UPDATE_DOC_PAGE_START: // for adjust time
+                notifyPageObservers(msg.obj != null ? (Integer)msg.obj : 0);    
                 
-                if (mPageTimerIdx < mPageTagList.size()) {
-                    SRTagDb tag = mPageTagList.get(mPageTimerIdx);
-                    int tagTime = Integer.parseInt(tag.getTag_time());
-                    int page = Integer.parseInt(tag.getContent());
-                    
-                    SRDebugUtil.SRLog("sendMessage: idx=" + mPageTimerIdx + " page = " + page + " tagTime = " + tagTime);
-                    
-                    Message m = new Message();
-                    m.what = UPDATE_DOC_PAGE;
-                    m.obj = Integer.valueOf(page);
-                    
-                    if (mPageTimerIdx == 0) {
-                        mHandler.sendMessageDelayed(m, tagTime);
-                    } else {
-                        SRTagDb prevTag = mPageTagList.get(mPageTimerIdx - 1);
-                        int prevTagTime = Integer.parseInt(prevTag.getTag_time());
-
-                        mHandler.sendMessageDelayed(m, tagTime - prevTagTime);
-                    }
-                }
+                sendUpdateDocPageMsg(mDocPageAdjustTime);
+                break;
+            case MSG_UPDATE_DOC_PAGE:
+                notifyPageObservers((Integer)msg.obj);  
                 
-                mPageTimerIdx++;                
+                sendUpdateDocPageMsg(0);            
                 break;
             }
         }
 	    
 	};
+	*/
+	
+	private void sendUpdateDocPageMsg(int adjustTime) {
+        if (mDocPageTagListIdx < mDocPageTagList.size()) {
+            SRTagDb tag = mDocPageTagList.get(mDocPageTagListIdx);
+            int tagTime = Integer.parseInt(tag.getTag_time());
+            int page = Integer.parseInt(tag.getContent());
 
+            SRDebugUtil.SRLog("sendMessage: idx=" + mDocPageTagListIdx
+                    + " page = " + page + " tagTime = " + tagTime);
+
+            Message m = new Message();
+            m.what = MSG_UPDATE_DOC_PAGE;
+            m.obj = Integer.valueOf(page);
+
+            if (mDocPageTagListIdx == 0) {
+                mHandler.sendMessageDelayed(m, tagTime - adjustTime);
+            } else {
+                SRTagDb prevTag = mDocPageTagList.get(mDocPageTagListIdx - 1);
+                int prevTagTime = Integer.parseInt(prevTag.getTag_time());
+
+                mHandler.sendMessageDelayed(m, tagTime - prevTagTime - adjustTime);
+            }
+            mDocPageTagListIdx++;
+        }
+	}
+
+    private void stopUpdateDocPage() {
+        if (mHandler != null) {
+            mHandler.removeMessages(MSG_UPDATE_DOC_PAGE_START);
+            mHandler.removeMessages(MSG_UPDATE_DOC_PAGE);
+        }           
+    }
+    
+    private void startUpdateDocPage(int startSeekTime) {
+        if (startSeekTime == 0) {
+            mDocPageTagListIdx = 0;
+            mDocPageAdjustTime = 0;
+            
+            mHandler.sendEmptyMessage(MSG_UPDATE_DOC_PAGE_START);
+        } else {
+            if (mDocPageTagList != null && mDocPageTagList.size() > 0) {
+                int i;
+                Message m = new Message();
+                for (i = mDocPageTagList.size() - 1; i >= 0; i--) {
+                    SRTagDb pageTag = mDocPageTagList.get(i);
+                    int pageTagTime = Integer.parseInt(pageTag.getTag_time());
+                    if (pageTagTime <= startSeekTime) {
+                        mDocPageAdjustTime = startSeekTime - pageTagTime;
+                        
+                        m.what = MSG_UPDATE_DOC_PAGE_START;
+                        m.obj = Integer.parseInt(pageTag.getContent());
+                            
+                        mDocPageTagListIdx = i + 1;
+                        mHandler.sendMessage(m);
+                        break;
+                    }
+                }
+                if (i < 0) {
+                    m.what = MSG_UPDATE_DOC_PAGE_START;
+                    m.obj = 0;
+                        
+                    mDocPageTagListIdx = 0;
+                    mDocPageAdjustTime = startSeekTime;
+                            
+                    mHandler.sendMessage(m);
+                }
+            }                
+        }
+    }    
+ 	
 	private class TimeTimerTask extends TimerTask {
         
         @Override
@@ -197,7 +278,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         stopTimer();
         
         // remove Update Page Msg
-        removeUpdateDocPageMsg();
+        stopUpdateDocPage();
         
         if (mPlayer != null) {
             mPlayer.release();
@@ -311,44 +392,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         return mPlayerState;
     }
     
-    private void removeUpdateDocPageMsg() {
-        if (mHandler != null)
-            mHandler.removeMessages(UPDATE_DOC_PAGE);
-    }
-    
-    private void sendUpdateDocPageMsg(int startSeekTime) {
-        if (startSeekTime == 0) {
-            mPageTimerIdx = 0;
-            mHandler.sendEmptyMessage(UPDATE_DOC_PAGE);
-        } else {
-            if (mPageTagList != null && mPageTagList.size() > 0) {
-                int i;
-                Message m = new Message();
-                for (i = mPageTagList.size() - 1; i >= 0; i--) {
-                    SRTagDb pageTag = mPageTagList.get(i);
-                    int pageTagTime = Integer.parseInt(pageTag.getTag_time());
-                    if (pageTagTime <= startSeekTime) {
 
-                        
-                        m.what = UPDATE_DOC_PAGE;
-                        m.obj = Integer.parseInt(pageTag.getContent());
-                            
-                        mPageTimerIdx = i + 1;
-                        mHandler.sendMessage(m);
-                        break;
-                    }
-                }
-                if (i < 0) {
-                    m.what = UPDATE_DOC_PAGE;
-                    m.obj = 0;
-                        
-                    mPageTimerIdx = 0;
-                    mHandler.sendMessage(m);
-                }
-            }                
-        }
-    }    
-    
     @Override
     public void play(String voicePath, int seekTime) {
         SRDebugUtil.SRLog("SRVoice.play(): filePath = " + voicePath
@@ -368,7 +412,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
             setTimeTimer(PLAYER_TIMER_PERIOD);
             
             // Doc Page Update
-            sendUpdateDocPageMsg(seekTime);
+            startUpdateDocPage(seekTime);
 
             // Change state
             mPlayerState = PLAYER_PLAY_STATE;
@@ -473,7 +517,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         stopTimer();
         
         // remove Update Page Msg
-        removeUpdateDocPageMsg();
+        stopUpdateDocPage();
         mPlayerPausePosition = 0;
         
         // SeekBar Time Text to Zero
@@ -497,7 +541,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
             setTimeTimer(PLAYER_TIMER_PERIOD);
             
             // Doc Page Update
-            sendUpdateDocPageMsg(mPlayerPausePosition);
+            startUpdateDocPage(mPlayerPausePosition);
             
             mPlayerState = PLAYER_PLAY_STATE;
             notifyPlayerBtnStateObservers(mPlayerState);
@@ -515,7 +559,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
             stopTimer();
             
             // remove Update Page Msg
-            removeUpdateDocPageMsg();            
+            stopUpdateDocPage();            
             mPlayerPausePosition = mPlayer.getCurrentPosition();
             
             mPlayer.pause();
@@ -538,7 +582,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
             stopTimer();
             
             // remove Update Page Msg
-            removeUpdateDocPageMsg();            
+            stopUpdateDocPage();            
             mPlayerPausePosition = 0;
             
             // SeekBar Time Text to Zero
@@ -645,8 +689,8 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
             
             mPlayerPausePosition = seekTime;
             if (mPlayer.isPlaying()) {
-                removeUpdateDocPageMsg();
-                sendUpdateDocPageMsg(seekTime);
+                stopUpdateDocPage();
+                startUpdateDocPage(seekTime);
             }
         }
     }
@@ -759,16 +803,16 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
 
     @Override
     public void setPageTagList(ArrayList<SRTagDb> docTagByVoiceId) {
-        mPageTagList = docTagByVoiceId;
+        mDocPageTagList = docTagByVoiceId;
         
-        if (mPageTagList != null && mPageTagList.size() > 0) {
+        if (mDocPageTagList != null && mDocPageTagList.size() > 0) {
             
         }
     }
     
     @Override
     public ArrayList<SRTagDb> getPageTagList() {
-        return mPageTagList;
+        return mDocPageTagList;
     }
 
 

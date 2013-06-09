@@ -9,6 +9,7 @@
 //
 package com.unus.smartrecorder;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import android.app.ActivityManager;
@@ -70,6 +71,41 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     private static final int UPDATE_RECORDER_BTN = 5;
     private static final int UPDATE_PLAYER_BTN = 6;
     
+    private static class UpdateHandler extends Handler {
+        WeakReference<SRVoiceView> mRef;
+
+        UpdateHandler(SRVoiceView voice) {
+            mRef = new WeakReference<SRVoiceView>(voice);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            SRVoiceView v = mRef.get();
+            switch(msg.what) {
+            case UPDATE_TAGS:
+                v.tagListAdapter.add((SRTagDb)msg.obj);
+                break;
+            case UPDATE_TIME:
+                v.setTime((Integer)msg.obj);
+                break;
+            case UPDATE_PAGE:
+                v.setDocPage((Integer)msg.obj);
+                break;
+            case UPDATE_DURATION:
+                v.setDuration((Integer)msg.obj);
+                break;                
+            case UPDATE_RECORDER_BTN:
+                v.setRecorderBtnState((Boolean)msg.obj);
+                break;
+            case UPDATE_PLAYER_BTN:
+                v.setPlayerBtnState((Integer)msg.obj);
+                break;                
+            }
+        }
+    }
+    private UpdateHandler mHandler = new UpdateHandler(this);    
+    
+    /*
     private Handler mHandler = new Handler() {
 
         @Override
@@ -97,6 +133,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         }
         
     };
+    */
 
     public SRVoiceView(Context context) {
         super(context);
