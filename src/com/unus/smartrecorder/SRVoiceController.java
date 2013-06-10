@@ -824,8 +824,10 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     public void unbindService() {
         // Unbind from the service
         if (mModel.isSRRecorderServiceBound()) {
-            mActivity.unbindService(mConnection);
-            mModel.setSRRecorderServiceBound(false);
+			if (!mModel.isRecordering()) {
+				mActivity.unbindService(mConnection);
+				mModel.setSRRecorderServiceBound(false);
+			}
         }
     }
 }

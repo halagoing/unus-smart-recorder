@@ -68,6 +68,7 @@ public class SRRecorderService extends Service{
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
+		SRDebugUtil.SRLog("SRRecorderService.onCreate()");
 		super.onCreate();
 		mRecorder = null;
 		isRecording = false;

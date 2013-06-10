@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -220,6 +221,38 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         
         mPlayerBtnsLayout = (LinearLayout) findViewById(R.id.playerBtnsLayout);
         mFFBtn = (ImageButton) findViewById(R.id.ffBtn);
+        
+        mFFBtn.setOnTouchListener(new View.OnTouchListener(){
+        	
+        	private Handler mHandler;
+        	
+        	@Override 
+        	public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (mHandler != null) return true;
+                    mHandler = new Handler();
+                    mHandler.postDelayed(mAction, 500);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    if (mHandler == null) return true;
+                    mHandler.removeCallbacks(mAction);
+                    mHandler = null;
+                    break;
+                }
+                return false;
+            }
+        	
+        	Runnable mAction = new Runnable() {
+                @Override public void run() {
+                	//SRDebugUtil.SRLog("setOnTouchListener setOnTouchListener run");
+                	mController.jumpToggleBtn(false);
+                    mHandler.postDelayed(this, 500);
+                }
+            };
+        	
+        });
+        
         mFFBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -227,7 +260,43 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 mController.jumpToggleBtn(false);
             }
         });
+        
+        
+        
+        
         mRewindBtn = (ImageButton) findViewById(R.id.rewindBtn);
+        
+        mRewindBtn.setOnTouchListener(new View.OnTouchListener(){
+        	
+        	private Handler mHandler;
+        	
+        	@Override 
+        	public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (mHandler != null) return true;
+                    mHandler = new Handler();
+                    mHandler.postDelayed(mAction, 500);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    if (mHandler == null) return true;
+                    mHandler.removeCallbacks(mAction);
+                    mHandler = null;
+                    break;
+                }
+                return false;
+            }
+        	
+        	Runnable mAction = new Runnable() {
+                @Override public void run() {
+                	//SRDebugUtil.SRLog("setOnTouchListener setOnTouchListener run");
+                	mController.jumpToggleBtn(true);
+                    mHandler.postDelayed(this, 500);
+                }
+            };
+        	
+        });
+        
         mRewindBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -238,6 +307,10 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
 
             }
         });
+
+        
+        
+        
         mPlayToggleBtn = (ImageButton) findViewById(R.id.playToggleBtn);
         mPlayToggleBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -613,7 +686,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         
         datasource.close();
     }
-
+    
     public ProgressBar getProgressBar() {
         return mVolumeView;
     }
@@ -621,4 +694,5 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     public ToggleButton getAutoTagToggleBtn() {
         return mAutoTagToggleBtn;
     }
+    
 }
