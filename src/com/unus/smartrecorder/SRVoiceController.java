@@ -293,6 +293,12 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                             		else{
                             			 mModel.setTitle(voiceTitle);
                                          mActivity.getActionBar().setTitle(mModel.getTitle());
+                                         if (docFilePath != null && docFilePath.length() > 0) {
+                                             mSRVoiceView.getAutoTagToggleBtn().setVisibility(View.VISIBLE);
+                                         } else {
+                                             mSRVoiceView.getAutoTagToggleBtn().setVisibility(View.INVISIBLE);
+                                         }
+                                         
                                          mModel.setDocFilePath(docFilePath);
                                          mSRVoiceView.setDocPath(docFilePath);
                                          mSRVoiceView.initRecorderTagListView();
@@ -490,7 +496,8 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         
         // Document Display
         mModel.setDocFilePath(docPath);
-        mSRVoiceView.setDocPath(docPath);
+        mSRVoiceView.setDocPath(docPath);        
+        mSRVoiceView.getAutoTagToggleBtn().setVisibility(View.INVISIBLE); // Auto Tag Button
 //        if (tagTime > 0) {
 //            if (tagDb.getType() == SRDbHelper.PAGE_TAG_TYPE) {
 //                mSRVoiceView.setDocPage(Integer.parseInt(tagDb.getContent()));

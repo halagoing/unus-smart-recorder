@@ -618,4 +618,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         return mVolumeView;
     }
 
+    public ToggleButton getAutoTagToggleBtn() {
+        return mAutoTagToggleBtn;
+    }
 }
