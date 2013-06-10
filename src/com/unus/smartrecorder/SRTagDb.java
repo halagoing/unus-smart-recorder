@@ -8,8 +8,15 @@ public class SRTagDb {
 	private String content;
 	private String tag_time;
 	private String Tag_numbering;
+	private Boolean isTitleType;
 	
 	
+	public Boolean getIsTitleType() {
+		return isTitleType;
+	}
+	public void setIsTitleType(Boolean isTitleType) {
+		this.isTitleType = isTitleType;
+	}
 	public String getTag_numbering() {
 		return Tag_numbering;
 	}

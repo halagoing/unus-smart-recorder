@@ -114,7 +114,8 @@ public class SRDataSource {
 		tag.setType(cursor.getInt(3));
 		tag.setContent(cursor.getString(4));
 		tag.setTag_time(cursor.getString(5));
-		isFirstTag(tag.getTag_time());
+		tag.setIsTitleType(isFirstTag(tag.getTag_time()));
+		
 
 		tag.setTag_numbering(getNumbering());
 

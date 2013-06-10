@@ -80,6 +80,10 @@ public interface SRVoiceInterface {
     public ArrayList<SRTagDb> getPageTagList();
 
     public boolean isPlaying();
+    
+    public void setmTempTagForDelete(SRTagDb tagDb);
+    
+    public SRTagDb getmTempTagForDelete();
 
     public void setSRRecorderService(SRRecorderService service);
 

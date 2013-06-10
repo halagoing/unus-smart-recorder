@@ -33,4 +33,7 @@ public interface SRVoiceControllerInterface {
     public void changeAutoTag(boolean isChecked);
 
     public void startSeekBarTracking();
+    
+    public void showDeleteTagDialog(SRTagDb tagDb);
+
 }

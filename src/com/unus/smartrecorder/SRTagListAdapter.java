@@ -58,6 +58,17 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		notifyDataSetChanged();
 	}
 	
+	public void remove(SRTagDb tag){
+		//mTags.re
+		for (int index = 0 ; index < mTags.size() ; index++){
+			if(mTags.get(index).getTag_id() == tag.getTag_id()){
+				mTags.remove(index);
+				break;
+			}
+		}
+		notifyDataSetChanged();
+	}
+	
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
