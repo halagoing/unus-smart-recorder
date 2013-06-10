@@ -77,8 +77,45 @@ public class SRRecorderService extends Service{
 		return false;
 	}
 	
-	
-	
+    public void record(String voicePath) {        
+        SRDebugUtil.SRLog("voicePath = " + voicePath);
+
+        String filepath = Environment.getExternalStorageDirectory().getPath();
+        File file = new File(filepath, AUDIO_RECORDER_FOLDER);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+
+        if (mRecorder == null) {
+            mRecorder = new MediaRecorder();
+        }
+        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mRecorder.setOutputFormat(output_formats[currentFormat]);
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        mRecorder.setOutputFile(voicePath);
+        mRecorder.setOnErrorListener(errorListener);
+        mRecorder.setOnInfoListener(infoListener);
+
+        try {
+            mRecorder.prepare();
+            mRecorder.start();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        showRecordingNotification();
+    }
+    
+    public void recordStop() {
+        if (mRecorder != null) {
+            mRecorder.stop();
+            // recorder.reset();
+            mRecorder.release();
+            mRecorder = null;
+            showStoppedNotification();
+        }
+    }
 	
 	
 	@Override
@@ -88,41 +125,7 @@ public class SRRecorderService extends Service{
 		String voicePath = intent.getStringExtra(SRConfig.VOICE_PATH_KEY);
 		SRDebugUtil.SRLog("voicePath = "+ voicePath);
 		
-        String filepath = Environment.getExternalStorageDirectory().getPath();
-        File file = new File(filepath, AUDIO_RECORDER_FOLDER);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-		
-		if(mRecorder==null){
-			mRecorder = new MediaRecorder();
-			mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-			mRecorder.setOutputFormat(output_formats[currentFormat]);
-		    mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-		    mRecorder.setOutputFile(voicePath);
-		    mRecorder.setOnErrorListener(errorListener);
-		    mRecorder.setOnInfoListener(infoListener);
-		    
-		    try {
-		    	mRecorder.prepare();
-		    	mRecorder.start();
-		    } catch (IllegalStateException e) {
-		        e.printStackTrace();
-		    } catch (IOException e) {
-		        e.printStackTrace();
-		    }
-		    showRecordingNotification();
-		}
-		
-//		String filepath = Environment.getExternalStorageDirectory().getPath();
-//		File file = new File(filepath, AUDIO_RECORDER_FOLDER);
-//	    if (!file.exists()) {
-//	        file.mkdirs();
-//	    }
-
-		
-		
-	
+		record(voicePath);
 		return super.onStartCommand(intent, flags, startId);
 	}
 	 
@@ -130,13 +133,7 @@ public class SRRecorderService extends Service{
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		SRDebugUtil.SRLog("call SRRecorderService onDestroy");
-		if(mRecorder!=null){
-			mRecorder.stop();
-	        //recorder.reset();
-			mRecorder.release();
-			mRecorder = null;
-			showStoppedNotification();
-		}
+		recordStop();
 		super.onDestroy();
 	}
 	

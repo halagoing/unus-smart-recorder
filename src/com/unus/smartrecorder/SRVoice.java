@@ -55,6 +55,8 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     private String mVoiceFilePath;
     private String mDocFilePath;
     
+    private SRRecorderService mSRRecorderService;
+    private boolean mIsSRRecorderServiceBound = false;
     
     public static int JUMP_TIME = 5000; // 녹음중에 사용자가 음성을 점프할때의 시간 (ms)
     
@@ -324,9 +326,16 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         
     	SRDebugUtil.SRLog("SRVoice.recordStart() : voice = " + mVoiceFilePath + " doc = " + mDocFilePath);
     	
-    	Intent recorderIntent = new Intent("com.unus.smartrecorder.Recorder");
-    	recorderIntent.putExtra(SRConfig.VOICE_PATH_KEY, mVoiceFilePath);
-    	mContext.startService(recorderIntent);
+//    	Intent recorderIntent = new Intent("com.unus.smartrecorder.Recorder");
+//    	recorderIntent.putExtra(SRConfig.VOICE_PATH_KEY, mVoiceFilePath);
+//    	mContext.startService(recorderIntent);
+    	if (mIsSRRecorderServiceBound) {
+    	    mSRRecorderService.record(mVoiceFilePath);
+    	} else { 
+    	    SRDebugUtil.SRLogError("SRRecorderService is not bound");
+    	    return;
+    	}
+    	
     	mRecordStartTime = System.currentTimeMillis();
     	
     	// Time Timer
@@ -366,7 +375,12 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     public void recordStop() {
         SRDebugUtil.SRLog("SRVoice.recordStop()");
         
-    	mContext.stopService(new Intent("com.unus.smartrecorder.Recorder"));
+//    	mContext.stopService(new Intent("com.unus.smartrecorder.Recorder"));
+        if (mIsSRRecorderServiceBound) {
+            mSRRecorderService.recordStop();
+        } else {
+            SRDebugUtil.SRLogError("SRRecorderService is not bound");
+        }
 //    	SRVoiceView.mBtnRecorder.setText("recorder");
     	isRecordering = false;
 //		mRecorder.stop();
@@ -811,5 +825,23 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         return mDocPageTagList;
     }
 
-
+    @Override
+    public void setSRRecorderService(SRRecorderService service) {
+        mSRRecorderService = service;
+    }
+    
+    @Override
+    public SRRecorderService getSRRecorderService() {
+        return mSRRecorderService;
+    }
+    
+    @Override
+    public void setSRRecorderServiceBound(boolean isBound) {
+        mIsSRRecorderServiceBound = isBound;
+    }
+    
+    @Override
+    public boolean isSRRecorderServiceBound() {
+        return mIsSRRecorderServiceBound;
+    }
 }

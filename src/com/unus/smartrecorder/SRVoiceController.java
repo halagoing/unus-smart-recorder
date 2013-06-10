@@ -69,9 +69,8 @@ public class SRVoiceController implements SRVoiceControllerInterface {
 	private static final Boolean Boolean = null;
 	private Pattern pattern;
 	private Matcher matcher;
-        
-    private SRRecorderService mSRRecorderService;
-    private boolean mSRRecorderServiceBound = false;
+          
+    private boolean mIsPlayBySearchList;
 	
     // for show Keyboard 
     private EditText mActiveEditText;
@@ -165,20 +164,14 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         mActionBarShareItem = null;
     }
     
-    /**
-     * Set Recorder, Player, Search View
-     * 
-     * @param mode
-     */
-    @Override
-    public void setViewMode(int mode) {
+    public void setViewModeWithInit(int mode, boolean isInit) {
         if (mModel.getMode() == mode)
             return;
         
         mModel.setMode(mode);
         
         if (SRVoice.RECORDER_MODE == mode) {
-            if (!mModel.isRecordering())
+            if (isInit)
                 mSRVoiceView.setVoiceViewMode(SRVoice.RECORDER_MODE);
             mActivity.setContentView(mSRVoiceView);
             
@@ -191,7 +184,8 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                 mActionBarShareItem.setVisible(false);
             
         } else if (SRVoice.PLAYER_MODE == mode) {
-            mSRVoiceView.setVoiceViewMode(SRVoice.PLAYER_MODE);
+            if (isInit)
+                mSRVoiceView.setVoiceViewMode(SRVoice.PLAYER_MODE);
             mActivity.setContentView(mSRVoiceView);
             
             //ActionBar : All
@@ -203,7 +197,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                 mActionBarShareItem.setVisible(true);
             
         } else if (SRVoice.SEARCH_MODE == mode) {
-        	mSRSearchView.setSearchViewMode();
+            mSRSearchView.setSearchViewMode();
             mActivity.setContentView(mSRSearchView);
             
             //ActionBar : only Search
@@ -214,6 +208,17 @@ public class SRVoiceController implements SRVoiceControllerInterface {
             if (mActionBarShareItem != null)
                 mActionBarShareItem.setVisible(false);
         }
+    }    
+    
+    
+    /**
+     * Set Recorder, Player, Search View
+     * 
+     * @param mode
+     */
+    @Override
+    public void setViewMode(int mode) {
+        setViewModeWithInit(mode, true);
     }
     
     public SRVoiceView getVoiceView() {
@@ -457,8 +462,10 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     @Override
     public void playBySearchList(SRTagDb tagDb) {
         // ActionBar 이전 상태로 이동 
+        mIsPlayBySearchList = true; // SearchView에서 들어온 경우를 구분하기 위해..
         if (mActionBarSearchItem != null)
             mActionBarSearchItem.collapseActionView();
+        mIsPlayBySearchList = false;
             
         // 녹음중/재생중 일 경우 녹음/재생 정지 
         if (mModel.getMode() == SRVoice.RECORDER_MODE
@@ -643,7 +650,16 @@ public class SRVoiceController implements SRVoiceControllerInterface {
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 SRDebugUtil.SRLog("onMenuItemActionCollapse()");
     
-                setViewMode(mModel.getPrevMode());                
+                // Don't need initialize just re-set ContentView
+                //setViewMode(mModel.getPrevMode());
+                //mModel.setMode(mModel.getPrevMode());
+                //mActivity.setContentView(mSRVoiceView);
+                
+                // 좀 지저분한데 SearchView에서 들어온 경우와 Back키나 ActionBar에서 들어온 경우를 구분하기 어려움...
+                // SearchView에서 재생하기 위해 들어온 경우를 제외하면 이전 View상태를 유지해야한다.
+                if (mIsPlayBySearchList == false) {
+                    setViewModeWithInit(mModel.getPrevMode(), false);                   
+                }
                 return true;
             }
         });
@@ -731,17 +747,17 @@ public class SRVoiceController implements SRVoiceControllerInterface {
             SRDebugUtil.SRLog("onServiceConnected() : " + className.toString());
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             SRRecorderBinder binder = (SRRecorderBinder) service;
-            mSRRecorderService = binder.getService();
-            mSRRecorderServiceBound = true;
+            mModel.setSRRecorderService(binder.getService());
+            mModel.setSRRecorderServiceBound(true);
             
             // set Volume progress bar
-            mSRRecorderService.setProgressBar(mSRVoiceView.getProgressBar());
+            mModel.getSRRecorderService().setProgressBar(mSRVoiceView.getProgressBar());
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
             SRDebugUtil.SRLog("onServiceDisconnected() : ");
-            mSRRecorderServiceBound = false;
+            mModel.setSRRecorderServiceBound(false);
         }
     }; 
     
@@ -753,9 +769,9 @@ public class SRVoiceController implements SRVoiceControllerInterface {
 
     public void unbindService() {
         // Unbind from the service
-        if (mSRRecorderServiceBound) {
+        if (mModel.isSRRecorderServiceBound()) {
             mActivity.unbindService(mConnection);
-            mSRRecorderServiceBound = false;
+            mModel.setSRRecorderServiceBound(false);
         }
     }
 }

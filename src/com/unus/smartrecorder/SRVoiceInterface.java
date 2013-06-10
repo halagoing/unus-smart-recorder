@@ -81,4 +81,12 @@ public interface SRVoiceInterface {
 
     public boolean isPlaying();
 
+    public void setSRRecorderService(SRRecorderService service);
+
+    public SRRecorderService getSRRecorderService();
+
+    public void setSRRecorderServiceBound(boolean isBound);
+
+    public boolean isSRRecorderServiceBound();
+
 }
