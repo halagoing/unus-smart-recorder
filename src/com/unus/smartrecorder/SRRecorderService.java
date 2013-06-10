@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.media.MediaRecorder;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Environment;
 import android.os.IBinder;
@@ -31,6 +32,10 @@ public class SRRecorderService extends Service{
 	public final static int NOTIFICATION_ID = 1357234;
 	private NotificationManager mNotifiManager;
 	private Boolean isRecording = false;
+
+	private static double mEMA = 0.0;
+    static final private double EMA_FILTER = 0.6;
+	RecordAmplitude recordAmplitude;
 	
 	//{{ for communicate Activity
 	private final IBinder mBinder = new SRRecorderBinder();
@@ -99,6 +104,9 @@ public class SRRecorderService extends Service{
         try {
             mRecorder.prepare();
             mRecorder.start();
+            isRecording = true;
+            recordAmplitude = new RecordAmplitude();
+    		recordAmplitude.execute();
         } catch (IllegalStateException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -108,8 +116,14 @@ public class SRRecorderService extends Service{
     }
     
     public void recordStop() {
-        if (mRecorder != null) {
-            mRecorder.stop();
+		if(isRecording){
+			isRecording = false;
+    		recordAmplitude.cancel(true);
+            mProgressBar.setProgress(0);
+		}
+
+    	if (mRecorder != null) {
+    		mRecorder.stop();
             // recorder.reset();
             mRecorder.release();
             mRecorder = null;
@@ -157,15 +171,14 @@ public class SRRecorderService extends Service{
     
     private void showRecordingNotification() {
     	showNotification(NOTI_RECORDING);
-    	isRecording = true;
+    	//isRecording = true;
   
     }
     
     private void showStoppedNotification() {
     	showNotification(NOTI_RECORDING_STOP);
     	mNotifiManager.cancelAll();
-
-
+		//isRecording = false;
     }
     
     private void showNotification(String notiMsg) {
@@ -176,4 +189,49 @@ public class SRRecorderService extends Service{
     	notification.setLatestEventInfo(this, "Smart Recorder", notiMsg, pendingIntent);
     	mNotifiManager.notify(NOTIFICATION_ID, notification);
 	}
+    private class RecordAmplitude extends AsyncTask<Void, Double, Void>{
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			//publishProgress(0.0);
+		}
+		@Override
+		protected Void doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			while (isRecording) {
+		        try {
+		          Thread.sleep(100);
+		        } catch (InterruptedException e) {
+		          e.printStackTrace();
+		        }
+		        publishProgress(getAmplitudeEMA());
+		        //publishProgress(recorder.getMaxAmplitude());
+		      }			
+			return null;
+		}
+		protected void onProgressUpdate(Double... progress) {
+		      //amplitudeTextView.setText(progress[0].toString());
+			  Integer iVal = Integer.parseInt(String.valueOf(Math.round(progress[0] * 50)));
+			  mProgressBar.setProgress(iVal);
+	    }
+		@Override
+		protected void onPostExecute(Void result) {
+			// TODO Auto-generated method stub
+			mProgressBar.setProgress(0);
+			super.onPostExecute(result);
+		}
+		 public double getAmplitude() {
+             if (mRecorder != null)
+                     return  (mRecorder.getMaxAmplitude()/2700.0);
+             else
+                     return 0;
+
+		 }
+	     public double getAmplitudeEMA() {
+	             double amp = getAmplitude();
+	             mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA;
+	             return mEMA;
+	     }
+	}    
 }
