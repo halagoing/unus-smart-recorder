@@ -52,7 +52,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left|center_vertical"
             android:layout_marginLeft="@dimen/sound_volume_left_margin"
-            android:layout_marginRight="@dimen/sound_volume_right_margin" />
+            android:layout_marginRight="@dimen/sound_volume_right_margin" 
+            android:progressDrawable="@drawable/progressbar"/>
 
         <!-- Record Time -->
         <TextView
