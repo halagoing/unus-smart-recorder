@@ -468,10 +468,10 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         mIsPlayBySearchList = false;
             
         // 녹음중/재생중 일 경우 녹음/재생 정지 
-        if (mModel.getMode() == SRVoice.RECORDER_MODE
+        if (mModel.getPrevMode() == SRVoice.RECORDER_MODE
                 && mModel.isRecordering()) {
             mModel.recordStop();
-        } else if (mModel.getMode() == SRVoice.PLAYER_MODE
+        } else if (mModel.getPrevMode() == SRVoice.PLAYER_MODE
                 && mModel.isPlaying()) {
             mModel.playStop();
         }
