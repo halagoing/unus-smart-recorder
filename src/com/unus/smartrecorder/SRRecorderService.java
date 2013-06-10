@@ -11,9 +11,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.media.MediaRecorder;
+import android.os.Binder;
 import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 public class SRRecorderService extends Service{
 	
@@ -30,10 +32,32 @@ public class SRRecorderService extends Service{
 	private NotificationManager mNotifiManager;
 	private Boolean isRecording = false;
 	
+	//{{ for communicate Activity
+	private final IBinder mBinder = new SRRecorderBinder();
+	
+	public class SRRecorderBinder extends Binder {
+	    SRRecorderService getService() {
+	        return SRRecorderService.this;
+	    }
+	}
+	
+	// For test
+//	private int mTestNumber;
+//	public int getTestNumber() {
+//	    return mTestNumber++;
+//	}
+	private ProgressBar mProgressBar;
+	public void setProgressBar(ProgressBar progressBar) {
+	    SRDebugUtil.SRLog("setProgressBar() : " + progressBar.toString());
+	    mProgressBar = progressBar;
+	}
+	//{{ for communicate Activity
+	
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stub
-		return null;
+		//return null;
+	    return mBinder;
 	}
 	
 	@Override

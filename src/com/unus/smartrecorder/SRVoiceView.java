@@ -614,4 +614,8 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         datasource.close();
     }
 
+    public ProgressBar getProgressBar() {
+        return mVolumeView;
+    }
+
 }

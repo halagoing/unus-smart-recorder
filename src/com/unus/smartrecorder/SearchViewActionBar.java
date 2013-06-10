@@ -21,14 +21,19 @@ import java.lang.reflect.Field;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewConfiguration;
 import android.view.Window;
 
 import com.android.debug.hv.ViewServer;
+import com.unus.smartrecorder.SRRecorderService.SRRecorderBinder;
 
 /**
  * This demonstrates the usage of SearchView in an ActionBar as a menu item. It
@@ -48,11 +53,6 @@ public class SearchViewActionBar extends Activity {
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         
         // setContentView(R.layout.searchview_actionbar);
-        
-        
-        
-        
-        
         
         mActionBar = getActionBar();
         mActionBar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_HOME); // remove
@@ -77,6 +77,24 @@ public class SearchViewActionBar extends Activity {
         ViewServer.get(this).addWindow(this);
     }
     
+    @Override
+    protected void onStart() {
+        super.onStart();
+        
+        if (mSRVoiceController != null) {
+            mSRVoiceController.bindService();          
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        
+        if (mSRVoiceController != null) {
+            mSRVoiceController.unbindService();          
+        }
+    }
+
     private void getOverflowMenu() {
 
         try {

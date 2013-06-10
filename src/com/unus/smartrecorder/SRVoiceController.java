@@ -7,17 +7,22 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.unus.smartrecorder.SRRecorderService.SRRecorderBinder;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -64,8 +69,9 @@ public class SRVoiceController implements SRVoiceControllerInterface {
 	private static final Boolean Boolean = null;
 	private Pattern pattern;
 	private Matcher matcher;
-    
-	
+        
+    private SRRecorderService mSRRecorderService;
+    private boolean mSRRecorderServiceBound = false;
 	
     // for show Keyboard 
     private EditText mActiveEditText;
@@ -708,5 +714,41 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         mModel.playPause();
     }
 
+    
+    /** Defines callbacks for service binding, passed to bindService() */
+    private ServiceConnection mConnection = new ServiceConnection() {
 
+        @Override
+        public void onServiceConnected(ComponentName className,
+                IBinder service) {
+            SRDebugUtil.SRLog("onServiceConnected() : " + className.toString());
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            SRRecorderBinder binder = (SRRecorderBinder) service;
+            mSRRecorderService = binder.getService();
+            mSRRecorderServiceBound = true;
+            
+            // set Volume progress bar
+            mSRRecorderService.setProgressBar(mSRVoiceView.getProgressBar());
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            SRDebugUtil.SRLog("onServiceDisconnected() : ");
+            mSRRecorderServiceBound = false;
+        }
+    }; 
+    
+    public void bindService() {
+        // Bind to LocalService
+        Intent intent = new Intent(mActivity, SRRecorderService.class);
+        mActivity.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);       
+    }
+
+    public void unbindService() {
+        // Unbind from the service
+        if (mSRRecorderServiceBound) {
+            mActivity.unbindService(mConnection);
+            mSRRecorderServiceBound = false;
+        }
+    }
 }
