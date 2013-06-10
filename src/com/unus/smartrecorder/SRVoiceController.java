@@ -505,7 +505,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     
     @Override
     public void playBySeekTime(int seekTime) {
-        mModel.playPause();
+        mModel.playPause(); //TODO : 지워도 되는지 확인 
         
         mModel.seekTo(seekTime);
         
