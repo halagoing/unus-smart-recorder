@@ -844,4 +844,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     public boolean isSRRecorderServiceBound() {
         return mIsSRRecorderServiceBound;
     }
+    
+    
+    
 }
