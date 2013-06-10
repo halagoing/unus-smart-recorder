@@ -40,7 +40,7 @@ import android.widget.Toast;
 public class SRVoiceController implements SRVoiceControllerInterface {
     public static final int DIALOG_INPUT_BASIC_INFO = 1; // Input Basic Info Dialog
     public static final int DIALOG_INPUT_TEXT_TAG = 2; // Input Text Tag Dialog
-    
+    public static final int DIALOG_DELETE_TAG = 3;
     public static final int FILE_EXPLORER_RESULT = 1;   // document file browsing
     public static final int TAKE_PICTURE_RESULT = 2;   // camera
     
@@ -224,6 +224,37 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         mActivity.showDialog(DIALOG_INPUT_BASIC_INFO);
         
     }
+    
+    @Override
+    public void showDeleteTagDialog(SRTagDb tagDb) {
+    	// TODO Auto-generated method stub
+    	mActivity.showDialog(DIALOG_DELETE_TAG);
+    	mModel.setmTempTagForDelete(tagDb);
+    }
+    
+    public void deleteTag(){
+    	SRTagDb tagDb = mModel.getmTempTagForDelete();
+    	SRDebugUtil.SRLog("deleteTag tagDb getIsTitleType = "+tagDb.getIsTitleType());
+    	SRDataSource datasource = new SRDataSource(mContext);
+    	datasource.open();
+
+    	if(tagDb.getIsTitleType()){
+    		SRVoiceDb voiceDb = datasource.getVoiceByVoiceId(tagDb.getVoice_id());
+    		File file = new File(voiceDb.getVoice_path());
+    		boolean deleted = file.delete();
+    		datasource.deleteVoice(voiceDb);
+    		ArrayList<SRTagDb> tagList = datasource.getTagByVoiceId(tagDb.getVoice_id());
+    		for (int index = 0 ; index < tagList.size(); index++){
+    			mSRSearchView.deleteTag(tagList.get(index));
+    			datasource.deleteTag(tagList.get(index));
+    		}
+    		
+    	}else{
+    		datasource.deleteTag(tagDb);
+    		mSRSearchView.deleteTag(tagDb);
+    	}
+    	datasource.close();
+    }
 
     @Override
     public void recordStop() {
@@ -305,6 +336,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                                 }
                             }).create();
             
+            
         case DIALOG_INPUT_TEXT_TAG:
             final View inputTextTagView = factory.inflate(
                     R.layout.sr_input_text_tag_dialog, null);
@@ -329,6 +361,28 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                                     // do nothing
                                 }
                             }).create();
+        case DIALOG_DELETE_TAG:
+        	SRDebugUtil.SRLog("DIALOG_INPUT_DELETE_TAG ");
+        	AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setMessage(R.string.delete_tag)
+                   .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                       public void onClick(DialogInterface dialog, int id) {
+                    	   SRDebugUtil.SRLog("Delete onClick");
+                    	   deleteTag();
+                           // FIRE ZE MISSILES!
+                    	   //deleteTag
+                       }
+                   })
+                   .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                       public void onClick(DialogInterface dialog, int id) {
+                    	   SRDebugUtil.SRLog("cancel onClick");
+                           // User cancelled the dialog
+                       }
+                   });
+        	
+        	
+        	return builder.create();
+//        	break;
         default:
             return null;
         }

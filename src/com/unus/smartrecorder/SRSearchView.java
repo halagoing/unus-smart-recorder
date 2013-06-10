@@ -12,12 +12,14 @@ package com.unus.smartrecorder;
 
 import java.util.ArrayList;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
@@ -67,6 +69,10 @@ public class SRSearchView extends FrameLayout {
         }        
     }
     
+    public void deleteTag(SRTagDb tagDb) {
+    	tagListAdapter.remove(tagDb);
+    }
+    
     public void setSearchViewMode() {
         SRDebugUtil.SRLog("call setSearchViewMode");
         
@@ -94,11 +100,20 @@ public class SRSearchView extends FrameLayout {
            	SRDebugUtil.SRLog("SRSearchView : onItemClick() pos = " + position);
 ////                
                mController.playBySearchList(tagListAdapter.getTagDb(position));
-
-            }
-            
-            
-            
+               
+            }  
+        });
+        
+        mListView.setOnItemLongClickListener(new OnItemLongClickListener(){
+        	@Override
+        	public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+        			int position, long id) {
+        		// TODO Auto-generated method stub
+        		SRDebugUtil.SRLog("call setOnItemLongClickListener");
+        		SRDebugUtil.SRLog("tagListAdapter.getTagDb(position) = " + tagListAdapter.getTagDb(position));
+        		mController.showDeleteTagDialog(tagListAdapter.getTagDb(position));
+        		return true;
+        	}
         });
         
         
