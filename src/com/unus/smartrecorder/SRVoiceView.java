@@ -67,6 +67,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     private static final int UPDATE_DURATION = 4;
     private static final int UPDATE_RECORDER_BTN = 5;
     private static final int UPDATE_PLAYER_BTN = 6;
+    private static final int JUMP_DELAYED_TIME = 250;
     
     private static class UpdateHandler extends Handler {
         WeakReference<SRVoiceView> mRef;
@@ -232,7 +233,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 case MotionEvent.ACTION_DOWN:
                     if (mHandler != null) return true;
                     mHandler = new Handler();
-                    mHandler.postDelayed(mAction, 500);
+                    mHandler.postDelayed(mAction, JUMP_DELAYED_TIME);
                     break;
                 case MotionEvent.ACTION_UP:
                     if (mHandler == null) return true;
@@ -247,7 +248,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 @Override public void run() {
                 	//SRDebugUtil.SRLog("setOnTouchListener setOnTouchListener run");
                 	mController.jumpToggleBtn(false);
-                    mHandler.postDelayed(this, 500);
+                    mHandler.postDelayed(this, JUMP_DELAYED_TIME);
                 }
             };
         	
@@ -276,7 +277,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 case MotionEvent.ACTION_DOWN:
                     if (mHandler != null) return true;
                     mHandler = new Handler();
-                    mHandler.postDelayed(mAction, 500);
+                    mHandler.postDelayed(mAction, JUMP_DELAYED_TIME);
                     break;
                 case MotionEvent.ACTION_UP:
                     if (mHandler == null) return true;
@@ -291,7 +292,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 @Override public void run() {
                 	//SRDebugUtil.SRLog("setOnTouchListener setOnTouchListener run");
                 	mController.jumpToggleBtn(true);
-                    mHandler.postDelayed(this, 500);
+                    mHandler.postDelayed(this, JUMP_DELAYED_TIME);
                 }
             };
         	
