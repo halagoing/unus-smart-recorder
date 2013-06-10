@@ -18,7 +18,7 @@ public class SRDataSource {
 			SRDbHelper.VOICE_COLUMN_VOICE_PATH,SRDbHelper.VOICE_COLUMN_DOCUMENT_PATH};
 	
 	private String[] allTagColumns = {SRDbHelper.TAG_COLUMN_TAG_ID,SRDbHelper.TAG_COLUMN_CREATED_DATETIME,
-			SRDbHelper.TAG_COLUMN_VOICE_ID,SRDbHelper.TAG_COLUMN_TYPE,SRDbHelper.TAG_COLUMN_CONTENT,SRDbHelper.TAG_COLUMN_TAG_TIME};
+			SRDbHelper.TAG_COLUMN_VOICE_ID,SRDbHelper.TAG_COLUMN_NUMBERING,SRDbHelper.TAG_COLUMN_TYPE,SRDbHelper.TAG_COLUMN_CONTENT,SRDbHelper.TAG_COLUMN_TAG_TIME};
 	
 	public SRDataSource (Context context) {
 		dbHelper = new SRDbHelper(context);
@@ -91,9 +91,10 @@ public class SRDataSource {
     	return newVoice;
 	}
 	
-	public SRTagDb createTag(long voice_id, int type, String content, String tag_time){
+	public SRTagDb createTag(long voice_id, String numbering,int type, String content, String tag_time){
     	ContentValues values = new ContentValues();
     	values.put(SRDbHelper.TAG_COLUMN_VOICE_ID, voice_id);
+    	values.put(SRDbHelper.TAG_COLUMN_NUMBERING, numbering);
     	values.put(SRDbHelper.TAG_COLUMN_TYPE, type);
     	values.put(SRDbHelper.TAG_COLUMN_CONTENT, content);
     	values.put(SRDbHelper.TAG_COLUMN_TAG_TIME, tag_time);
@@ -111,25 +112,28 @@ public class SRDataSource {
 		tag.setTag_id(cursor.getLong(0));
 		tag.setCreated_datetime(cursor.getString(1));
 		tag.setVoice_id(cursor.getLong(2));
-		tag.setType(cursor.getInt(3));
-		tag.setContent(cursor.getString(4));
-		tag.setTag_time(cursor.getString(5));
+		tag.setNumbering(cursor.getString(3));
+		tag.setType(cursor.getInt(4));
+		tag.setContent(cursor.getString(5));
+		tag.setTag_time(cursor.getString(6));
 		tag.setIsTitleType(isFirstTag(tag.getTag_time()));
-		
-
-		tag.setTag_numbering(getNumbering());
 
 		return tag;
 	}
 	
 	private Boolean isFirstTag(String tagTime) {
 		int intTagTime = Integer.parseInt(tagTime);
-		if(intTagTime==0){
-			mNubering = 0;
-			return true;
+		Boolean isFirstTag = false;
+		if (intTagTime == 0) {
+			isFirstTag = true;
 		}
-		mNubering ++;
-		return false;
+		return isFirstTag;
+//		if(intTagTime==0){
+//			mNubering = 0;
+//			return true;
+//		}
+//		mNubering ++;
+//		return false;
 	}
 	
 	private String getNumbering(){

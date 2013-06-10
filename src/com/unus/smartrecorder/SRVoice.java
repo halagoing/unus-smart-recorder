@@ -74,7 +74,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
 	private ArrayList<SRTagDb> mTagList = new ArrayList<SRTagDb>();
 	private SRTagDb mTempTagForDelete = new SRTagDb();
 	private MediaPlayer mPlayer;
-	
+	private int mTagNumbering = 0;
 	private int mPlayerState;
 	
 	private boolean mIsAutoTag = true;
@@ -92,6 +92,14 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
 	private Timer mTimer;
 	private int mDocPageTagListIdx, mDocPageAdjustTime;
 	
+	public int getmTagNumbering() {
+		return mTagNumbering;
+	}
+
+	public void setmTagNumbering(int mTagNumbering) {
+		this.mTagNumbering = mTagNumbering;
+	}
+
 	public SRTagDb getmTempTagForDelete() {
 		return mTempTagForDelete;
 	}
@@ -694,10 +702,14 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         }
         
         SRDebugUtil.SRLog("addTag(): " + Integer.toString(type) + " [" + data + "] " +position);
-        SRTagDb tag = mDataSource.createTag(mVoiceDb.getVoice_id(), type, data, position);
+        SRTagDb tag = mDataSource.createTag(mVoiceDb.getVoice_id(), getChangeNumbering(),type, data, position);
         mTagList.add(tag);
         notifyTagsObservers(tag);
     }
+    
+	private String getChangeNumbering(){
+		return String.format("%03d",mTagNumbering++);
+	}
 
     @Override
     public void seekTo(int seekTime) {

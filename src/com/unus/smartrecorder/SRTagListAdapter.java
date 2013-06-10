@@ -125,7 +125,7 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		tagIconView.setImageResource(android.R.color.transparent);
 		
 		
-		SRDebugUtil.SRLog("tag.getTag_numbering() = " + tag.getTag_numbering());
+		SRDebugUtil.SRLog("tag.getTag_numbering() = " + tag.getNumbering());
 		switch (getLayoutType(tag.getTag_time())) {
 			case TITLE_TYPE:
 //				tagListMainLayout.setBackgroundColor(R.drawable.tag_list_item_selector);
@@ -143,12 +143,12 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 				//tagIconView.setImageDrawable(res.getDrawable(R.drawable.test));
 				
 				if(tag.getType() == SRDbHelper.TEXT_TAG_TYPE){
-					tagTitle = " "+tag.getTag_numbering()+" "+tag.getContent();
+					tagTitle = " "+tag.getNumbering()+" "+tag.getContent();
 					//tagTitle = "Text is "+tag.getContent();
 					tagIconView.setImageDrawable(res.getDrawable(R.drawable.text_labels));
 				}
 				else if(tag.getType() == SRDbHelper.PAGE_TAG_TYPE){
-					tagTitle = " "+tag.getTag_numbering()+" Page# "+tag.getContent();
+					tagTitle = " "+tag.getNumbering()+" Page# "+tag.getContent();
 					tagIconView.setImageDrawable(res.getDrawable(R.drawable.doc_labels));
 //					tagTitle = "Page is "+tag.getContent();
 				}
@@ -195,7 +195,7 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 						imageView.setImageDrawable(res.getDrawable(R.drawable.no_pic));
 					}
 					tagIconView.setImageDrawable(res.getDrawable(R.drawable.pic_labels));
-					tagTitle = " "+tag.getTag_numbering() +" "+getImageFileName(tag.getContent());
+					tagTitle = " "+tag.getNumbering() +" "+getImageFileName(tag.getContent());
 				}
 				text.setText(tagTitle);
 				tagNumber++;

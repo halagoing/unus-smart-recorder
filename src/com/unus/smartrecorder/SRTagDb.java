@@ -5,9 +5,9 @@ public class SRTagDb {
 	private String created_datetime;
 	private long voice_id;
 	private int type;
+	private String numbering;
 	private String content;
 	private String tag_time;
-	private String Tag_numbering;
 	private Boolean isTitleType;
 	
 	
@@ -17,11 +17,11 @@ public class SRTagDb {
 	public void setIsTitleType(Boolean isTitleType) {
 		this.isTitleType = isTitleType;
 	}
-	public String getTag_numbering() {
-		return Tag_numbering;
+	public String getNumbering() {
+		return numbering;
 	}
-	public void setTag_numbering(String tag_numbering) {
-		Tag_numbering = tag_numbering;
+	public void setNumbering(String numbering) {
+		this.numbering = numbering;
 	}
 	public long getTag_id() {
 		return tag_id;
