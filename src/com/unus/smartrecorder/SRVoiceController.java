@@ -239,8 +239,15 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     @Override
     public void showDeleteTagDialog(SRTagDb tagDb) {
     	// TODO Auto-generated method stub
-    	mActivity.showDialog(DIALOG_DELETE_TAG);
-    	mModel.setmTempTagForDelete(tagDb);
+    	if(mModel.getVoiceId()==tagDb.getVoice_id()){
+//    		Toast toast = Toast.makeText(mContext, "재생화면에 해당데이터가 사용 중입니다!", 3000).show();
+    		Toast.makeText(mContext, "재생화면에 데이터를 사용하여 삭제할 수 없습니다.", 3000).show();
+    	}
+    	else{
+        	mActivity.showDialog(DIALOG_DELETE_TAG);
+        	mModel.setmTempTagForDelete(tagDb);
+    	}
+
     }
     
     public void deleteTag(){

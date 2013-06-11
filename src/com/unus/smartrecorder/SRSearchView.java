@@ -97,7 +97,7 @@ public class SRSearchView extends FrameLayout {
                     int position, long id) {
 
 //            	view.setSelected(true);
-           	SRDebugUtil.SRLog("SRSearchView : onItemClick() pos = " + position);
+//           	SRDebugUtil.SRLog("SRSearchView : onItemClick() pos = " + position);
 ////                
                mController.playBySearchList(tagListAdapter.getTagDb(position));
                
@@ -109,8 +109,8 @@ public class SRSearchView extends FrameLayout {
         	public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
         			int position, long id) {
         		// TODO Auto-generated method stub
-        		SRDebugUtil.SRLog("call setOnItemLongClickListener");
-        		SRDebugUtil.SRLog("tagListAdapter.getTagDb(position) = " + tagListAdapter.getTagDb(position));
+//        		SRDebugUtil.SRLog("call setOnItemLongClickListener");
+//        		SRDebugUtil.SRLog("tagListAdapter.getTagDb(position) = " + tagListAdapter.getTagDb(position));
         		mController.showDeleteTagDialog(tagListAdapter.getTagDb(position));
         		return true;
         	}
