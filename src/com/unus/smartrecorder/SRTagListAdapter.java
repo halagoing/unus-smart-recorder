@@ -105,107 +105,98 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 			convertView = mInflater.inflate(layout, parent, false);
 		}
 		
-		String tagTitle = "";
 		SRTagDb tag = mTags.get(position);
-		
-		TextView text = (TextView)convertView.findViewById(R.id.tagListTitle);
-//		LinearLayout dividingLine = (LinearLayout)convertView.findViewById(R.id.dividingLine);
-		RelativeLayout tagListMainLayout = (RelativeLayout)convertView.findViewById(R.id.tagListMainLayout);
-		ImageView imageView = (ImageView)convertView.findViewById(R.id.tagListImage);
-		ImageView tagIconView = (ImageView)convertView.findViewById(R.id.tagIcon);
-		Resources res = mContext.getResources(); /** from an Activity */
-		
-		
-//		dividingLine.setBackgroundColor(Color.parseColor("#e8e8e8"));
-		tagListMainLayout.setBackgroundColor(Color.parseColor("#e8e8e8"));
-		tagListMainLayout.setBackgroundColor(Color.TRANSPARENT);
-		
+
+		// declaration
+		TextView text = (TextView) convertView.findViewById(R.id.tagListTitle);
+		RelativeLayout tagListMainLayout = (RelativeLayout) convertView
+				.findViewById(R.id.tagListMainLayout);
+		ImageView imageView = (ImageView) convertView
+				.findViewById(R.id.tagListImage);
+		ImageView tagIconView = (ImageView) convertView
+				.findViewById(R.id.tagIcon);
+		Resources res = mContext.getResources();
+		/** from an Activity */
+
+		// init
 		tagListMainLayout.setPadding(20, 0, 0, 0);
 		imageView.setImageResource(android.R.color.transparent);
 		tagIconView.setImageResource(android.R.color.transparent);
-		
-		
-//		SRDebugUtil.SRLog("tag.getTag_numbering() = " + tag.getNumbering());
+
+		// set
 		switch (getLayoutType(tag.getTag_time())) {
-			case TITLE_TYPE:
-//				tagListMainLayout.setBackgroundColor(R.drawable.tag_list_item_selector);
-				tagListMainLayout.setBackgroundColor(Color.parseColor("#dbdbdb"));
-				tagListMainLayout.setPadding(10, 0, 0, 0);
-//				dividingLine.setBackgroundColor(Color.parseColor("#e8e8e8"));
-				tagTitle = tag.getContent();
-				text.setText(tagTitle);
-				tagIconView.setImageDrawable(res.getDrawable(R.drawable.voice_labels));
-//				tagNumber = 1;
-				break;
-			case TAG_TYPE:
-				
-				//tagListMainLayout.setBackgroundResource(R.id.t)
-				//tagIconView.setImageDrawable(res.getDrawable(R.drawable.test));
-				
-				if(tag.getType() == SRDbHelper.TEXT_TAG_TYPE){
-					tagTitle = " "+tag.getNumbering()+" "+tag.getContent();
-					//tagTitle = "Text is "+tag.getContent();
-					tagIconView.setImageDrawable(res.getDrawable(R.drawable.text_labels));
-				}
-				else if(tag.getType() == SRDbHelper.PAGE_TAG_TYPE){
-					tagTitle = " "+tag.getNumbering()+" Page# "+tag.getContent();
-					tagIconView.setImageDrawable(res.getDrawable(R.drawable.doc_labels));
-//					tagTitle = "Page is "+tag.getContent();
-				}
-				else if(tag.getType() == SRDbHelper.PHOTO_TAG_TYPE){
-					
-					File imgFile = new  File(tag.getContent());
-					
-					
-					if(imgFile.exists()){
-						
-						try{
-							//Drawable d = Drawable.createFromPath(imgFile.getAbsolutePath());
-							//imageView.setImageDrawable(d);
-							
-							SRDebugUtil.SRLog("imgFile.getAbsolutePath() = " +imgFile.getAbsolutePath());
-//							Bitmap myBitmap = BitmapFactory.decodeFile("/mnt/sdcard/DCIM/100LGDSC/test.jpg");
-							
-							BitmapFactory.Options options=new BitmapFactory.Options();
-							options.inSampleSize = 8;
-							BitmapFactory.decodeStream(new FileInputStream(imgFile),null,options);
-							
-							
-							final int REQUIRED_SIZE=70;
+		case TITLE_TYPE:
+			tagIconView.setImageDrawable(res
+					.getDrawable(R.drawable.voice_labels));
+			text.setText(tag.getTagListTitle());
+		case TAG_TYPE:
 
-					        //Find the correct scale value. It should be the power of 2.
-					        int scale=1;
-					        while(options.outWidth/scale/2>=REQUIRED_SIZE && options.outHeight/scale/2>=REQUIRED_SIZE)
-					            scale*=2;
+			// tagListMainLayout.setBackgroundResource(R.id.t)
+			// tagIconView.setImageDrawable(res.getDrawable(R.drawable.test));
 
-					        //Decode with inSampleSize
-					        BitmapFactory.Options o2 = new BitmapFactory.Options();
-					        o2.inSampleSize=scale;
-					        Bitmap myBitmap = BitmapFactory.decodeStream(new FileInputStream(imgFile), null, o2);
-					        imageView.setImageBitmap(myBitmap);
-					        
-					        
-						}
-						catch (FileNotFoundException e){
-							
-						}
+			if (tag.getType() == SRDbHelper.TEXT_TAG_TYPE) {
+
+				tagIconView.setImageDrawable(res
+						.getDrawable(R.drawable.text_labels));
+			} else if (tag.getType() == SRDbHelper.PAGE_TAG_TYPE) {
+
+				tagIconView.setImageDrawable(res
+						.getDrawable(R.drawable.doc_labels));
+				// tagTitle = "Page is "+tag.getContent();
+			} else if (tag.getType() == SRDbHelper.PHOTO_TAG_TYPE) {
+
+				File imgFile = new File(tag.getContent());
+
+				if (imgFile.exists()) {
+
+					try {
+						// Drawable d =
+						// Drawable.createFromPath(imgFile.getAbsolutePath());
+						// imageView.setImageDrawable(d);
+
+						SRDebugUtil.SRLog("imgFile.getAbsolutePath() = "
+								+ imgFile.getAbsolutePath());
+						// Bitmap myBitmap =
+						// BitmapFactory.decodeFile("/mnt/sdcard/DCIM/100LGDSC/test.jpg");
+
+						BitmapFactory.Options options = new BitmapFactory.Options();
+						options.inSampleSize = 8;
+						BitmapFactory.decodeStream(
+								new FileInputStream(imgFile), null, options);
+
+						final int REQUIRED_SIZE = 70;
+
+						// Find the correct scale value. It should be the power
+						// of 2.
+						int scale = 1;
+						while (options.outWidth / scale / 2 >= REQUIRED_SIZE
+								&& options.outHeight / scale / 2 >= REQUIRED_SIZE)
+							scale *= 2;
+
+						// Decode with inSampleSize
+						BitmapFactory.Options o2 = new BitmapFactory.Options();
+						o2.inSampleSize = scale;
+						Bitmap myBitmap = BitmapFactory.decodeStream(
+								new FileInputStream(imgFile), null, o2);
+						imageView.setImageBitmap(myBitmap);
+
+					} catch (FileNotFoundException e) {
+
 					}
-					else{
-						
-						imageView.setImageDrawable(res.getDrawable(R.drawable.no_pic));
-					}
-					tagIconView.setImageDrawable(res.getDrawable(R.drawable.pic_labels));
-					tagTitle = " "+tag.getNumbering() +" "+getImageFileName(tag.getContent());
+				} else {
+
+					imageView.setImageDrawable(res
+							.getDrawable(R.drawable.no_pic));
 				}
-				text.setText(tagTitle);
-				tagNumber++;
-				break;
-			default:
-				break;
+				tagIconView.setImageDrawable(res
+						.getDrawable(R.drawable.pic_labels));
+			}
+			text.setText(tag.getTagListTitle());
+			break;
+		default:
+			break;
 		}
-		
-		
-		
+
 		return convertView;
 
 	}
