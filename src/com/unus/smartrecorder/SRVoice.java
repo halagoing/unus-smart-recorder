@@ -73,6 +73,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
 	private SRVoiceDb mVoiceDb;
 	private ArrayList<SRTagDb> mTagList = new ArrayList<SRTagDb>();
 	private SRTagDb mTempTagForDelete = new SRTagDb();
+	private SRVoiceDb mTempVoiceForDelete = new SRVoiceDb();
 	private MediaPlayer mPlayer;
 	private int mTagNumbering = 0;
 	private int mPlayerState;
@@ -106,6 +107,14 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
 
 	public void setmTempTagForDelete(SRTagDb mTempTagForDelete) {
 		this.mTempTagForDelete = mTempTagForDelete;
+	}
+	
+	public SRVoiceDb getmTempVoiceForDelete() {
+		return this.mTempVoiceForDelete;
+	}
+	
+	public void setmTempVoiceForDelete(SRVoiceDb mTempVoiceForDelete) {
+		this.mTempVoiceForDelete = mTempVoiceForDelete;
 	}
 	
     private static class UpdatePageHandler extends Handler {

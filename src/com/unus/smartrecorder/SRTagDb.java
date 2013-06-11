@@ -11,8 +11,21 @@ public class SRTagDb {
 	private String content;
 	private String tag_time;
 	private Boolean isTitleType;
+	private int groupPosition;
+	private int childPosition;
 	
-	
+	public int getGroupPosition() {
+		return groupPosition;
+	}
+	public void setGroupPosition(int groupPosition) {
+		this.groupPosition = groupPosition;
+	}
+	public int getChildPosition() {
+		return childPosition;
+	}
+	public void setChildPosition(int childPosition) {
+		this.childPosition = childPosition;
+	}
 	public Boolean getIsTitleType() {
 		return isTitleType;
 	}
@@ -65,15 +78,15 @@ public class SRTagDb {
 	public String getTagListTitle(){
 		String tagTitle = "";
 		if(getIsTitleType()){
-			tagTitle = "00:00 | " + getContent();
+			tagTitle = "0:00:00  " + getContent();
 		}
 		else{
 			if (getType() == SRDbHelper.TEXT_TAG_TYPE) {
-				tagTitle = " " + getTime() + " | " + getContent();
+				tagTitle = " " + getTime() + "  " + getContent();
 			} else if (getType() == SRDbHelper.PAGE_TAG_TYPE) {
-				tagTitle = " " + getTime() + " | Page# " + getContent();
+				tagTitle = " " + getTime() + "  Page# " + getContent();
 			} else if (getType() == SRDbHelper.PHOTO_TAG_TYPE) {
-				tagTitle = " " + getTime() + " | " + getImageFileName(getContent());
+				tagTitle = " " + getTime() + "  " + getImageFileName(getContent());
 			}
 		}
 		return tagTitle;

@@ -83,6 +83,8 @@ public interface SRVoiceInterface {
     
     public void setmTempTagForDelete(SRTagDb tagDb);
     
+    public void setmTempVoiceForDelete(SRVoiceDb voiceDb);
+    
     public SRTagDb getmTempTagForDelete();
 
     public void setSRRecorderService(SRRecorderService service);

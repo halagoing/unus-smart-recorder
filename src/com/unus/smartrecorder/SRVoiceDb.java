@@ -8,6 +8,14 @@ public class SRVoiceDb {
 	private String voice_path;
 	private String document_path;
 	private ArrayList<SRTagDb> mTagList;
+	private int groupPosition;
+	
+	public int getGroupPosition() {
+		return groupPosition;
+	}
+	public void setGroupPosition(int groupPosition) {
+		this.groupPosition = groupPosition;
+	}
 	
 	public ArrayList<SRTagDb> getmTagList() {
 		return mTagList;

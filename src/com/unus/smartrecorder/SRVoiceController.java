@@ -241,7 +241,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     	// TODO Auto-generated method stub
     	if(mModel.getVoiceId()==tagDb.getVoice_id()){
 //    		Toast toast = Toast.makeText(mContext, "재생화면에 해당데이터가 사용 중입니다!", 3000).show();
-    		Toast.makeText(mContext, "재생화면에 데이터를 사용하여 삭제할 수 없습니다.", 3000).show();
+    		Toast.makeText(mContext, "재생화면에 데이터를 사용하여 삭제할 수 없습니다.", Toast.LENGTH_SHORT).show();
     	}
     	else{
         	mActivity.showDialog(DIALOG_DELETE_TAG);
@@ -250,27 +250,43 @@ public class SRVoiceController implements SRVoiceControllerInterface {
 
     }
     
+    @Override
+    public void showDeleteVoiceDialog(SRVoiceDb voiceDb) {
+    	// TODO Auto-generated method stub
+    	if(mModel.getVoiceId()==voiceDb.getVoice_id()){
+//    		Toast toast = Toast.makeText(mContext, "재생화면에 해당데이터가 사용 중입니다!", 3000).show();
+    		Toast.makeText(mContext, "재생화면에 데이터를 사용하여 삭제할 수 없습니다.", Toast.LENGTH_SHORT).show();
+    	}
+    	else{
+    		
+    		mModel.setmTempVoiceForDelete(voiceDb);
+    	}
+    	
+    }
+    
     public void deleteTag(){
     	SRTagDb tagDb = mModel.getmTempTagForDelete();
     	SRDebugUtil.SRLog("deleteTag tagDb getIsTitleType = "+tagDb.getIsTitleType());
     	SRDataSource datasource = new SRDataSource(mContext);
     	datasource.open();
-
-    	if(tagDb.getIsTitleType()){
-    		SRVoiceDb voiceDb = datasource.getVoiceByVoiceId(tagDb.getVoice_id());
-    		File file = new File(voiceDb.getVoice_path());
-    		boolean deleted = file.delete();
-    		datasource.deleteVoice(voiceDb);
-    		ArrayList<SRTagDb> tagList = datasource.getTagByVoiceId(tagDb.getVoice_id());
-    		for (int index = 0 ; index < tagList.size(); index++){
-    			mSRSearchView.deleteTag(tagList.get(index));
-    			datasource.deleteTag(tagList.get(index));
-    		}
-    		
-    	}else{
-    		datasource.deleteTag(tagDb);
-    		mSRSearchView.deleteTag(tagDb);
-    	}
+    	datasource.deleteTag(tagDb);
+    	mSRSearchView.deleteTag(tagDb);
+    	
+//    	if(tagDb.getIsTitleType()){
+//    		SRVoiceDb voiceDb = datasource.getVoiceByVoiceId(tagDb.getVoice_id());
+//    		File file = new File(voiceDb.getVoice_path());
+//    		boolean deleted = file.delete();
+//    		datasource.deleteVoice(voiceDb);
+//    		ArrayList<SRTagDb> tagList = datasource.getTagByVoiceId(tagDb.getVoice_id());
+//    		for (int index = 0 ; index < tagList.size(); index++){
+//    			mSRSearchView.deleteTag(tagList.get(index));
+//    			datasource.deleteTag(tagList.get(index));
+//    		}
+//    		
+//    	}else{
+//    		datasource.deleteTag(tagDb);
+//    		mSRSearchView.deleteTag(tagDb);
+//    	}
     	datasource.close();
     }
 

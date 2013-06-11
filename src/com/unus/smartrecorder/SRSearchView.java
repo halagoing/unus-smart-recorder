@@ -24,6 +24,7 @@ import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class SRSearchView extends FrameLayout {
     private Context mContext;
@@ -72,6 +73,8 @@ public class SRSearchView extends FrameLayout {
     }
     
     public void deleteTag(SRTagDb tagDb) {
+    	expandableTagListAdapter.removeChild(tagDb.getGroupPosition(),tagDb.getChildPosition());
+    	
     	//expandableTagListAdapter.remove(tagDb);
     }
     
@@ -102,6 +105,9 @@ public class SRSearchView extends FrameLayout {
         mExpandableListView.setAdapter(expandableTagListAdapter);
         mExpandableListView.setTextFilterEnabled(true);
         
+        
+
+        
         mExpandableListView.setOnChildClickListener(new OnChildClickListener() {
 			@Override
 			public boolean onChildClick(ExpandableListView parent, View v,
@@ -120,6 +126,9 @@ public class SRSearchView extends FrameLayout {
 			public boolean onItemLongClick(AdapterView<?> arg0,
 					View arg1, int arg2, long id) {
 				// TODO Auto-generated method stub
+				
+				SRDebugUtil.SRLog("setOnItemLongClickListener onItemLongClick");
+				
 				if (mExpandableListView.getPackedPositionType(id) == mExpandableListView.PACKED_POSITION_TYPE_CHILD){
 					int groupPosition = mExpandableListView.getPackedPositionGroup(id);
 					int childPosition = mExpandableListView.getPackedPositionChild(id);
@@ -128,7 +137,20 @@ public class SRSearchView extends FrameLayout {
 					
 					SRTagDb tag = (SRTagDb) expandableTagListAdapter.getChild(groupPosition, childPosition);
 					
-					mController.showDeleteTagDialog(tag);
+					if (tag.getIsTitleType()){
+						Toast.makeText(mContext, "시작 태그는 삭제할 수 없습니다.", Toast.LENGTH_SHORT).show();
+					}else{
+						tag.setGroupPosition(groupPosition);
+						tag.setChildPosition(childPosition);
+						mController.showDeleteTagDialog(tag);
+					}
+				}else{
+					int groupPosition = mExpandableListView.getPackedPositionGroup(id);
+					
+					SRVoiceDb voice = (SRVoiceDb) expandableTagListAdapter.getGroup(groupPosition);
+					voice.setGroupPosition(groupPosition);
+					mController.showDeleteVoiceDialog(voice);
+					
 				}
 				return true;
 			}

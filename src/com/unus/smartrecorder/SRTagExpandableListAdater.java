@@ -46,6 +46,13 @@ public class SRTagExpandableListAdater extends BaseExpandableListAdapter impleme
 		// TODO Auto-generated method stub
 		return mRecorders.get(groupPosition).getmTagList().get(childPosition);
 	}
+	
+	public void removeChild(int groupPosition, int childPosition) {
+		// TODO Auto-generated method stub
+		//return mRecorders.get(groupPosition).getmTagList().get(childPosition);
+		mRecorders.get(groupPosition).getmTagList().remove(childPosition);
+		notifyDataSetChanged();
+	}
 
 	@Override
 	public long getChildId(int groupPosition, int childPosition) {
@@ -104,7 +111,16 @@ public class SRTagExpandableListAdater extends BaseExpandableListAdapter impleme
 		
 		TextView recorder_title = (TextView) convertView.findViewById(R.id.recorder_title);
 		recorder_title.setText(getVoiceFileName(getGroup(groupPosition).toString()));
-
+		
+//		convertView.setOnLongClickListener(new OnLongClickListener() {
+//			
+//			@Override
+//			public boolean onLongClick(View arg0) {
+//				// TODO Auto-generated method stub
+//				return false;
+//			}
+//		});
+		
         return convertView;
 	}
 	
@@ -256,7 +272,7 @@ public class SRTagExpandableListAdater extends BaseExpandableListAdapter impleme
 					constraint = constraint.toString();
 					for (int indexRecorder = 0; indexRecorder < mOriginalRecorders.size(); indexRecorder++) {
 						SRVoiceDb tempVoice = mOriginalRecorders.get(indexRecorder);
-						
+						//System.arraycopy(mOriginalRecorders.get(indexRecorder), 0, tempVoice, 0, 1);
 						ArrayList<SRTagDb> tags = tempVoice.getmTagList();
 						ArrayList<SRTagDb> tempTags = new ArrayList<SRTagDb>();
 

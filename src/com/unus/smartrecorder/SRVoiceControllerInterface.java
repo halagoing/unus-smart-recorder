@@ -35,5 +35,7 @@ public interface SRVoiceControllerInterface {
     public void startSeekBarTracking();
     
     public void showDeleteTagDialog(SRTagDb tagDb);
+    
+    public void showDeleteVoiceDialog(SRVoiceDb voiceDb);
 
 }
