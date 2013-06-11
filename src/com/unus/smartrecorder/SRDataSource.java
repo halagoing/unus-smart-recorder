@@ -33,6 +33,25 @@ public class SRDataSource {
 		dbHelper.close();
 	}
 	
+	public ArrayList<SRVoiceDb> getAllRecorder(){
+		ArrayList<SRVoiceDb> voices = new ArrayList<SRVoiceDb>();
+
+	    Cursor cursor = database.query(SRDbHelper.TABLE_VOICE,
+	    		allVoiceColumns, null, null, null, null, null);
+
+	    cursor.moveToFirst();
+	    while (!cursor.isAfterLast()) {
+	    	SRVoiceDb voice = cursorToVoice(cursor);
+	    	ArrayList<SRTagDb> tags = getTagByVoiceId(voice.getVoice_id());
+	    	voice.setmTagList(tags);
+	    	voices.add(voice);
+	    	cursor.moveToNext();
+	    }
+	    // Make sure to close the cursor
+	    cursor.close();
+	    return voices;
+	}
+	
 	public SRVoiceDb createVoice(String voiceFilePath, String docFilePath){
     	ContentValues values = new ContentValues();
     	values.put(SRDbHelper.VOICE_COLUMN_VOICE_PATH, voiceFilePath);

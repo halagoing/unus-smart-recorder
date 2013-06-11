@@ -1,11 +1,20 @@
 package com.unus.smartrecorder;
 
+import java.util.ArrayList;
+
 public class SRVoiceDb {
 	private long voice_id;
 	private String created_datetime;
 	private String voice_path;
 	private String document_path;
+	private ArrayList<SRTagDb> mTagList;
 	
+	public ArrayList<SRTagDb> getmTagList() {
+		return mTagList;
+	}
+	public void setmTagList(ArrayList<SRTagDb> mTagList) {
+		this.mTagList = mTagList;
+	}
 	public long getVoice_id() {
 		return voice_id;
 	}

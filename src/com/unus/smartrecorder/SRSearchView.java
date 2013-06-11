@@ -20,14 +20,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
 public class SRSearchView extends FrameLayout {
     private Context mContext;
     private SRVoiceControllerInterface mController;
-    private ListView mListView;
-    private SRTagListAdapter tagListAdapter;
+    private ExpandableListView mExpandableListView;
+    private SRTagExpandableListAdater expandableTagListAdapter;
 
     public SRSearchView(Context context) {
         super(context);
@@ -58,19 +60,19 @@ public class SRSearchView extends FrameLayout {
     }
     
     public void clearTextFilter() {
-        if (mListView != null) {
-            mListView.clearTextFilter();
+        if (mExpandableListView != null) {
+        	mExpandableListView.clearTextFilter();
         }
     }
     
     public void setFilterText(String filterText) {
-        if (mListView != null) {
-            mListView.setFilterText(filterText);
+        if (mExpandableListView != null) {
+        	mExpandableListView.setFilterText(filterText);
         }        
     }
     
     public void deleteTag(SRTagDb tagDb) {
-    	tagListAdapter.remove(tagDb);
+    	//expandableTagListAdapter.remove(tagDb);
     }
     
     public void setSearchViewMode() {
@@ -79,42 +81,115 @@ public class SRSearchView extends FrameLayout {
         SRDataSource datasource = new SRDataSource(mContext);
         datasource.open();
         
-        ArrayList<SRTagDb> tags = datasource.getAllTag();
+        
+        ArrayList<SRVoiceDb> recorders = datasource.getAllRecorder();
+        
+        
+        
+        //ArrayList<SRTagDb> tags = datasource.getAllTag();
         
         datasource.close();
-        SRDebugUtil.SRLog("tags = "+tags);
+        //SRDebugUtil.SRLog("tags = "+tags);
         
-        mListView = (ListView)findViewById(R.id.SRSearchListView);
+        for (int index = 0; index < recorders.size() ; index++){
+        	SRDebugUtil.SRLog("recorders = " + recorders.get(index));
+        	SRDebugUtil.SRLog("recorders tags = " + recorders.get(index).getmTagList());
+        }
         
-        tagListAdapter = new SRTagListAdapter(mContext, R.layout.sr_tag_list, tags);
-        mListView.setAdapter(tagListAdapter);
         
-        mListView.setTextFilterEnabled(true);
+        mExpandableListView = (ExpandableListView)findViewById(R.id.SRSearchExpandableListView);
+        expandableTagListAdapter = new SRTagExpandableListAdater(mContext, recorders);
+        mExpandableListView.setAdapter(expandableTagListAdapter);
+        mExpandableListView.setTextFilterEnabled(true);
         
-        mListView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                    int position, long id) {
+        mExpandableListView.setOnChildClickListener(new OnChildClickListener() {
+			@Override
+			public boolean onChildClick(ExpandableListView parent, View v,
+					int groupPosition, int childPosition, long id) {
+				// TODO Auto-generated method stub
+				//SRDebugUtil.SRLog("setOnChildClickListener : onChildClick = " +expandableTagListAdapter.getChild(groupPosition, childPosition));
+				SRTagDb tag = (SRTagDb) expandableTagListAdapter.getChild(groupPosition, childPosition);
+				mController.playBySearchList(tag);
+				return false;
+			}
 
-//            	view.setSelected(true);
-//           	SRDebugUtil.SRLog("SRSearchView : onItemClick() pos = " + position);
-////                
-               mController.playBySearchList(tagListAdapter.getTagDb(position));
-               
-            }  
-        });
+		});
         
-        mListView.setOnItemLongClickListener(new OnItemLongClickListener(){
-        	@Override
-        	public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-        			int position, long id) {
-        		// TODO Auto-generated method stub
-//        		SRDebugUtil.SRLog("call setOnItemLongClickListener");
-//        		SRDebugUtil.SRLog("tagListAdapter.getTagDb(position) = " + tagListAdapter.getTagDb(position));
-        		mController.showDeleteTagDialog(tagListAdapter.getTagDb(position));
-        		return true;
-        	}
-        });
+		mExpandableListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0,
+					View arg1, int arg2, long id) {
+				// TODO Auto-generated method stub
+				if (mExpandableListView.getPackedPositionType(id) == mExpandableListView.PACKED_POSITION_TYPE_CHILD){
+					int groupPosition = mExpandableListView.getPackedPositionGroup(id);
+					int childPosition = mExpandableListView.getPackedPositionChild(id);
+					SRDebugUtil.SRLog("setOnItemLongClickListener" + groupPosition+groupPosition);
+					
+					
+					SRTagDb tag = (SRTagDb) expandableTagListAdapter.getChild(groupPosition, childPosition);
+					
+					mController.showDeleteTagDialog(tag);
+				}
+				return true;
+			}
+		});
+        
+        //mExpandableListView.s
+        
+//		mListView.setOnItemClickListener(new OnItemClickListener() {
+//			@Override
+//			public void onItemClick(AdapterView<?> parent, View view,
+//					int position, long id) {
+//
+//				SRDebugUtil.SRLog("SRSearchView : onItemClick() pos = " +position);
+//				// //
+////				mController.playBySearchList(tagListAdapter.getTagDb(position));
+//
+//			}
+//		});
+        
+        
+        
+        //tagListAdapter = new SRTagListAdapter(mContext, R.layout.sr_tag_list, tags);
+        
+        
+        
+        
+        
+        
+//        mListView.setAdapter(tagListAdapter);
+        
+//        mListView = (ListView)findViewById(R.id.SRSearchListView);
+//        
+//        tagListAdapter = new SRTagListAdapter(mContext, R.layout.sr_tag_list, tags);
+//        mListView.setAdapter(tagListAdapter);
+//        
+//        mListView.setTextFilterEnabled(true);
+//        
+//        mListView.setOnItemClickListener(new OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view,
+//                    int position, long id) {
+//
+////            	view.setSelected(true);
+////           	SRDebugUtil.SRLog("SRSearchView : onItemClick() pos = " + position);
+//////                
+//               mController.playBySearchList(tagListAdapter.getTagDb(position));
+//               
+//            }  
+//        });
+//        
+//        mListView.setOnItemLongClickListener(new OnItemLongClickListener(){
+//        	@Override
+//        	public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+//        			int position, long id) {
+//        		// TODO Auto-generated method stub
+////        		SRDebugUtil.SRLog("call setOnItemLongClickListener");
+////        		SRDebugUtil.SRLog("tagListAdapter.getTagDb(position) = " + tagListAdapter.getTagDb(position));
+//        		mController.showDeleteTagDialog(tagListAdapter.getTagDb(position));
+//        		return true;
+//        	}
+//        });
         
         
 

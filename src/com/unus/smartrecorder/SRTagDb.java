@@ -1,5 +1,7 @@
 package com.unus.smartrecorder;
 
+import android.view.View;
+
 public class SRTagDb {
 	private long tag_id;
 	private String created_datetime;
@@ -58,6 +60,48 @@ public class SRTagDb {
 	}
 	public void setTag_time(String tag_time) {
 		this.tag_time = tag_time;
+	}
+	
+	public String getTagListTitle(){
+		String tagTitle = "";
+		if(getIsTitleType()){
+			tagTitle = "00:00 | " + getContent();
+		}
+		else{
+			if (getType() == SRDbHelper.TEXT_TAG_TYPE) {
+				tagTitle = " " + getTime() + " | " + getContent();
+			} else if (getType() == SRDbHelper.PAGE_TAG_TYPE) {
+				tagTitle = " " + getTime() + " | Page# " + getContent();
+			} else if (getType() == SRDbHelper.PHOTO_TAG_TYPE) {
+				tagTitle = " " + getTime() + " | " + getImageFileName(getContent());
+			}
+		}
+		return tagTitle;
+	}
+	
+	private String getTime() {
+		int t = Integer.parseInt(getTag_time());
+        int sec = t / 1000;
+        int h, m, s, tmp;
+
+        if (sec < 3600) {
+            h = 0;
+            m = sec / 60;
+            s = sec % 60;
+        } else {
+            h = sec / 3600;
+            tmp = sec % 3600;
+            m = tmp / 60;
+            s = tmp % 60;
+        }
+        return String.format("%d:%02d:%02d", h, m, s);
+
+    }
+	
+
+	private String getImageFileName(String content) {
+		String contents[] = content.split("/");
+		return contents[contents.length-1];
 	}
 	
 	@Override
