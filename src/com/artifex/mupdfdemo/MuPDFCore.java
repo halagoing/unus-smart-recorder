@@ -2,6 +2,7 @@ package com.artifex.mupdfdemo;
 import java.util.ArrayList;
 
 import com.unus.smartrecorder.R;
+import com.unus.smartrecorder.SRDebugUtil;
 import com.unus.smartrecorder.R.string;
 
 import android.content.Context;
@@ -117,6 +118,12 @@ public class MuPDFCore
 			page = numPages-1;
 		else if (page < 0)
 			page = 0;
+
+		// 20130611 suhwan.hwang : numPages가 설정되지 않았을 경우 page가 -2가 되어서 
+		//                        첫페이지에서 화면 크기가 정사각형(100,100)으로 출력
+		if (page < 0)
+		    page = 0;
+		
 		gotoPageInternal(page);
 		this.pageWidth = getPageWidth();
 		this.pageHeight = getPageHeight();

@@ -32,6 +32,7 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnActionExpandListener;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -186,6 +187,8 @@ public class SRVoiceController implements SRVoiceControllerInterface {
             if (mActionBarShareItem != null)
                 mActionBarShareItem.setVisible(false);
             
+            // 201306111 Suhwan Hwang: Keyboard가 출력되었을때 화면이 리사이징되면서 하단 버튼이 올라가는 현상 수정
+            mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         } else if (SRVoice.PLAYER_MODE == mode) {
             if (isInit)
                 mSRVoiceView.setVoiceViewMode(SRVoice.PLAYER_MODE);
@@ -198,7 +201,9 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                 mActionBarSearchItem.setVisible(true);
             if (mActionBarShareItem != null)
                 mActionBarShareItem.setVisible(true);
-            
+
+            // 201306111 Suhwan Hwang: Keyboard가 출력되었을때 화면이 리사이징되면서 하단 버튼이 올라가는 현상 수정
+            mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         } else if (SRVoice.SEARCH_MODE == mode) {
             mSRSearchView.setSearchViewMode();
             mActivity.setContentView(mSRSearchView);
@@ -210,6 +215,9 @@ public class SRVoiceController implements SRVoiceControllerInterface {
                 mActionBarSearchItem.setVisible(true);
             if (mActionBarShareItem != null)
                 mActionBarShareItem.setVisible(false);
+            
+            // 201306111 Suhwan Hwang: Keyboard가 출력되었을때 화면이 리사이징되면서 하단 버튼이 올라가는 현상 수정
+            mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
     }    
     
@@ -653,11 +661,12 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     
     @Override
     public void playBySeekTime(int seekTime) {
-        mModel.playPause(); //TODO : 지워도 되는지 확인 
-        
+        if (mModel.getPlayerState() == SRVoice.PLAYER_STOP_STATE) {
+            mModel.playResume(true);
+        } else {
+            mModel.playResume(false);
+        }
         mModel.seekTo(seekTime);
-        
-        mModel.playResume();
         
         // Doc Page 
         //mSRVoiceView.setDocPage(getNearDocPage(seekTime));

@@ -47,7 +47,7 @@ public interface SRVoiceInterface {
 
     public void playStop();
 
-    public void playResume();
+    public void playResume(boolean isStopped);
 
     public void playPause();
 

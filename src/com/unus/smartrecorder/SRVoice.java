@@ -521,21 +521,11 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
                 playPause();
             } else {
                 // Play
-                if (mPlayerState == PLAYER_PAUSE_STATE) {
-                    playResume();
-                }else if (mPlayerState == PLAYER_STOP_STATE
+                if (mPlayerState == PLAYER_PAUSE_STATE
                         || mPlayerState == PLAYER_COMPLETE_STATE ) {
-                    try {
-                        if (mPlayerState == PLAYER_STOP_STATE) {
-                            mPlayer.prepare();
-                            mPlayer.seekTo(0);
-                        }
-                        playResume();
-                    } catch (IllegalStateException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    playResume(false);
+                }else if (mPlayerState == PLAYER_STOP_STATE) {
+                    playResume(true);
                 }
             }
         }       
@@ -566,20 +556,32 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
      * 재생 재시작 
      */
     @Override
-    public void playResume() {
+    public void playResume(boolean isStopped) {
         SRDebugUtil.SRLog("SRVoice.playResume()");
         
         if (mPlayer != null) {
-            mPlayer.start();
-            
-            // Play Timer Start
-            setTimeTimer(PLAYER_TIMER_PERIOD);
-            
-            // Doc Page Update
-            startUpdateDocPage(mPlayerPausePosition);
-            
-            mPlayerState = PLAYER_PLAY_STATE;
-            notifyPlayerBtnStateObservers(mPlayerState);
+            try {
+                if (isStopped) {
+                    mPlayer.prepare();
+                    mPlayer.seekTo(0);
+                }
+                mPlayer.start();
+
+                // Play Timer Start
+                setTimeTimer(PLAYER_TIMER_PERIOD);
+
+                // Doc Page Update
+                startUpdateDocPage(mPlayerPausePosition);
+
+                mPlayerState = PLAYER_PLAY_STATE;
+                notifyPlayerBtnStateObservers(mPlayerState);
+            } catch (IllegalStateException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 
