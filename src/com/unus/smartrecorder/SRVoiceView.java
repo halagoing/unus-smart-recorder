@@ -82,6 +82,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
             switch(msg.what) {
             case UPDATE_TAGS:
                 v.tagListAdapter.add((SRTagDb)msg.obj);
+                v.focusToLastItem();
                 break;
             case UPDATE_TIME:
                 v.setTime((Integer)msg.obj);
@@ -464,7 +465,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         mDummyView.setVisibility(View.INVISIBLE);
     }
     public void focusToLastItem() {
-
+    	SRDebugUtil.SRLog("mTagListView.getCount()-1 = " + mTagListView.getCount());
     	mTagListView.setSelection(mTagListView.getCount()-1);
     	mTagListView.requestFocus(mTagListView.getCount()-1);
 	}
@@ -474,7 +475,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         Message m = new Message();
         m.what = UPDATE_TAGS;
         m.obj = tag;
-        focusToLastItem();
+        
 //        mTagListView.get
 //        mTagListView.setSelection();
 //        mTagListView.requestFocus();

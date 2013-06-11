@@ -125,7 +125,7 @@ public class SRTagListAdapter extends BaseAdapter implements Filterable{
 		tagIconView.setImageResource(android.R.color.transparent);
 		
 		
-		SRDebugUtil.SRLog("tag.getTag_numbering() = " + tag.getNumbering());
+//		SRDebugUtil.SRLog("tag.getTag_numbering() = " + tag.getNumbering());
 		switch (getLayoutType(tag.getTag_time())) {
 			case TITLE_TYPE:
 //				tagListMainLayout.setBackgroundColor(R.drawable.tag_list_item_selector);
