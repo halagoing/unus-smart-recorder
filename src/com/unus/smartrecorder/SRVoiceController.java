@@ -594,11 +594,12 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     
     @Override
     public void playBySeekTime(int seekTime) {
-        mModel.playPause(); //TODO : 지워도 되는지 확인 
-        
+        if (mModel.getPlayerState() == SRVoice.PLAYER_STOP_STATE) {
+            mModel.playResume(true);
+        } else {
+            mModel.playResume(false);
+        }
         mModel.seekTo(seekTime);
-        
-        mModel.playResume();
         
         // Doc Page 
         //mSRVoiceView.setDocPage(getNearDocPage(seekTime));
