@@ -46,6 +46,9 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     public static final int DIALOG_INPUT_BASIC_INFO = 1; // Input Basic Info Dialog
     public static final int DIALOG_INPUT_TEXT_TAG = 2; // Input Text Tag Dialog
     public static final int DIALOG_DELETE_TAG = 3;
+    public static final int DIALOG_DELETE_VOICE = 4;
+    
+    
     public static final int FILE_EXPLORER_RESULT = 1;   // document file browsing
     public static final int TAKE_PICTURE_RESULT = 2;   // camera
     
@@ -258,9 +261,14 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     		Toast.makeText(mContext, "재생화면에 데이터를 사용하여 삭제할 수 없습니다.", Toast.LENGTH_SHORT).show();
     	}
     	else{
-    		
+    		SRDebugUtil.SRLog("showDeleteVoiceDialog");
+    		mActivity.showDialog(DIALOG_DELETE_VOICE);
     		mModel.setmTempVoiceForDelete(voiceDb);
     	}
+    	
+    }
+    
+    public void deleteVoice(){
     	
     }
     
@@ -422,6 +430,30 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         	
         	
         	return builder.create();
+//        	break;
+        	
+        case DIALOG_DELETE_VOICE:
+        	SRDebugUtil.SRLog("DIALOG_DELETE_VOICE ");
+        	AlertDialog.Builder builderVoice = new AlertDialog.Builder(mContext);
+        	builderVoice.setMessage("녹음파일을 삭제하겠습니까? (모든 태그파일이 삭제 됩니다)")
+                   .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                       public void onClick(DialogInterface dialog, int id) {
+                    	   SRDebugUtil.SRLog("Delete onClick");
+                    	   deleteVoice();
+                    	  // deleteTag();
+                           // FIRE ZE MISSILES!
+                    	   //deleteTag
+                       }
+                   })
+                   .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                       public void onClick(DialogInterface dialog, int id) {
+                    	   SRDebugUtil.SRLog("cancel onClick");
+                           // User cancelled the dialog
+                       }
+                   });
+        	
+        	
+        	return builderVoice.create();
 //        	break;
         default:
             return null;
