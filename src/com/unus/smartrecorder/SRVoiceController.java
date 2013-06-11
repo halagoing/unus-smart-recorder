@@ -454,7 +454,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         final PackageManager packageManager = mContext.getPackageManager();
         final Intent intent = new Intent(Intent.ACTION_GET_CONTENT); 
         intent.setType("file/*");
-        //intent.setType("application/pdf");
+        //intent.setType("image/*");
         List<ResolveInfo> list = packageManager.queryIntentActivities(intent,
                                         PackageManager.GET_ACTIVITIES);
 

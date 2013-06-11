@@ -37,6 +37,6 @@
 	<string name="pause">Pause</string>
 	<string name="auto_tag">Auto Tag</string>
 	<string name="delete">Delete</string>
-	<string name="delete_tag">Delete Tag? </string>    
+	<string name="delete_tag">Delete?</string>    
     
 </resources>
