@@ -78,6 +78,10 @@ public class SRSearchView extends FrameLayout {
     	//expandableTagListAdapter.remove(tagDb);
     }
     
+    public void deleteVoice(SRVoiceDb voiceDb){
+    	expandableTagListAdapter.removeGroup(voiceDb.getGroupPosition());
+    }
+    
     public void setSearchViewMode() {
         SRDebugUtil.SRLog("call setSearchViewMode");
         

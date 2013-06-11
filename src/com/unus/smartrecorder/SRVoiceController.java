@@ -269,6 +269,25 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     }
     
     public void deleteVoice(){
+    	SRVoiceDb voiceDb = mModel.getmTempVoiceForDelete();
+    	
+    	File file = new File(voiceDb.getVoice_path());
+    	boolean deleted = file.delete();
+    	
+    	SRDataSource datasource = new SRDataSource(mContext);
+    	datasource.open();
+    	
+    	datasource.deleteVoice(voiceDb);
+		ArrayList<SRTagDb> tagList = datasource.getTagByVoiceId(voiceDb.getVoice_id());
+		for (int index = 0 ; index < tagList.size(); index++){
+			//mSRSearchView.deleteTag(tagList.get(index));
+			datasource.deleteTag(tagList.get(index));
+		}
+
+    	datasource.deleteVoice(voiceDb);
+    	
+    	mSRSearchView.deleteVoice(voiceDb);
+    	datasource.close();
     	
     }
     

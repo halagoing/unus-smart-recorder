@@ -73,6 +73,11 @@ public class SRTagExpandableListAdater extends BaseExpandableListAdapter impleme
 		// TODO Auto-generated method stub
 		return mRecorders.get(groupPosition);
 	}
+	
+	public void removeGroup(int groupPosition) {
+		mRecorders.remove(groupPosition);
+		notifyDataSetChanged();
+	}
 
 	@Override
 	public int getGroupCount() {
