@@ -204,13 +204,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 return false;
             }
         	
-        	Runnable mffAction = new Runnable() {
-                @Override public void run() {
-                	//SRDebugUtil.SRLog("setOnTouchListener setOnTouchListener run");
-                	mController.jumpToggleBtn(false);
-                	mffHandler.postDelayed(this, JUMP_DELAYED_TIME);
-                }
-            };
+        	
         	
         });
         
@@ -361,6 +355,14 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         });
     }
     
+    private Runnable mffAction = new Runnable() {
+        @Override public void run() {
+        	//SRDebugUtil.SRLog("setOnTouchListener setOnTouchListener run");
+        	mController.jumpToggleBtn(false);
+        	mffHandler.postDelayed(this, JUMP_DELAYED_TIME);
+        }
+    };
+    
     public void removeFfHandler(){
     	//mffHandler.removeCallbacksAndMessages(null);
         //mffHandler = null;
@@ -368,6 +370,11 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
 //	        mffHandler.removeCallbacksAndMessages(null);
 //	        mffHandler = null;
 //    	}
+    	if (mffHandler != null) {
+    		mffHandler.removeCallbacks(mffAction);
+            mffHandler = null;
+    	}
+        
     }
     
     public void setTagList(){
@@ -599,7 +606,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
             mStopPlayBtn.setEnabled(true);
         } else if (playerState == SRVoice.PLAYER_STOP_STATE
                 || playerState == SRVoice.PLAYER_COMPLETE_STATE) {
-//        	removeFfHandler();
+        	removeFfHandler();
             mFFBtn.setEnabled(false);
             mRewindBtn.setEnabled(false);
             //mPlayToggleBtn.setEnabled(true);
