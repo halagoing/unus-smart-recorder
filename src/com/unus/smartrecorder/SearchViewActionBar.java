@@ -66,7 +66,7 @@ public class SearchViewActionBar extends Activity {
         startActivity(new Intent(this, SRLogoActivity.class));
         
         // DEBUG : For Hierarchy Viewer
-        //ViewServer.get(this).addWindow(this);
+        if(SRDebugUtil.DEBUG) ViewServer.get(this).addWindow(this);
     }
     
     @Override
@@ -124,7 +124,8 @@ public class SearchViewActionBar extends Activity {
         super.onResume();
 
         // DEBUG : For Hierarchy Viewer
-        ViewServer.get(this).setFocusedWindow(this);
+        if(SRDebugUtil.DEBUG) ViewServer.get(this).setFocusedWindow(this);
+
     }
 
     @Override
@@ -135,7 +136,8 @@ public class SearchViewActionBar extends Activity {
             mSRVoiceController.finalize();
         
         // DEBUG : For Hierarchy Viewer
-        ViewServer.get(this).removeWindow(this);
+        if(SRDebugUtil.DEBUG) ViewServer.get(this).removeWindow(this);
+        
     }
 
     @Override
