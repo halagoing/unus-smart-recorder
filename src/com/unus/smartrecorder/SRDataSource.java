@@ -48,7 +48,7 @@ public class SRDataSource {
 		ArrayList<SRVoiceDb> resultAllRecorder = new ArrayList<SRVoiceDb>();
 		
 	    Cursor cursor = database.query(SRDbHelper.TABLE_VOICE,
-	    		allVoiceColumns, null, null, null, null, null);
+	    		allVoiceColumns, SRDbHelper.VOICE_COLUMN_STATE + " = " + SRDbHelper.VOICE_COMPLETION , null, null, null, null);
 
 	    cursor.moveToFirst();
 	    while (!cursor.isAfterLast()) {
@@ -92,6 +92,13 @@ public class SRDataSource {
 		database.delete(SRDbHelper.TABLE_VOICE, SRDbHelper.VOICE_COLUMN_VOICE_ID
 		    + " = " + voice_id, null);
     }
+	
+	public void updateVoiceState(SRVoiceDb voice){
+		long voice_id = voice.getVoice_id();
+		ContentValues args = new ContentValues();
+	    args.put(SRDbHelper.VOICE_COLUMN_STATE, SRDbHelper.VOICE_COMPLETION);
+	    database.update(SRDbHelper.TABLE_VOICE, args, SRDbHelper.VOICE_COLUMN_VOICE_ID + " = " + voice_id, null);
+	}
 	
 	public List<SRVoiceDb> getAllVoice() {
 	    List<SRVoiceDb> voices = new ArrayList<SRVoiceDb>();

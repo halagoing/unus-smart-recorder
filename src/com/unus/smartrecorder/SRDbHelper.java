@@ -23,7 +23,7 @@ public class SRDbHelper extends SQLiteOpenHelper{
 	
 	private static final String DB_NAME = "SMART_RECORDER";
     private static final int DB_VERSION = 13;
-	
+    static final int VOICE_COMPLETION = 1;
     // voice table
     static final String TABLE_VOICE = "voice";
     static final String VOICE_COLUMN_VOICE_ID = "voice_id";

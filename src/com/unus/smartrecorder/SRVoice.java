@@ -416,6 +416,15 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     	stopTimer();
     	
     	mRecordStartTime = 0;
+    	
+    	SRDataSource datasource = new SRDataSource(mContext);
+        datasource.open();
+    
+        datasource.updateVoiceState(mVoiceDb);
+
+        datasource.close();
+    	
+    	
     	mVoiceDb = null;
     	
         // SRVoiceView Button State
