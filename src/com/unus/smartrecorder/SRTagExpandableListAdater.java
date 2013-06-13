@@ -26,7 +26,6 @@ public class SRTagExpandableListAdater extends BaseExpandableListAdapter impleme
 	Context mContext;
 	ArrayList<SRVoiceDb> mRecorders;
 	ArrayList<SRVoiceDb> mOriginalRecorders;
-	
 	LayoutInflater mInflater;
 	
 	
@@ -279,33 +278,21 @@ public class SRTagExpandableListAdater extends BaseExpandableListAdapter impleme
 						SRVoiceDb tempVoice = mOriginalRecorders.get(indexRecorder);
 						//System.arraycopy(mOriginalRecorders.get(indexRecorder), 0, tempVoice, 0, 1);
 						ArrayList<SRTagDb> tags = tempVoice.getmTagList();
+						SRDebugUtil.SRLog("indexTag tags = " + tags);
+						
 						ArrayList<SRTagDb> tempTags = new ArrayList<SRTagDb>();
 
 						for (int indexTag = 0 ; indexTag < tags.size() ; indexTag++){
-							if (tags.get(indexTag).getTagListTitle().matches(".*"+((String) constraint)+"*.")) {
-								SRDebugUtil.SRLog("indexTag tags = " + tags.get(indexTag).getTagListTitle());
+							if (tags.get(indexTag).getTagListTitle().contains(constraint)){
 								tempTags.add(tags.get(indexTag));
-							}
+							};
 						}
 						if(tempTags.size() != 0) {
 							tempVoice.setmTagList(tempTags);
 							filteredArrList.add(tempVoice);
 						}
 					}
-					
-//					for (int index = 0; index < mTags.size(); index++) {
-//						SRTagDb tag = mTags.get(index);
-//						SRDebugUtil.SRLog("constraint.toString() = "
-//								+ constraint.toString());
-//						// System.out.println("text.indexOf('23'); = " +
-//						// text.indexOf("TA"));
-//						if (tag.getContent().indexOf(constraint.toString()) != -1) {
-//							filteredArrList.add(tag);
-//						}
-//
-//					}
-//
-//					// mTags.remove(1);
+
 					results.count = filteredArrList.size();
 					results.values = filteredArrList;
 				}

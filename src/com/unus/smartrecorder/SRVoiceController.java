@@ -847,6 +847,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     public void backPressed() {
 		//SRDebugUtil.SRLog("gppd!");
 		if(mModel.isRecordering()) mModel.recordStop();
+		else if (mModel.isPlaying()) mModel.playStop();
 		else mActivity.finish();
 	}
 
