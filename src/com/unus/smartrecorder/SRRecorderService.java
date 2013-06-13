@@ -156,7 +156,7 @@ public class SRRecorderService extends Service{
         @Override
         public void onError(MediaRecorder mr, int what, int extra) {     
             //Toast.makeText(this, "Error: " + what + ", " + extra, Toast.LENGTH_SHORT).show();;
-        	Log.d("TAG", "Error = " +what);
+//        	Log.d("TAG", "Error = " +what);
         }
     };
 
@@ -165,7 +165,7 @@ public class SRRecorderService extends Service{
         public void onInfo(MediaRecorder mr, int what, int extra) {
         	//Toast.makeText(this, "Warning: " + what + ", " + extra, Toast.LENGTH_SHORT).show();
         	//Toast.makeText(this, "Test", 300).show();
-        	Log.d("TAG", "Error = " +what);
+//        	Log.d("TAG", "Error = " +what);
             //Toast.makeText(this, "Warning: " + what + ", " + extra, Toast.LENGTH_SHORT).show();
         }
     };

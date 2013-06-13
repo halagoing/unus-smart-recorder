@@ -254,7 +254,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     	// TODO Auto-generated method stub
     	if(mModel.getVoiceId()==tagDb.getVoice_id()){
 //    		Toast toast = Toast.makeText(mContext, "재생화면에 해당데이터가 사용 중입니다!", 3000).show();
-    		Toast.makeText(mContext, "재생화면에 데이터를 사용하여 삭제할 수 없습니다.", Toast.LENGTH_SHORT).show();
+    		Toast.makeText(mContext, R.string.can_not_delete_tag, Toast.LENGTH_SHORT).show();
     	}
     	else{
         	mActivity.showDialog(DIALOG_DELETE_TAG);
@@ -268,7 +268,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
     	// TODO Auto-generated method stub
     	if(mModel.getVoiceId()==voiceDb.getVoice_id()){
 //    		Toast toast = Toast.makeText(mContext, "재생화면에 해당데이터가 사용 중입니다!", 3000).show();
-    		Toast.makeText(mContext, "재생화면에 데이터를 사용하여 삭제할 수 없습니다.", Toast.LENGTH_SHORT).show();
+    		Toast.makeText(mContext, R.string.can_not_delete_tag, Toast.LENGTH_SHORT).show();
     	}
     	else{
     		SRDebugUtil.SRLog("showDeleteVoiceDialog");
@@ -464,7 +464,7 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         case DIALOG_DELETE_VOICE:
         	SRDebugUtil.SRLog("DIALOG_DELETE_VOICE ");
         	AlertDialog.Builder builderVoice = new AlertDialog.Builder(mContext);
-        	builderVoice.setMessage("녹음파일을 삭제하겠습니까? (모든 태그파일이 삭제 됩니다)")
+        	builderVoice.setMessage(R.string.delete_voice)
                    .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                        public void onClick(DialogInterface dialog, int id) {
                     	   SRDebugUtil.SRLog("Delete onClick");

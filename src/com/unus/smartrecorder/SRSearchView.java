@@ -83,27 +83,7 @@ public class SRSearchView extends FrameLayout {
     }
     
     public void setSearchViewMode() {
-        SRDebugUtil.SRLog("call setSearchViewMode");
-        
-//        SRDataSource datasource = new SRDataSource(mContext);
-//        datasource.open();
-//        
-//        
-//        ArrayList<SRVoiceDb> recorders = datasource.getAllRecorder();
-//        
-//        
-//        
-//        //ArrayList<SRTagDb> tags = datasource.getAllTag();
-//        
-//        datasource.close();
-//        //SRDebugUtil.SRLog("tags = "+tags);
-//        
-//        for (int index = 0; index < recorders.size() ; index++){
-//        	SRDebugUtil.SRLog("recorders = " + recorders.get(index));
-//        	SRDebugUtil.SRLog("recorders tags = " + recorders.get(index).getmTagList());
-//        }
-        
-        
+       
         mExpandableListView = (ExpandableListView)findViewById(R.id.SRSearchExpandableListView);
         expandableTagListAdapter = new SRTagExpandableListAdater(mContext);
         mExpandableListView.setAdapter(expandableTagListAdapter);
@@ -131,7 +111,6 @@ public class SRSearchView extends FrameLayout {
 					View arg1, int arg2, long id) {
 				// TODO Auto-generated method stub
 				
-				SRDebugUtil.SRLog("setOnItemLongClickListener onItemLongClick");
 				
 				if (mExpandableListView.getPackedPositionType(id) == mExpandableListView.PACKED_POSITION_TYPE_CHILD){
 					int groupPosition = mExpandableListView.getPackedPositionGroup(id);
@@ -142,7 +121,7 @@ public class SRSearchView extends FrameLayout {
 					SRTagDb tag = (SRTagDb) expandableTagListAdapter.getChild(groupPosition, childPosition);
 					
 					if (tag.getIsTitleType()){
-						Toast.makeText(mContext, "시작 태그는 삭제할 수 없습니다.", Toast.LENGTH_SHORT).show();
+						Toast.makeText(mContext, R.string.start_tag_can_not_be_deleted, Toast.LENGTH_SHORT).show();
 					}else{
 						tag.setGroupPosition(groupPosition);
 						tag.setChildPosition(childPosition);
@@ -159,65 +138,6 @@ public class SRSearchView extends FrameLayout {
 				return true;
 			}
 		});
-        
-        //mExpandableListView.s
-        
-//		mListView.setOnItemClickListener(new OnItemClickListener() {
-//			@Override
-//			public void onItemClick(AdapterView<?> parent, View view,
-//					int position, long id) {
-//
-//				SRDebugUtil.SRLog("SRSearchView : onItemClick() pos = " +position);
-//				// //
-////				mController.playBySearchList(tagListAdapter.getTagDb(position));
-//
-//			}
-//		});
-        
-        
-        
-        //tagListAdapter = new SRTagListAdapter(mContext, R.layout.sr_tag_list, tags);
-        
-        
-        
-        
-        
-        
-//        mListView.setAdapter(tagListAdapter);
-        
-//        mListView = (ListView)findViewById(R.id.SRSearchListView);
-//        
-//        tagListAdapter = new SRTagListAdapter(mContext, R.layout.sr_tag_list, tags);
-//        mListView.setAdapter(tagListAdapter);
-//        
-//        mListView.setTextFilterEnabled(true);
-//        
-//        mListView.setOnItemClickListener(new OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view,
-//                    int position, long id) {
-//
-////            	view.setSelected(true);
-////           	SRDebugUtil.SRLog("SRSearchView : onItemClick() pos = " + position);
-//////                
-//               mController.playBySearchList(tagListAdapter.getTagDb(position));
-//               
-//            }  
-//        });
-//        
-//        mListView.setOnItemLongClickListener(new OnItemLongClickListener(){
-//        	@Override
-//        	public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-//        			int position, long id) {
-//        		// TODO Auto-generated method stub
-////        		SRDebugUtil.SRLog("call setOnItemLongClickListener");
-////        		SRDebugUtil.SRLog("tagListAdapter.getTagDb(position) = " + tagListAdapter.getTagDb(position));
-//        		mController.showDeleteTagDialog(tagListAdapter.getTagDb(position));
-//        		return true;
-//        	}
-//        });
-        
-        
 
     }
     
