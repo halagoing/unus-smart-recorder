@@ -151,8 +151,10 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         mSRVoiceView = new SRVoiceView(mContext, this);
         mSRSearchView = new SRSearchView(mContext, this);
         
+        checkFileExists();
         mModel.initialize(mContext);
         mModel.registerObserver(mSRVoiceView);
+        
     }
     
     public void finalize() {

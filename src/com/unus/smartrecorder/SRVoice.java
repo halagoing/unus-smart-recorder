@@ -47,7 +47,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     private int mMode = 0;
     private int mPrevMode = 0;
     
-    public SRShare mShare;
+
     
     private Context mContext;
     

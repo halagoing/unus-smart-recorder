@@ -51,30 +51,22 @@ public class SearchViewActionBar extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-        
-        // setContentView(R.layout.searchview_actionbar);
-        
+
         mActionBar = getActionBar();
         mActionBar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_HOME); // remove
                                                                       // title
                                                                       // icon
         getOverflowMenu();
-        
-        // initial state
-        //mActionBar.setTitle(R.string.no_title); // no title
-        
+
         mSRVoice = new SRVoice();
         mSRVoiceController = new SRVoiceController(mSRVoice, this);
-        
-        mSRVoiceController.checkFileExists();
-        
         mSRVoiceController.setViewMode(SRVoice.RECORDER_MODE);
         
         // Logo
         startActivity(new Intent(this, SRLogoActivity.class));
         
         // DEBUG : For Hierarchy Viewer
-        ViewServer.get(this).addWindow(this);
+        //ViewServer.get(this).addWindow(this);
     }
     
     @Override
