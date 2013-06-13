@@ -243,6 +243,15 @@ public class SRTagExpandableListAdater extends BaseExpandableListAdapter impleme
 		}
 		return layoutType;
 	}
+	private  ArrayList<SRVoiceDb> getAllRecorders(){
+		SRDataSource datasource = new SRDataSource(mContext);
+        datasource.open();
+    
+        ArrayList<SRVoiceDb> recorders = datasource.getAllRecorder();
+
+        datasource.close();
+        return recorders;
+	}
 	
 	@Override
 	public void notifyDataSetChanged() {
@@ -270,13 +279,17 @@ public class SRTagExpandableListAdater extends BaseExpandableListAdapter impleme
                 SRDebugUtil.SRLog("FilterResults performFiltering");
                 ArrayList<SRVoiceDb> filteredArrList = new ArrayList<SRVoiceDb>();
                 if(constraint == null || constraint.length() == 0){
-                	results.count = mOriginalRecorders.size();
-                	results.values = mOriginalRecorders;
+                    ArrayList<SRVoiceDb> recorders = getAllRecorders();
+                	results.count = recorders.size();
+                	results.values = recorders;
 				} else {
 					constraint = constraint.toString();
-					for (int indexRecorder = 0; indexRecorder < mOriginalRecorders.size(); indexRecorder++) {
-						SRVoiceDb tempVoice = mOriginalRecorders.get(indexRecorder);
+					SRDebugUtil.SRLog("FilterResults performFiltering");
+					ArrayList<SRVoiceDb> recorders = getAllRecorders();
+					for (int indexRecorder = 0; indexRecorder < recorders.size(); indexRecorder++) {
+						SRVoiceDb tempVoice = recorders.get(indexRecorder);
 						//System.arraycopy(mOriginalRecorders.get(indexRecorder), 0, tempVoice, 0, 1);
+
 						ArrayList<SRTagDb> tags = tempVoice.getmTagList();
 						SRDebugUtil.SRLog("indexTag tags = " + tags);
 						
