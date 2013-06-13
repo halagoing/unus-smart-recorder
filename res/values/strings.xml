@@ -40,5 +40,5 @@
 	<string name="delete_tag">Delete?</string>    
     <string name="start_tag_can_not_be_deleted">Start tag can not be deleted!</string>
     <string name="delete_voice">Delete the record file with tags?</string>
-    <string name="can_not_delete_tag">Playing file can't delete.</string>
+    <string name="can_not_delete_tag">Playing file can not delete.</string>
 </resources>
