@@ -36,6 +36,8 @@ public interface SRVoiceInterface {
     public int getCurrentRecordTime();
     
     public int getCurrentPlayTime();
+    
+    public int getDurationTime();
 
     public int getMode();
     

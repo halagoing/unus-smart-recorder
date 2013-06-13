@@ -230,6 +230,8 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
         return 0;
     }
     
+    
+    
     private void setTimeTimer(int msec) {
         SRDebugUtil.SRLog("setTimeTimer() : " + msec);
         if (mTimer != null) {
@@ -320,6 +322,12 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     @Override
     public int getCurrentPlayTime() {
         return mPlayer.getCurrentPosition();
+    }
+    
+    @Override
+    public int getDurationTime() {
+    	// TODO Auto-generated method stub
+    	return mPlayer.getDuration();
     }
 
     public void recordStart() {
@@ -714,7 +722,9 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     	SRDebugUtil.SRLog("SRVoice.seekTo() : " + seekTime);
         if (mPlayer != null) {
             mPlayer.seekTo(seekTime);
+//            SRDebugUtil.SRLog("SRVoice.seekTo() : " + mPlayer.getDuration());
             
+            //mPlayer.getVideoHeight();
             mPlayerPausePosition = seekTime;
             if (mPlayer.isPlaying()) {
                 stopUpdateDocPage();

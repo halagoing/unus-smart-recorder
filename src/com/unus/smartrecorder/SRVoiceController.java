@@ -680,10 +680,21 @@ public class SRVoiceController implements SRVoiceControllerInterface {
         //mModel.playJump(rewind);
 
         int curTime = mModel.getCurrentPlayTime();
+        SRDebugUtil.SRLog("call jumpToggleBtn!!! ");
+        SRDebugUtil.SRLog("curTime = " + curTime);
+//        SRDebugUtil.SRLog("curTime - SRVoice.JUMP_TIME = " + SRVoice.JUMP_TIME);
         if (rewind) {
             mModel.seekTo(curTime - SRVoice.JUMP_TIME);
         } else {
-            mModel.seekTo(curTime + SRVoice.JUMP_TIME);
+//        	if(mModel.getDurationTime() < curTime + SRVoice.JUMP_TIME){
+//        		mModel.seekTo(curTime + SRVoice.JUMP_TIME);
+//        		
+//        	}
+//        	else{
+//        		mModel.seekTo(curTime + SRVoice.JUMP_TIME);
+//        	}
+        	mModel.seekTo(curTime + SRVoice.JUMP_TIME);
+        	
         }
     }    
     

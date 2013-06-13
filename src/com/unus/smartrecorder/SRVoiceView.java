@@ -69,6 +69,8 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     private static final int UPDATE_PLAYER_BTN = 6;
     private static final int JUMP_DELAYED_TIME = 250;
     
+    private Handler mffHandler;
+    
     private static class UpdateHandler extends Handler {
         WeakReference<SRVoiceView> mRef;
 
@@ -183,30 +185,30 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         
         mFFBtn.setOnTouchListener(new View.OnTouchListener(){
         	
-        	private Handler mHandler;
+        	
         	
         	@Override 
         	public boolean onTouch(View v, MotionEvent event) {
                 switch(event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    if (mHandler != null) return true;
-                    mHandler = new Handler();
-                    mHandler.postDelayed(mAction, JUMP_DELAYED_TIME);
+                    if (mffHandler != null) return true;
+                    mffHandler = new Handler();
+                    mffHandler.postDelayed(mffAction, JUMP_DELAYED_TIME);
                     break;
                 case MotionEvent.ACTION_UP:
-                    if (mHandler == null) return true;
-                    mHandler.removeCallbacks(mAction);
-                    mHandler = null;
+                    if (mffHandler == null) return true;
+                    mffHandler.removeCallbacks(mffAction);
+                    mffHandler = null;
                     break;
                 }
                 return false;
             }
         	
-        	Runnable mAction = new Runnable() {
+        	Runnable mffAction = new Runnable() {
                 @Override public void run() {
                 	//SRDebugUtil.SRLog("setOnTouchListener setOnTouchListener run");
                 	mController.jumpToggleBtn(false);
-                    mHandler.postDelayed(this, JUMP_DELAYED_TIME);
+                	mffHandler.postDelayed(this, JUMP_DELAYED_TIME);
                 }
             };
         	
@@ -227,20 +229,20 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
         
         mRewindBtn.setOnTouchListener(new View.OnTouchListener(){
         	
-        	private Handler mHandler;
+        	private Handler mRevindHandler;
         	
         	@Override 
         	public boolean onTouch(View v, MotionEvent event) {
                 switch(event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    if (mHandler != null) return true;
-                    mHandler = new Handler();
-                    mHandler.postDelayed(mAction, JUMP_DELAYED_TIME);
+                    if (mRevindHandler != null) return true;
+                    mRevindHandler = new Handler();
+                    mRevindHandler.postDelayed(mAction, JUMP_DELAYED_TIME);
                     break;
                 case MotionEvent.ACTION_UP:
-                    if (mHandler == null) return true;
-                    mHandler.removeCallbacks(mAction);
-                    mHandler = null;
+                    if (mRevindHandler == null) return true;
+                    mRevindHandler.removeCallbacks(mAction);
+                    mRevindHandler = null;
                     break;
                 }
                 return false;
@@ -250,7 +252,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 @Override public void run() {
                 	//SRDebugUtil.SRLog("setOnTouchListener setOnTouchListener run");
                 	mController.jumpToggleBtn(true);
-                    mHandler.postDelayed(this, JUMP_DELAYED_TIME);
+                	mRevindHandler.postDelayed(this, JUMP_DELAYED_TIME);
                 }
             };
         	
@@ -357,6 +359,15 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 }
             }
         });
+    }
+    
+    public void removeFfHandler(){
+    	//mffHandler.removeCallbacksAndMessages(null);
+        //mffHandler = null;
+//    	if (mffHandler == null){
+//	        mffHandler.removeCallbacksAndMessages(null);
+//	        mffHandler = null;
+//    	}
     }
     
     public void setTagList(){
@@ -588,6 +599,7 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
             mStopPlayBtn.setEnabled(true);
         } else if (playerState == SRVoice.PLAYER_STOP_STATE
                 || playerState == SRVoice.PLAYER_COMPLETE_STATE) {
+//        	removeFfHandler();
             mFFBtn.setEnabled(false);
             mRewindBtn.setEnabled(false);
             //mPlayToggleBtn.setEnabled(true);
