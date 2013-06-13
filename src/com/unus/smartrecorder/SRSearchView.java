@@ -85,27 +85,27 @@ public class SRSearchView extends FrameLayout {
     public void setSearchViewMode() {
         SRDebugUtil.SRLog("call setSearchViewMode");
         
-        SRDataSource datasource = new SRDataSource(mContext);
-        datasource.open();
-        
-        
-        ArrayList<SRVoiceDb> recorders = datasource.getAllRecorder();
-        
-        
-        
-        //ArrayList<SRTagDb> tags = datasource.getAllTag();
-        
-        datasource.close();
-        //SRDebugUtil.SRLog("tags = "+tags);
-        
-        for (int index = 0; index < recorders.size() ; index++){
-        	SRDebugUtil.SRLog("recorders = " + recorders.get(index));
-        	SRDebugUtil.SRLog("recorders tags = " + recorders.get(index).getmTagList());
-        }
+//        SRDataSource datasource = new SRDataSource(mContext);
+//        datasource.open();
+//        
+//        
+//        ArrayList<SRVoiceDb> recorders = datasource.getAllRecorder();
+//        
+//        
+//        
+//        //ArrayList<SRTagDb> tags = datasource.getAllTag();
+//        
+//        datasource.close();
+//        //SRDebugUtil.SRLog("tags = "+tags);
+//        
+//        for (int index = 0; index < recorders.size() ; index++){
+//        	SRDebugUtil.SRLog("recorders = " + recorders.get(index));
+//        	SRDebugUtil.SRLog("recorders tags = " + recorders.get(index).getmTagList());
+//        }
         
         
         mExpandableListView = (ExpandableListView)findViewById(R.id.SRSearchExpandableListView);
-        expandableTagListAdapter = new SRTagExpandableListAdater(mContext, recorders);
+        expandableTagListAdapter = new SRTagExpandableListAdater(mContext);
         mExpandableListView.setAdapter(expandableTagListAdapter);
         mExpandableListView.setTextFilterEnabled(true);
         

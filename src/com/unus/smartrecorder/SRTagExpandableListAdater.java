@@ -25,18 +25,16 @@ public class SRTagExpandableListAdater extends BaseExpandableListAdapter impleme
 	
 	Context mContext;
 	ArrayList<SRVoiceDb> mRecorders;
-	ArrayList<SRVoiceDb> mOriginalRecorders;
 	LayoutInflater mInflater;
 	
 	
 	private static final int TITLE_TYPE = 1;
 	private static final int TAG_TYPE = 2;
 	
-	public SRTagExpandableListAdater(Context context, ArrayList<SRVoiceDb> recorders) {
+	public SRTagExpandableListAdater(Context context) {
 		// TODO Auto-generated constructor stub
 		mContext = context;
-		mRecorders = recorders;
-		mOriginalRecorders = recorders;
+		mRecorders = getAllRecorders();
 		mInflater = LayoutInflater.from(context);
 	}
 	
