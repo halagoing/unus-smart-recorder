@@ -169,21 +169,17 @@ public class SRTagExpandableListAdater extends BaseExpandableListAdapter impleme
 			if (imgFile.exists()) {
 
 				try {
-					// Drawable d =
-					// Drawable.createFromPath(imgFile.getAbsolutePath());
-					// imageView.setImageDrawable(d);
-
+					
 					SRDebugUtil.SRLog("imgFile.getAbsolutePath() = "
 							+ imgFile.getAbsolutePath());
-					// Bitmap myBitmap =
-					// BitmapFactory.decodeFile("/mnt/sdcard/DCIM/100LGDSC/test.jpg");
+					
 
 					BitmapFactory.Options options = new BitmapFactory.Options();
 					options.inSampleSize = 8;
 					BitmapFactory.decodeStream(
 							new FileInputStream(imgFile), null, options);
 
-					final int REQUIRED_SIZE = 70;
+					final int REQUIRED_SIZE = 30;
 
 					// Find the correct scale value. It should be the power
 					// of 2.

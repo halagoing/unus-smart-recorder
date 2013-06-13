@@ -22,7 +22,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class SRDbHelper extends SQLiteOpenHelper{
 	
 	private static final String DB_NAME = "SMART_RECORDER";
-    private static final int DB_VERSION = 7;
+    private static final int DB_VERSION = 8;
 	
     // voice table
     static final String TABLE_VOICE = "voice";
@@ -30,13 +30,15 @@ public class SRDbHelper extends SQLiteOpenHelper{
     static final String VOICE_COLUMN_CREATED_DATETIME = "created_datetime";
     static final String VOICE_COLUMN_VOICE_PATH = "voice_path";
     static final String VOICE_COLUMN_DOCUMENT_PATH = "document_path";
+    static final String VOICE_COLUMN_STATE = "state";
     
     private static final String VOICE_CREATE = "create table "
     		+ TABLE_VOICE + "(" + VOICE_COLUMN_VOICE_ID
     		+ " INTEGER primary key autoincrement, " + VOICE_COLUMN_CREATED_DATETIME
     		+ " DATETIME default current_timestamp, " + VOICE_COLUMN_VOICE_PATH
     		+ " TEXT not null, " + VOICE_COLUMN_DOCUMENT_PATH
-    		+ " TEXT);";
+    		+ " TEXT " + VOICE_COLUMN_STATE 
+    		+ " BOOLEAN default 0 );";
     
     // tag table
     static final String TABLE_TAG = "tag";

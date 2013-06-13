@@ -9,7 +9,14 @@ public class SRVoiceDb {
 	private String document_path;
 	private ArrayList<SRTagDb> mTagList;
 	private int groupPosition;
+	private int state;
 	
+	public int getState() {
+		return state;
+	}
+	public void setState(int state) {
+		this.state = state;
+	}
 	public int getGroupPosition() {
 		return groupPosition;
 	}

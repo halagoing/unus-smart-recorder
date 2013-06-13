@@ -104,36 +104,6 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
     }
     private UpdateHandler mHandler = new UpdateHandler(this);    
     
-    /*
-    private Handler mHandler = new Handler() {
-
-        @Override
-        public void handleMessage(Message msg) {
-            switch(msg.what) {
-            case UPDATE_TAGS:
-                tagListAdapter.add((SRTagDb)msg.obj);
-                break;
-            case UPDATE_TIME:
-                setTime((Integer)msg.obj);
-                break;
-            case UPDATE_PAGE:
-                setDocPage((Integer)msg.obj);
-                break;
-            case UPDATE_DURATION:
-                setDuration((Integer)msg.obj);
-                break;                
-            case UPDATE_RECORDER_BTN:
-                setRecorderBtnState((Boolean)msg.obj);
-                break;
-            case UPDATE_PLAYER_BTN:
-                setPlayerBtnState((Integer)msg.obj);
-                break;                
-            }
-        }
-        
-    };
-    */
-
     public SRVoiceView(Context context) {
         super(context);
         initView(context);
@@ -162,17 +132,6 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
 
         inflater.inflate(R.layout.sr_voiceview_layout, this, true);
 
-        
-        
-//        ServiceConnection mConnection = null;
-//        Intent recorderIntent = new Intent("com.unus.smartrecorder.Recorder");
-//        Boolean woo = mContext.bindService(recorderIntent, mConnection, 0);
-//        SRDebugUtil.SRLog("woo = "+woo);
-        
-//        mTagListView.setAdapter(mTagListViewAdapter = new ArrayAdapter<String>(
-//
-//        mContext, android.R.layout.simple_list_item_1, Cheeses.sCheeseStrings));
-        // }}TESTCODE
 
         mRecorderBtnsLayout = (LinearLayout) findViewById(R.id.recorderBtnsLayout);
         
@@ -205,8 +164,6 @@ public class SRVoiceView extends RelativeLayout implements SRVoice.SRVoiceObserv
                 if (mController != null)
                     mController.record();
 
-                //mRecordBtn.setEnabled(false);
-                //mStopRecordBtn.setEnabled(true);
 
             }
         });

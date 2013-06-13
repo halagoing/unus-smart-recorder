@@ -9,33 +9,44 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+
+/*
+ * SRDataSource
+ */
 public class SRDataSource {
 	private SQLiteDatabase database;
 	private SRDbHelper dbHelper;
 	private int mNubering = 0; 
+	private ArrayList<SRVoiceDb> tempVoiceList;
 	
+	// voice table all columns
 	private String[] allVoiceColumns = {SRDbHelper.VOICE_COLUMN_VOICE_ID,SRDbHelper.VOICE_COLUMN_CREATED_DATETIME,
-			SRDbHelper.VOICE_COLUMN_VOICE_PATH,SRDbHelper.VOICE_COLUMN_DOCUMENT_PATH};
+			SRDbHelper.VOICE_COLUMN_VOICE_PATH,SRDbHelper.VOICE_COLUMN_DOCUMENT_PATH,SRDbHelper.VOICE_COLUMN_STATE};
 	
+	// tag table all columns
 	private String[] allTagColumns = {SRDbHelper.TAG_COLUMN_TAG_ID,SRDbHelper.TAG_COLUMN_CREATED_DATETIME,
 			SRDbHelper.TAG_COLUMN_VOICE_ID,SRDbHelper.TAG_COLUMN_NUMBERING,SRDbHelper.TAG_COLUMN_TYPE,SRDbHelper.TAG_COLUMN_CONTENT,SRDbHelper.TAG_COLUMN_TAG_TIME};
 	
 	public SRDataSource (Context context) {
+		// init dbHelper
 		dbHelper = new SRDbHelper(context);
 	}
 	
+	// when start using database
 	public void open() throws SQLException{
+		// get database from dbhelper
 		database = dbHelper.getWritableDatabase();
-		
 	}
 	
+	// when end using database
 	public void close() {
 		dbHelper.close();
 	}
 	
+	
 	public ArrayList<SRVoiceDb> getAllRecorder(){
-		ArrayList<SRVoiceDb> voices = new ArrayList<SRVoiceDb>();
-
+		ArrayList<SRVoiceDb> resultAllRecorder = new ArrayList<SRVoiceDb>();
+		
 	    Cursor cursor = database.query(SRDbHelper.TABLE_VOICE,
 	    		allVoiceColumns, null, null, null, null, null);
 
@@ -44,12 +55,12 @@ public class SRDataSource {
 	    	SRVoiceDb voice = cursorToVoice(cursor);
 	    	ArrayList<SRTagDb> tags = getTagByVoiceId(voice.getVoice_id());
 	    	voice.setmTagList(tags);
-	    	voices.add(voice);
+	    	resultAllRecorder.add(voice);
 	    	cursor.moveToNext();
 	    }
 	    // Make sure to close the cursor
 	    cursor.close();
-	    return voices;
+	    return resultAllRecorder;
 	}
 	
 	public SRVoiceDb createVoice(String voiceFilePath, String docFilePath){
@@ -57,15 +68,13 @@ public class SRDataSource {
     	values.put(SRDbHelper.VOICE_COLUMN_VOICE_PATH, voiceFilePath);
     	values.put(SRDbHelper.VOICE_COLUMN_DOCUMENT_PATH, docFilePath);
     	long insertId = database.insert(SRDbHelper.TABLE_VOICE, null, values);
-    	SRDebugUtil.SRLog("insertId = "+ insertId);
+//    	SRDebugUtil.SRLog("insertId = "+ insertId);
     	Cursor cursor = database.query(SRDbHelper.TABLE_VOICE,
     			allVoiceColumns, SRDbHelper.VOICE_COLUMN_VOICE_ID + " = " + insertId, null,
     	        null, null, null);
     	cursor.moveToFirst();
-    	SRVoiceDb newVoice = cursorToVoice(cursor);
-    	return newVoice;
-//    	SRVoiceModel voice = new SRVoiceModel();
-//    	return voice;
+    	SRVoiceDb resultVoice = cursorToVoice(cursor);
+    	return resultVoice;
 	}
 	
 	private SRVoiceDb cursorToVoice(Cursor cursor) {
@@ -74,6 +83,7 @@ public class SRDataSource {
 		voice.setCreated_datetime(cursor.getString(1));
 		voice.setVoice_path(cursor.getString(2));
 		voice.setDocument_path(cursor.getString(3));
+		voice.setState(cursor.getInt(4));
 		return voice;
 	}
 	
@@ -147,22 +157,12 @@ public class SRDataSource {
 			isFirstTag = true;
 		}
 		return isFirstTag;
-//		if(intTagTime==0){
-//			mNubering = 0;
-//			return true;
-//		}
-//		mNubering ++;
-//		return false;
 	}
 	
-	private String getNumbering(){
-//		String imageName = "%3d";
-//		String num = String.format( imageName, mNubering);   
-//		SRDebugUtil.SRLog("getNumbering num = " + num);
-		
-		return String.format("%03d",mNubering);
-//		return num;
-	}
+	
+//	private String getNumbering(){
+//		return String.format("%03d",mNubering);
+//	}
 	
 	public void deleteTag(SRTagDb tag) {
 		long tag_id = tag.getTag_id();
