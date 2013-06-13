@@ -143,28 +143,6 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
     }
     private UpdatePageHandler mHandler = new UpdatePageHandler(this);
 
-	/*
-	private Handler mHandler = new Handler() {
-
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-            case MSG_UPDATE_DOC_PAGE_START: // for adjust time
-                notifyPageObservers(msg.obj != null ? (Integer)msg.obj : 0);    
-                
-                sendUpdateDocPageMsg(mDocPageAdjustTime);
-                break;
-            case MSG_UPDATE_DOC_PAGE:
-                notifyPageObservers((Integer)msg.obj);  
-                
-                sendUpdateDocPageMsg(0);            
-                break;
-            }
-        }
-	    
-	};
-	*/
-	
 	private void sendUpdateDocPageMsg(int adjustTime) {
         if (mDocPageTagListIdx < mDocPageTagList.size()) {
             SRTagDb tag = mDocPageTagList.get(mDocPageTagListIdx);
@@ -349,7 +327,7 @@ public class SRVoice implements SRVoiceInterface, OnCompletionListener {
             playStop();
         }
         
-    	SRDebugUtil.SRLog("SRVoice.recordStart() : voice = " + mVoiceFilePath + " doc = " + mDocFilePath);
+//    	SRDebugUtil.SRLog("SRVoice.recordStart() : voice = " + mVoiceFilePath + " doc = " + mDocFilePath);
     	
 //    	Intent recorderIntent = new Intent("com.unus.smartrecorder.Recorder");
 //    	recorderIntent.putExtra(SRConfig.VOICE_PATH_KEY, mVoiceFilePath);
