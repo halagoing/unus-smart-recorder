@@ -213,7 +213,7 @@ public class SRRecorderService extends Service{
 		}
 		protected void onProgressUpdate(Double... progress) {
 		      //amplitudeTextView.setText(progress[0].toString());
-			  Integer iVal = Integer.parseInt(String.valueOf(Math.round(progress[0] * 50)));
+			  Integer iVal = Integer.parseInt(String.valueOf(Math.round(progress[0] * 10)));
 			  mProgressBar.setProgress(iVal);
 	    }
 		@Override
